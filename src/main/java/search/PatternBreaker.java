@@ -2,17 +2,22 @@ package search;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
 import Pattern.Pattern;
+import io.DataSet;
 
 /**
  * PatternBreaker algorithm. Top-down search for MUPS
  *
  */
-public class PatternBreaker {
+public class PatternBreaker extends NaiveSearch {
+	
+	public PatternBreaker(DataSet curData) {
+		super(curData);
+	}
+	
 	public Set<Pattern> findMaxUncoveredPatternSet(double threshold) {
 		Set<Pattern> mups = new HashSet<Pattern>();
 
