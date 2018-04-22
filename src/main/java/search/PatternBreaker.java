@@ -13,60 +13,57 @@ import io.DataSet;
  *
  */
 public class PatternBreaker extends NaiveSearch {
-	
-	public PatternBreaker(DataSet curData) {
-		super(curData);
-	}
-	
-	public Set<Pattern> findMaxUncoveredPatternSet(double threshold) {
-		Set<Pattern> mups = new HashSet<Pattern>();
 
-		Queue<Pattern> patternToCheckQ = new LinkedList<Pattern>();
+    public PatternBreaker(DataSet curData) {
+	super(curData);
+    }
 
-		// Add root pattern
-		Pattern root = Pattern.getRootPattern(5);
-		patternToCheckQ.add(root);
+    public Set<Pattern> findMaxUncoveredPatternSet(double threshold) {
 
-		// Top-down mup traveral
-		while (!patternToCheckQ.isEmpty()) {
-			Pattern currentPattern = patternToCheckQ.poll();
+	Set<Pattern> mups = new HashSet<Pattern>();
 
-			// Make sure none of its ancestor is in MUP
-			boolean noMupAncestor = true;
-			for (Pattern mup : mups) {
-				if (mup.isAncestorOf(currentPattern)) {
-					noMupAncestor = false;
-					break;
-				}
-			}
-			if (!noMupAncestor)
-				continue;
+	Queue<Pattern> patternToCheckQ = new LinkedList<Pattern>();
 
-			// Check coverage
-			int coverageValue = 0;
+	// Add root pattern
+	Pattern root = Pattern.getRootPattern(dataToEvaluate.getDimension());
+	patternToCheckQ.add(root);
 
-			if (coverageValue < threshold)
-				mups.add(currentPattern);
-			else {
-				// Find the right most deterministic cell
-				int rightMostDeterministicIdx = currentPattern.findRightMostDeterministicIndex();
+	// Top-down mup traveral
+	while (!patternToCheckQ.isEmpty()) {
+	    Pattern currentPattern = patternToCheckQ.poll();
+	    // Make sure none of its ancestor is in MUP
+	    boolean noMupAncestor = true;
+	    for (Pattern mup : mups) {
+		if (mup.isAncestorOf(currentPattern)) {
+		    noMupAncestor = false;
+		    break;
+		}
+	    }
+	    if (!noMupAncestor)
+		continue;
 
-				if (rightMostDeterministicIdx >= 0) {
-					// Sequentially create new patterns by replacing each
-					// position with all possible values in that position
-					for (int i = rightMostDeterministicIdx + 1; i < currentPattern.getDimention(); i++) {
-						for (Character valueToReplace : currentPattern.getAttributeValueRange(i)) {
-							patternToCheckQ.add(new Pattern(currentPattern.data, i, valueToReplace));
-						}
-					}
-				}
-			}
+	    // Check coverage
+	    int coverageValue = this.dataToEvaluate.checkCoverage(currentPattern);
+	    
+//	    System.out.println(coverageValue + " " + currentPattern);
+
+	    if (coverageValue < threshold)
+		mups.add(currentPattern);
+	    else {
+		// Find the right most deterministic cell
+		int rightMostDeterministicIdx = currentPattern.findRightMostDeterministicIndex();
+
+		// Sequentially create new patterns by replacing each
+		// position with all possible values in that position
+		for (int i = rightMostDeterministicIdx + 1; i < currentPattern.getDimension(); i++) {
+		    for (char valueToReplace : dataToEvaluate.getValueRange(i)) {
+			patternToCheckQ.add(new Pattern(currentPattern.data, i, valueToReplace));
+		    }
 		}
 
-		return mups;
+	    }
 	}
 
-	public static void main(String[] args) {
-		System.out.println("Hello World!");
-	}
+	return mups;
+    }
 }

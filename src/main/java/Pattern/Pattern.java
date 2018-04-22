@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pattern {
-    public int[] data; // the content of pattern (a sequence of characters)
+    public char[] data; // the content of pattern (a sequence of characters)
 
-    public Pattern(int[] data) {
+    public Pattern(char[] data) {
 	this.data = data.clone();
     }
 
-    public Pattern(int[] data, int idx, int chrToReplace) {
+    public Pattern(char[] data, int idx, char chrToReplace) {
 	this.data = data.clone();
 	this.data[idx] = chrToReplace;
     }
 
-    public int getDimention() {
+    public int getDimension() {
 	return data.length;
     }
 
     public boolean isAncestorOf(Pattern other) {
-	int size = getDimention();
-	if (size != other.getDimention()) {
+	int size = getDimension();
+	if (size != other.getDimension()) {
 	    return false;
 	}
 
@@ -41,7 +41,7 @@ public class Pattern {
     }
 
     public static Pattern getRootPattern(int dimension) {
-	int[] rootData = new int[dimension];
+	char[] rootData = new char[dimension];
 	for (int i = 0; i < dimension; i++) {
 	    rootData[i] = 'x';
 	}
@@ -50,17 +50,11 @@ public class Pattern {
 
     public int findRightMostDeterministicIndex() {
 	int idx = -1;
-	for (idx = getDimention() - 1; idx >= 0; idx--) {
-	    if (idx != 'x')
+	for (idx = getDimension() - 1; idx >= 0; idx--) {
+	    if (data[idx] != 'x')
 		return idx;
 	}
 	return idx;
-    }
-
-    public List<Character> getAttributeValueRange(int k) {
-	List<Character> values = new ArrayList<Character>();
-
-	return values;
     }
 
     @Override
@@ -75,6 +69,15 @@ public class Pattern {
     @Override
     public int hashCode() {
 	return data.hashCode();
+    }
+    
+    @Override
+    public String toString() {
+	String msg = "";
+	for (char a : data)
+	    msg += a;
+	
+	return msg;
     }
 
 }
