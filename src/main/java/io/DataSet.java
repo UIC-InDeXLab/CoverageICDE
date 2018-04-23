@@ -96,17 +96,13 @@ public class DataSet {
     public int checkCoverage(Pattern p) {
 	int numRecords = getNumRecords();
 	BitSet coverageBitVector = new BitSet(numRecords);
-	for (int i = 0; i < numRecords; i++) {
-	    coverageBitVector.set(i);
-	}
+	coverageBitVector.set(0, numRecords);
 
 	for (int i = 0; i < getDimension(); i++) {
 	    BitSet coverageBitVectorPerDimension = new BitSet(numRecords);
 	    for (int n = 0; n < numRecords; n++) {
 		if (p.data[i] == 'x' || p.data[i] == data[i][n]) {
 		    coverageBitVectorPerDimension.set(n);
-		} else {
-		    coverageBitVectorPerDimension.set(n, false);
 		}
 	    }
 	    coverageBitVector.and(coverageBitVectorPerDimension);

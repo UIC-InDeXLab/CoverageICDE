@@ -18,6 +18,7 @@ public class PatternBreaker extends NaiveSearch {
 	super(curData);
     }
 
+    @Override
     public Set<Pattern> findMaxUncoveredPatternSet(double threshold) {
 
 	Set<Pattern> mups = new HashSet<Pattern>();
@@ -44,8 +45,6 @@ public class PatternBreaker extends NaiveSearch {
 
 	    // Check coverage
 	    int coverageValue = this.dataToEvaluate.checkCoverage(currentPattern);
-	    
-//	    System.out.println(coverageValue + " " + currentPattern);
 
 	    if (coverageValue < threshold)
 		mups.add(currentPattern);

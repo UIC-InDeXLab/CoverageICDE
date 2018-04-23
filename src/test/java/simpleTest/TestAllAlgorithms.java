@@ -21,8 +21,6 @@ public class TestAllAlgorithms {
 	DataSet dataToCheck = new DataSet(fileName, Arrays.copyOfRange(cardinalities, 0, d),
 		Arrays.copyOfRange(chosenAttributeIds, 0, d));
 	
-//	System.out.println(dataToCheck);
-
 	// Test 1 with pattern breaker
 	PatternBreaker pb = new PatternBreaker(dataToCheck);
 	

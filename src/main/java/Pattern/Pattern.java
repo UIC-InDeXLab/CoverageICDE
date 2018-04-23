@@ -1,7 +1,7 @@
 package Pattern;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import org.apache.commons.collections.iterators.ArrayIterator;
 
 public class Pattern {
     public char[] data; // the content of pattern (a sequence of characters)
@@ -19,27 +19,36 @@ public class Pattern {
 	return data.length;
     }
 
+    /**
+     * Check if the current pattern is the ancestor of "other"
+     * @param other
+     * @return
+     */
     public boolean isAncestorOf(Pattern other) {
 	int size = getDimension();
 	if (size != other.getDimension()) {
 	    return false;
 	}
 
-	boolean ifAncestor = false;
-	//
-	// Iterator it1 = ArrayIterator(data);
-	// Iterator it2 = ArrayIterator(array2);
-	// while (it1.hasNext()) {
-	// doStuff(it1.next());
-	// doOtherStuff(it2.next());
-	// }
+	Iterator<Character> thisIt = new ArrayIterator(data);
+	Iterator<Character> otherIt = new ArrayIterator(other.data);
+	while (thisIt.hasNext()) {
+	    char thisChar = thisIt.next();
+	    char otherChar = otherIt.next();
+	    if (thisChar == 'x' || thisChar == otherChar)
+		continue;
+	    else
+		return false;
+	}
 
-	if (ifAncestor)
-	    return true;
-	else
-	    return false;
+	return true;
     }
 
+    /**
+     * Get the root pattern 'xxx...x'
+     * @param dimension
+     * @return
+     */
     public static Pattern getRootPattern(int dimension) {
 	char[] rootData = new char[dimension];
 	for (int i = 0; i < dimension; i++) {
@@ -48,6 +57,10 @@ public class Pattern {
 	return new Pattern(rootData);
     }
 
+    /**
+     * From right to left, find the index on the first deterministic character (i.e., not 'x')
+     * @return
+     */
     public int findRightMostDeterministicIndex() {
 	int idx = -1;
 	for (idx = getDimension() - 1; idx >= 0; idx--) {
@@ -70,13 +83,13 @@ public class Pattern {
     public int hashCode() {
 	return data.hashCode();
     }
-    
+
     @Override
     public String toString() {
 	String msg = "";
 	for (char a : data)
 	    msg += a;
-	
+
 	return msg;
     }
 
