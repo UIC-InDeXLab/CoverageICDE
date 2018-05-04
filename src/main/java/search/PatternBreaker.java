@@ -20,6 +20,7 @@ public class PatternBreaker extends NaiveSearch {
 
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
+		long numNodesVisited = 0;
 
 		Set<Pattern> mups = new HashSet<Pattern>();
 
@@ -31,6 +32,8 @@ public class PatternBreaker extends NaiveSearch {
 
 		// Top-down mup traveral
 		while (!patternToCheckQ.isEmpty()) {
+			numNodesVisited++;
+			
 			Pattern currentPattern = patternToCheckQ.poll();
 			// Make sure none of its ancestor is in MUP
 			boolean noMupAncestor = true;
@@ -67,6 +70,10 @@ public class PatternBreaker extends NaiveSearch {
 
 			}
 		}
+
+		// Update debug info
+		updateDebugNodesVisited(numNodesVisited);
+		updateDebugMUPSSize(mups.size());
 
 		return mups;
 	}

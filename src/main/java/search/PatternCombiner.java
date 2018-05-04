@@ -22,6 +22,7 @@ public class PatternCombiner extends NaiveSearch {
 
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
+		int numNodesVisited = 0;
 
 		Set<Pattern> mups = new HashSet<Pattern>();
 		Map<Pattern, Integer> coverageHashThisLevel = new HashMap<Pattern, Integer>();
@@ -84,6 +85,7 @@ public class PatternCombiner extends NaiveSearch {
 			// parent pattern). If so, put it in mups.
 			for (Map.Entry<Pattern, Integer> e : coverageHashThisLevel
 					.entrySet()) {
+				numNodesVisited++;
 				if (e.getValue() < threshold) {
 					Pattern curPattern = e.getKey();
 					Map<Integer, Pattern> allParentPatterns = curPattern
@@ -105,6 +107,10 @@ public class PatternCombiner extends NaiveSearch {
 
 		}
 
+		// Update debug info
+		updateDebugNodesVisited(numNodesVisited);
+		updateDebugMUPSSize(mups.size());
+		
 		return mups;
 	}
 

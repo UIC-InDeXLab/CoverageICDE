@@ -5,6 +5,7 @@ import java.util.Set;
 
 import Pattern.Pattern;
 import io.DataSet;
+import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
@@ -20,38 +21,41 @@ public class TestAllAlgorithms {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 10;
+		int d = 13;
 
 		int threshold = 200;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
 				Arrays.copyOfRange(chosenAttributeIds, 0, d));
+		
+		// Test 2 with pattern breaker
+		PatternBreakerOriginal pbo = new PatternBreakerOriginal(dataToCheck);
+
+		long t0 = System.currentTimeMillis();
+		Set<Pattern> mups = pbo.findMaxUncoveredPatternSet(threshold);
+		long t1 = System.currentTimeMillis();
+
+		System.out.println(breakline);
+		System.out.println("Algo: Pattern Breaker Original");
+		System.out.println("MUPs: " + pbo.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
+		System.out.println("Visited: " + pbo.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+
+		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
 		// Test 1 with pattern breaker
 		PatternBreaker pb = new PatternBreaker(dataToCheck);
 
-		long t0 = System.currentTimeMillis();
-		Set<Pattern> mups = pb.findMaxUncoveredPatternSet(threshold);
-		long t1 = System.currentTimeMillis();
+		t0 = System.currentTimeMillis();
+		mups = pb.findMaxUncoveredPatternSet(threshold);
+		t1 = System.currentTimeMillis();
 		System.out.println(breakline);
 		System.out.println("Algo: Pattern Breaker");
-		System.out.println("MUPs: " + mups);
-		System.out.println("# of MUPs: " + mups.size());
+		System.out.println("MUPs: " + pb.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
+		System.out.println("Visited: " + pb.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
-		// Test 2 with pattern breaker
-		PatternBreakerOriginal pbo = new PatternBreakerOriginal(dataToCheck);
 
-		t0 = System.currentTimeMillis();
-		mups = pbo.findMaxUncoveredPatternSet(threshold);
-		t1 = System.currentTimeMillis();
-
-		System.out.println(breakline);
-		System.out.println("Algo: Pattern Breaker Original");
-		System.out.println("MUPs: " + mups);
-		System.out.println("# of MUPs: " + mups.size());
-		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
 		// Test 3 with pattern combiner
 		PatternCombiner pc = new PatternCombiner(dataToCheck);
@@ -62,9 +66,8 @@ public class TestAllAlgorithms {
 
 		System.out.println(breakline);
 		System.out.println("Algo: Pattern Combiner");
-		System.out.println("MUPs: " + mups);
-
-		System.out.println("# of MUPs: " + mups.size());
+		System.out.println("MUPs: " + pc.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
+		System.out.println("Visited: " + pc.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
 		// for (Pattern p : mups)

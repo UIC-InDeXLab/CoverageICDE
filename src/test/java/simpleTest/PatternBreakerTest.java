@@ -16,7 +16,7 @@ public class PatternBreakerTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 10;
+		int d = 13;
 
 		int threshold = 200;
 

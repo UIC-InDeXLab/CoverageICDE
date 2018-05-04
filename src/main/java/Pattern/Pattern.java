@@ -2,11 +2,8 @@ package Pattern;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.commons.collections.iterators.ArrayIterator;
 
 public class Pattern implements Comparable<Pattern> {
 	public char[] data; // the content of pattern (a sequence of characters)
@@ -35,12 +32,10 @@ public class Pattern implements Comparable<Pattern> {
 		if (size != other.getDimension()) {
 			return false;
 		}
-
-		Iterator<Character> thisIt = new ArrayIterator(data);
-		Iterator<Character> otherIt = new ArrayIterator(other.data);
-		while (thisIt.hasNext()) {
-			char thisChar = thisIt.next();
-			char otherChar = otherIt.next();
+		
+		for (int i = 0; i < size; i++) {
+			char thisChar = data[i];
+			char otherChar = other.data[i];
 			if (thisChar == 'x' || thisChar == otherChar)
 				continue;
 			else
@@ -158,10 +153,9 @@ public class Pattern implements Comparable<Pattern> {
 		return msg;
 	}
 
-
-    public int compareTo(Pattern other) {
-    	return this.data.toString().compareTo(other.data.toString());
-    }
+	public int compareTo(Pattern other) {
+		return this.data.toString().compareTo(other.data.toString());
+	}
 
 	public static void main(String[] args) {
 		Pattern p1 = new Pattern(new char[]{'1', 'x'});
