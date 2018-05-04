@@ -68,7 +68,7 @@ public class PatternCombiner extends NaiveSearch {
 							coverageOfParentPattern += coverageHashThisLevel
 									.get(childOfParentPattern);
 						else
-							coverageOfParentPattern = threshold;
+							coverageOfParentPattern += threshold;
 					}
 
 					if (coverageOfParentPattern < threshold)
