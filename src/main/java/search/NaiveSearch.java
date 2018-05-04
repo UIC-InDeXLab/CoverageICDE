@@ -13,7 +13,7 @@ public class NaiveSearch {
 		dataToEvaluate = curData;
 	}
 	
-	public Set<Pattern> findMaxUncoveredPatternSet(double threshold) {
+	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
 		Set<Pattern> mups = new HashSet<Pattern>();
 		return mups;
 	}
