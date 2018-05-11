@@ -28,19 +28,19 @@ public class PatternCombiner extends NaiveSearch {
 		Map<Pattern, Integer> coverageHashThisLevel = new HashMap<Pattern, Integer>();
 
 		// Initialize the bottom level
-		List<Pattern> patternList = dataToEvaluate.enumAllValues();
+		List<Pattern> patternList = curDataSet.enumAllValues();
 		for (Pattern p : patternList) {
 			coverageHashThisLevel.put(p, 0);
 		}
 
 		// Count the pattern coverage from the bottom level.
-		for (int i = 0; i < dataToEvaluate.getNumRecords(); i++) {
-			Pattern curRowPattern = new Pattern(dataToEvaluate.getRow(i));
+		for (int i = 0; i < curDataSet.getNumRecords(); i++) {
+			Pattern curRowPattern = new Pattern(curDataSet.getRow(i));
 			int count = coverageHashThisLevel.getOrDefault(curRowPattern, 0);
 			coverageHashThisLevel.put(curRowPattern, count + 1);
 		}
 
-		int curLevel = dataToEvaluate.getDimension();
+		int curLevel = curDataSet.getDimension();
 		while (curLevel >= 0) {
 			Map<Pattern, Integer> coverageHashNextLevel = new HashMap<Pattern, Integer>();
 
@@ -59,7 +59,7 @@ public class PatternCombiner extends NaiveSearch {
 					Pattern parentPattern = e2.getValue();
 					int idx = e2.getKey();
 
-					for (char charToReplace : dataToEvaluate
+					for (char charToReplace : curDataSet
 							.getValueRange(idx)) {
 						Pattern childOfParentPattern = new Pattern(
 								parentPattern.data, idx, charToReplace);

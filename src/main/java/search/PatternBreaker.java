@@ -18,6 +18,23 @@ public class PatternBreaker extends NaiveSearch {
 		super(curData);
 	}
 
+	/**
+	 * Check if this pattern is covered by any mup
+	 * 
+	 * @param patternToCheck
+	 * @param mups
+	 * @return
+	 */
+	public boolean ifCoveredByMups(Pattern patternToCheck, Set<Pattern> mups) {
+		// Make sure none of its ancestor is in MUP
+		for (Pattern mup : mups) {
+			if (mup.isAncestorOf(patternToCheck)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
 		long numNodesVisited = 0;
@@ -27,28 +44,21 @@ public class PatternBreaker extends NaiveSearch {
 		Queue<Pattern> patternToCheckQ = new LinkedList<Pattern>();
 
 		// Add root pattern
-		Pattern root = Pattern.getRootPattern(dataToEvaluate.getDimension());
+		Pattern root = Pattern.getRootPattern(curDataSet.getDimension());
 		patternToCheckQ.add(root);
 
 		// Top-down mup traveral
 		while (!patternToCheckQ.isEmpty()) {
-			numNodesVisited++;
-			
+
 			Pattern currentPattern = patternToCheckQ.poll();
+
 			// Make sure none of its ancestor is in MUP
-			boolean noMupAncestor = true;
-			for (Pattern mup : mups) {
-				if (mup.isAncestorOf(currentPattern)) {
-					noMupAncestor = false;
-					break;
-				}
-			}
-			if (!noMupAncestor)
+			if (ifCoveredByMups(currentPattern, mups))
 				continue;
 
 			// Check coverage
-			int coverageValue = this.dataToEvaluate
-					.checkCoverage(currentPattern);
+			numNodesVisited++;
+			int coverageValue = this.curDataSet.checkCoverage(currentPattern);
 
 			if (coverageValue < threshold)
 				mups.add(currentPattern);
@@ -61,8 +71,7 @@ public class PatternBreaker extends NaiveSearch {
 				// position with all possible values in that position
 				for (int i = rightMostDeterministicIdx + 1; i < currentPattern
 						.getDimension(); i++) {
-					for (char valueToReplace : dataToEvaluate
-							.getValueRange(i)) {
+					for (char valueToReplace : curDataSet.getValueRange(i)) {
 						patternToCheckQ.add(new Pattern(currentPattern.data, i,
 								valueToReplace));
 					}

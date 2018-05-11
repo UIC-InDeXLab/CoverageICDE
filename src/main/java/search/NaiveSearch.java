@@ -13,11 +13,11 @@ public class NaiveSearch {
 	public static final String DEBUG_MUPS_SIZE = "MUPS_SIZE";
 	public static final String DEBUG_NODES_VISITED = "NODES_VISITED";
 	
-	DataSet dataToEvaluate;
+	DataSet curDataSet;
 	Map<String, Long> debugInfo;
 	
 	public NaiveSearch(DataSet curData) {
-		dataToEvaluate = curData;
+		curDataSet = curData;
 		debugInfo = new HashMap<String, Long>();
 	}
 	

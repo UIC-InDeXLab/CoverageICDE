@@ -9,7 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import Pattern.Pattern;
@@ -19,6 +21,7 @@ public class DataSet {
 	char[][] dataToAccess;
 	int[] cardinalities;
 	int[] selectedAttrIds;
+	public List<double[]> coveragePercentageOfEachValueInEachAttr;
 
 	public DataSet(String fileName, int[] cardinalities,
 			int[] selectedAttrIds) {
@@ -63,10 +66,34 @@ public class DataSet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		updateCoveragePercentage();
 	}
-	
+
+	/**
+	 * Update the coverage percentage
+	 */
+	public void updateCoveragePercentage() {
+		Pattern root = Pattern.getRootPattern(getDimension());
+		this.coveragePercentageOfEachValueInEachAttr = new ArrayList<double[]>();
+		for (int i = 0; i < getDimension(); i++) {
+			double[] covereagePercentageArrayForAttr = new double[cardinalities[i]];
+
+			int j = 0;
+			for (char val : getValueRange(i)) {
+				Pattern patternCheckingCovereageFoVal = new Pattern(root.data,
+						i, val);
+				covereagePercentageArrayForAttr[j++] = checkCoveragePercentage(
+						patternCheckingCovereageFoVal);
+			}
+			coveragePercentageOfEachValueInEachAttr
+					.add(covereagePercentageArrayForAttr);
+		}
+	}
+
 	/**
 	 * Get row of data by row id
+	 * 
 	 * @param rowId
 	 * @return
 	 */
@@ -126,6 +153,29 @@ public class DataSet {
 	}
 
 	/**
+	 * Check coverage percentage for pattern p
+	 * 
+	 * @param p
+	 * @return
+	 */
+	public double checkCoveragePercentage(Pattern p) {
+		int numRecords = getNumRecords();
+		BitSet coverageBitVector = new BitSet(numRecords);
+		coverageBitVector.set(0, numRecords);
+
+		for (int i = 0; i < getDimension(); i++) {
+			BitSet coverageBitVectorPerDimension = new BitSet(numRecords);
+			for (int n = 0; n < numRecords; n++) {
+				if (p.data[i] == 'x' || p.data[i] == data[i][n]) {
+					coverageBitVectorPerDimension.set(n);
+				}
+			}
+			coverageBitVector.and(coverageBitVectorPerDimension);
+		}
+		return coverageBitVector.cardinality() * 1.0 / numRecords;
+	}
+
+	/**
 	 * Create an array of integers from 0 to d - 1 for column number #columnId
 	 * 
 	 * @param columnId
@@ -139,9 +189,38 @@ public class DataSet {
 
 		return range;
 	}
-	
+
 	/**
-	 * Enumerate all possible values based on different cardinalities in each column
+	 * Get children next level
+	 * 
+	 * @param parentPattern
+	 * @return
+	 */
+	public Set<Pattern> getChildrenNextLevel(Pattern parentPattern) {
+		Set<Pattern> childPatterns = new HashSet<Pattern>();
+
+		// Find the right most deterministic cell
+		int rightMostDeterministicIdx = parentPattern
+				.findRightMostDeterministicIndex();
+
+		// Sequentially create new patterns by replacing each
+		// position with all possible values in that position
+		for (int i = rightMostDeterministicIdx + 1; i < parentPattern
+				.getDimension(); i++) {
+			for (char valueToReplace : getValueRange(i)) {
+				childPatterns.add(new Pattern(parentPattern.data, i,
+						valueToReplace, coveragePercentageOfEachValueInEachAttr,
+						parentPattern.covereagePercentage));
+			}
+		}
+
+		return childPatterns;
+	}
+
+	/**
+	 * Enumerate all possible values based on different cardinalities in each
+	 * column
+	 * 
 	 * @return
 	 */
 	public List<Pattern> enumAllValues() {
@@ -151,26 +230,26 @@ public class DataSet {
 			for (char valueForCol : getValueRange(col)) {
 				if (valueList.isEmpty()) {
 					tempValueList.add(new char[]{valueForCol});
-				}
-				else {
+				} else {
 					for (char[] originalValue : valueList) {
 						char[] newValue = new char[originalValue.length + 1];
-						
-						System.arraycopy(originalValue, 0, newValue, 0, originalValue.length);
+
+						System.arraycopy(originalValue, 0, newValue, 0,
+								originalValue.length);
 						newValue[newValue.length - 1] = valueForCol;
 						tempValueList.add(newValue);
 					}
 				}
 			}
-			
+
 			valueList = tempValueList;
 		}
-		
+
 		List<Pattern> patternList = new LinkedList<Pattern>();
 		for (char[] value : valueList) {
 			patternList.add(new Pattern(value));
 		}
-		
+
 		return patternList;
 	}
 

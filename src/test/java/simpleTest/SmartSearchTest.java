@@ -6,9 +6,11 @@ import java.util.Set;
 import Pattern.Pattern;
 import io.DataSet;
 import search.PatternBreaker;
+import search.PatternBreakerOriginal;
 import search.PatternCombiner;
+import search.SmartSearch;
 
-public class PatternBreakerTest {
+public class SmartSearchTest {
 	public static void main(String[] args) {
 		String fileName = "data/airbnb_1000.csv";
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
@@ -16,7 +18,7 @@ public class PatternBreakerTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 16;
+		int d = 3;
 
 		int threshold = 200;
 
@@ -25,10 +27,10 @@ public class PatternBreakerTest {
 				Arrays.copyOfRange(chosenAttributeIds, 0, d));
 
 		// Test 1 with pattern breaker
-		PatternBreaker pb = new PatternBreaker(dataToCheck);
+		SmartSearch pbo = new SmartSearch(dataToCheck);
 
 		long t0 = System.currentTimeMillis();
-		Set<Pattern> mups = pb.findMaxUncoveredPatternSet(threshold);
+		Set<Pattern> mups = pbo.findMaxUncoveredPatternSet(threshold);
 		long t1 = System.currentTimeMillis();
 
 		String breakline = String.format("%0" + 50 + "d", 0).replace("0", "-");

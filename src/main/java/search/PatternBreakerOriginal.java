@@ -28,7 +28,7 @@ public class PatternBreakerOriginal extends NaiveSearch {
 		// Queue<Pattern> patternToCheckQ = new LinkedList<Pattern>();
 
 		// Add root pattern
-		Pattern root = Pattern.getRootPattern(dataToEvaluate.getDimension());
+		Pattern root = Pattern.getRootPattern(curDataSet.getDimension());
 
 		Set<Pattern> curPatternSet = new HashSet<Pattern>();
 		curPatternSet.add(root);
@@ -59,7 +59,7 @@ public class PatternBreakerOriginal extends NaiveSearch {
 					continue;
 				}
 
-				if (this.dataToEvaluate
+				if (this.curDataSet
 						.checkCoverage(currentPattern) < threshold) {
 					mups.add(currentPattern);
 				} else {
@@ -71,7 +71,7 @@ public class PatternBreakerOriginal extends NaiveSearch {
 					// position with all possible values in that position
 					for (int i = rightMostDeterministicIdx
 							+ 1; i < currentPattern.getDimension(); i++) {
-						for (char valueToReplace : dataToEvaluate
+						for (char valueToReplace : curDataSet
 								.getValueRange(i)) {
 							nextPatternSet.add(new Pattern(currentPattern.data,
 									i, valueToReplace));

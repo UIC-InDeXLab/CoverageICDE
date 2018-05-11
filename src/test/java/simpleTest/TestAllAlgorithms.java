@@ -9,6 +9,7 @@ import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
+import search.SmartSearch;
 
 public class TestAllAlgorithms {
 	public static void main(String[] args) {
@@ -28,8 +29,8 @@ public class TestAllAlgorithms {
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
 				Arrays.copyOfRange(chosenAttributeIds, 0, d));
-		
-		// Test 2 with pattern breaker
+
+		// Test 1 with pattern breaker
 		PatternBreakerOriginal pbo = new PatternBreakerOriginal(dataToCheck);
 
 		long t0 = System.currentTimeMillis();
@@ -38,12 +39,14 @@ public class TestAllAlgorithms {
 
 		System.out.println(breakline);
 		System.out.println("Algo: Pattern Breaker Original");
-		System.out.println("MUPs: " + pbo.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
-		System.out.println("Visited: " + pbo.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println(
+				"MUPs: " + pbo.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
+		System.out.println("Visited: "
+				+ pbo.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
-		// Test 1 with pattern breaker
+		// Test 2 with pattern breaker
 		PatternBreaker pb = new PatternBreaker(dataToCheck);
 
 		t0 = System.currentTimeMillis();
@@ -51,11 +54,11 @@ public class TestAllAlgorithms {
 		t1 = System.currentTimeMillis();
 		System.out.println(breakline);
 		System.out.println("Algo: Pattern Breaker");
-		System.out.println("MUPs: " + pb.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
-		System.out.println("Visited: " + pb.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println(
+				"MUPs: " + pb.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
+		System.out.println("Visited: "
+				+ pb.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
-
-
 
 		// Test 3 with pattern combiner
 		PatternCombiner pc = new PatternCombiner(dataToCheck);
@@ -66,12 +69,26 @@ public class TestAllAlgorithms {
 
 		System.out.println(breakline);
 		System.out.println("Algo: Pattern Combiner");
-		System.out.println("MUPs: " + pc.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
-		System.out.println("Visited: " + pc.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println(
+				"MUPs: " + pc.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
+		System.out.println("Visited: "
+				+ pc.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
-		// for (Pattern p : mups)
-		// System.out.println(p.data);
+		// Test 4 with pattern combiner
+		SmartSearch ss = new SmartSearch(dataToCheck);
+
+		t0 = System.currentTimeMillis();
+		mups = ss.findMaxUncoveredPatternSet(threshold);
+		t1 = System.currentTimeMillis();
+
+		System.out.println(breakline);
+		System.out.println("Algo: SmartSearch");
+		System.out.println(
+				"MUPs: " + ss.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
+		System.out.println("Visited: "
+				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println("Total Time: " + (t1 - t0) + " ms");
 	}
 
 }
