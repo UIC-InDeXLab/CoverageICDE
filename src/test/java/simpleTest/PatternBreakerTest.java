@@ -5,6 +5,7 @@ import java.util.Set;
 
 import Pattern.Pattern;
 import io.DataSet;
+import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternCombiner;
 
@@ -16,7 +17,7 @@ public class PatternBreakerTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 16;
+		int d = 13;
 
 		int threshold = 200;
 
@@ -38,6 +39,9 @@ public class PatternBreakerTest {
 		System.out.println("MUPs: " + mups);
 		System.out.println("# of MUPs: " + mups.size());
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
+		
+		System.out.println("Visited: "
+				+ pb.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 
 	}
 

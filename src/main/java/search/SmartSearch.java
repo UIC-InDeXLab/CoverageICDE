@@ -26,6 +26,9 @@ public class SmartSearch extends NaiveSearch {
 		long numNodesVisited = 0;
 
 		Set<Pattern> mups = new HashSet<Pattern>();
+		
+		Set<Pattern> coveredPatternSet = new HashSet<Pattern>();
+		Set<Pattern> uncoveredPatternSet = new HashSet<Pattern>();
 
 		PriorityQueue<Pattern> patternToCheckQ = new PriorityQueue<Pattern>(
 				10000);
@@ -35,29 +38,67 @@ public class SmartSearch extends NaiveSearch {
 				curDataSet.coveragePercentageOfEachValueInEachAttr);
 		patternToCheckQ.add(root);
 
-		// Top-down mup traveral
 		while (!patternToCheckQ.isEmpty()) {
-			
 
 			Pattern currentPattern = patternToCheckQ.poll();
 
 			// Check coverage
-			numNodesVisited++;
-			int coverageValue = this.curDataSet.checkCoverage(currentPattern);
+			boolean ifUncovered;
+			
+			if (currentPattern.covereage >= 0)
+				ifUncovered = currentPattern.covereage < threshold;
+			else if (checkIfPatternIsAParentOfAny(coveredPatternSet, currentPattern))
+				ifUncovered = false;
+			else if (checkIfPatternIsAChildOfAny(uncoveredPatternSet, currentPattern))
+				ifUncovered = true;
+			else {
+				numNodesVisited++;
+				int coverageValue = this.curDataSet.checkCoverage(currentPattern);
 
-			currentPattern.updateCoveragePercentage(
-					(double) coverageValue / curDataSet.getNumRecords());
-			// System.out.println(
-			// currentPattern + ": " + currentPattern.covereagePercentage);
+				currentPattern.updateCoveragePercentage(
+						(double) coverageValue / curDataSet.getNumRecords());
+				currentPattern.setCoverage(coverageValue);
+				
+				ifUncovered = coverageValue < threshold;
+				
+				if (ifUncovered)
+					uncoveredPatternSet.add(currentPattern);
+				else
+					coveredPatternSet.add(currentPattern);
+				
+			}
 
-			if (coverageValue < threshold) {
+			if (ifUncovered) {
 				Map<Integer, Pattern> parents = currentPattern.genParents();
 				boolean ifMup = true;
 
-				for (Pattern parent : parents.values()) {
-					if (this.curDataSet.checkCoverage(parent) < threshold) {
+				for (Pattern parentPattern : parents.values()) {
+					if (parentPattern.covereage >= 0)
+						ifUncovered = parentPattern.covereage < threshold;
+					else if (checkIfPatternIsAParentOfAny(coveredPatternSet, parentPattern))
+						ifUncovered = false;
+					else if (checkIfPatternIsAChildOfAny(uncoveredPatternSet, parentPattern)) {
+						ifUncovered = true;
 						ifMup = false;
 						break;
+					}
+					else {
+						numNodesVisited++;
+						int coverageValue = this.curDataSet.checkCoverage(parentPattern);
+
+						parentPattern.updateCoveragePercentage(
+								(double) coverageValue / curDataSet.getNumRecords());
+						parentPattern.setCoverage(coverageValue);
+						
+						ifUncovered = coverageValue < threshold;
+						
+						if (ifUncovered) {
+							uncoveredPatternSet.add(parentPattern);
+							ifMup = false;
+							break;
+						}
+						else
+							coveredPatternSet.add(parentPattern);
 					}
 
 				}
@@ -75,5 +116,23 @@ public class SmartSearch extends NaiveSearch {
 		updateDebugMUPSSize(mups.size());
 
 		return mups;
+	}
+	
+	public boolean checkIfPatternIsAParentOfAny(Set<Pattern> patternSet, Pattern patternToCheck) {
+		for (Pattern myPattern : patternSet) {
+			if (patternToCheck.isAncestorOf(myPattern))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean checkIfPatternIsAChildOfAny(Set<Pattern> patternSet, Pattern patternToCheck) {
+		for (Pattern myPattern : patternSet) {
+			if (myPattern.isAncestorOf(patternToCheck))
+				return true;
+		}
+		
+		return false;
 	}
 }

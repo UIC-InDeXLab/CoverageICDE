@@ -5,6 +5,7 @@ import java.util.Set;
 
 import Pattern.Pattern;
 import io.DataSet;
+import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
@@ -39,6 +40,9 @@ public class PatternBreakerOriginalTest {
 		System.out.println("MUPs: " + mups);
 		System.out.println("# of MUPs: " + mups.size());
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
+		
+		System.out.println("Visited: "
+				+ pbo.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 
 	}
 

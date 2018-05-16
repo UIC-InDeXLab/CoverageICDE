@@ -12,25 +12,30 @@ import java.util.Set;
 public class Pattern implements Comparable<Pattern> {
 	public char[] data; // the content of pattern (a sequence of characters)
 	public double covereagePercentage;
+	public double covereage;
 
 	public Pattern(char[] data) {
 		this.data = Arrays.copyOf(data, data.length);
+		this.covereage = -1;
 	}
 	
 	public Pattern(char[] data, List<double[]> coveragePercentageOfEachValueInEachAttr) {
 		this.data = Arrays.copyOf(data, data.length);
 		this.covereagePercentage = predictCoveragePercentage(coveragePercentageOfEachValueInEachAttr);
+		this.covereage = -1;
 	}
 
 	public Pattern(char[] data, int idx, char chrToReplace) {
 		this.data = data.clone();
 		this.data[idx] = chrToReplace;
+		this.covereage = -1;
 	}
 	
 	public Pattern(char[] data, int idx, char chrToReplace, List<double[]> coveragePercentageOfEachValueInEachAttr, double curPercentage) {
 		this.data = data.clone();
 		this.data[idx] = chrToReplace;
 		this.covereagePercentage = curPercentage * coveragePercentageOfEachValueInEachAttr.get(idx)[Integer.parseInt(chrToReplace + "")];
+		this.covereage = -1;
 	}
 
 	public int getDimension() {
@@ -233,6 +238,10 @@ public class Pattern implements Comparable<Pattern> {
 	 */
 	public void updateCoveragePercentage(double newPercentage) {
 		this.covereagePercentage = newPercentage;
+	}
+	
+	public void setCoverage(int coverageValue) {
+		this.covereage = coverageValue;
 	}
 
 	public static void main(String[] args) {

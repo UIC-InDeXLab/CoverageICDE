@@ -5,6 +5,7 @@ import java.util.Set;
 
 import Pattern.Pattern;
 import io.DataSet;
+import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
@@ -18,7 +19,7 @@ public class SmartSearchTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 3;
+		int d = 13;
 
 		int threshold = 200;
 
@@ -27,10 +28,10 @@ public class SmartSearchTest {
 				Arrays.copyOfRange(chosenAttributeIds, 0, d));
 
 		// Test 1 with pattern breaker
-		SmartSearch pbo = new SmartSearch(dataToCheck);
+		SmartSearch ss = new SmartSearch(dataToCheck);
 
 		long t0 = System.currentTimeMillis();
-		Set<Pattern> mups = pbo.findMaxUncoveredPatternSet(threshold);
+		Set<Pattern> mups = ss.findMaxUncoveredPatternSet(threshold);
 		long t1 = System.currentTimeMillis();
 
 		String breakline = String.format("%0" + 50 + "d", 0).replace("0", "-");
@@ -40,6 +41,8 @@ public class SmartSearchTest {
 		System.out.println("MUPs: " + mups);
 		System.out.println("# of MUPs: " + mups.size());
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
+		System.out.println("Visited: "
+				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 
 	}
 
