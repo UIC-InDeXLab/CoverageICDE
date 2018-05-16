@@ -19,7 +19,7 @@ import Pattern.Pattern;
 public class DataSet {
 	char[][] data;
 	char[][] dataToAccess;
-	int[] cardinalities;
+	public int[] cardinalities;
 	int[] selectedAttrIds;
 	public List<double[]> coveragePercentageOfEachValueInEachAttr;
 

@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import Pattern.Pattern;
+import Pattern.PatternSet;
 import io.DataSet;
 
 /**
@@ -39,7 +40,7 @@ public class PatternBreaker extends NaiveSearch {
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
 		long numNodesVisited = 0;
 
-		Set<Pattern> mups = new HashSet<Pattern>();
+		PatternSet mups = new PatternSet(this.curDataSet.cardinalities);
 
 		Queue<Pattern> patternToCheckQ = new LinkedList<Pattern>();
 
@@ -54,8 +55,9 @@ public class PatternBreaker extends NaiveSearch {
 
 			numNodesVisited++;
 			// Make sure none of its ancestor is in MUP
-			if (ifCoveredByMups(currentPattern, mups))
+			if (mups.containsAncestorOf(currentPattern)) {
 				continue;
+			}
 
 			// Check coverage
 			
@@ -85,6 +87,6 @@ public class PatternBreaker extends NaiveSearch {
 		updateDebugNodesVisited(numNodesVisited);
 		updateDebugMUPSSize(mups.size());
 
-		return mups;
+		return mups.patternSet;
 	}
 }

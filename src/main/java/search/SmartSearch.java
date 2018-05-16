@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import Pattern.Pattern;
+import Pattern.PatternSet;
 import io.DataSet;
 
 /**
@@ -27,8 +28,8 @@ public class SmartSearch extends NaiveSearch {
 
 		Set<Pattern> mups = new HashSet<Pattern>();
 		
-		Set<Pattern> coveredPatternSet = new HashSet<Pattern>();
-		Set<Pattern> uncoveredPatternSet = new HashSet<Pattern>();
+		PatternSet coveredPatternSet = new PatternSet(curDataSet.cardinalities);
+		PatternSet uncoveredPatternSet = new PatternSet(curDataSet.cardinalities);
 
 		PriorityQueue<Pattern> patternToCheckQ = new PriorityQueue<Pattern>(
 				10000);
@@ -47,9 +48,9 @@ public class SmartSearch extends NaiveSearch {
 			
 			if (currentPattern.covereage >= 0)
 				ifUncovered = currentPattern.covereage < threshold;
-			else if (checkIfPatternIsAParentOfAny(coveredPatternSet, currentPattern))
+			else if (coveredPatternSet.containsDescendantOf(currentPattern))
 				ifUncovered = false;
-			else if (checkIfPatternIsAChildOfAny(uncoveredPatternSet, currentPattern))
+			else if (uncoveredPatternSet.containsAncestorOf(currentPattern))
 				ifUncovered = true;
 			else {
 				numNodesVisited++;
@@ -75,9 +76,9 @@ public class SmartSearch extends NaiveSearch {
 				for (Pattern parentPattern : parents.values()) {
 					if (parentPattern.covereage >= 0)
 						ifUncovered = parentPattern.covereage < threshold;
-					else if (checkIfPatternIsAParentOfAny(coveredPatternSet, parentPattern))
+					else if (coveredPatternSet.containsDescendantOf(parentPattern))
 						ifUncovered = false;
-					else if (checkIfPatternIsAChildOfAny(uncoveredPatternSet, parentPattern)) {
+					else if (uncoveredPatternSet.containsAncestorOf(parentPattern)) {
 						ifUncovered = true;
 						ifMup = false;
 						break;
