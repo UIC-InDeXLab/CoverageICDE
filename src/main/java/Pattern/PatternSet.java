@@ -33,7 +33,7 @@ public class PatternSet {
 	public void add(Pattern p) {
 		if (this.patternSet.contains(p))
 			return;
-		
+
 		int originalSize = size();
 
 		this.patternSet.add(p);
@@ -44,11 +44,11 @@ public class PatternSet {
 				BitSet b = valueHash.get(curAttrValue);
 				if (b == null) {
 					b = new BitSet(1);
-				} 
-				
+				}
+
 				if (curAttrValue == p.data[attrId])
 					b.set(originalSize);
-				else 
+				else
 					b.set(originalSize, false);
 				valueHash.put(curAttrValue, b);
 			}
@@ -59,10 +59,10 @@ public class PatternSet {
 			if (b == null) {
 				b = new BitSet(1);
 			}
-			
+
 			if (curAttrValue == p.data[attrId])
 				b.set(originalSize);
-			else 
+			else
 				b.set(originalSize, false);
 			valueHash.put(curAttrValue, b);
 
@@ -76,18 +76,19 @@ public class PatternSet {
 	 * @param p
 	 * @return
 	 */
-	public boolean containsAncestorOf(Pattern p) {
+	public boolean hasAncestorTo(Pattern p) {
 		if (patternSet.isEmpty())
 			return false;
 
 		BitSet match = new BitSet(size());
 		match.set(0, size());
-		
+
 		for (int colId = 0; colId < p.data.length; colId++) {
 			char attrValueToCheck = p.data[colId];
 
 			// patterns contains attrValueToCheck at colId
-			BitSet b1 = attributeValueHash.get(colId).get(attrValueToCheck);
+			BitSet b1 = (BitSet) attributeValueHash.get(colId)
+					.get(attrValueToCheck).clone();
 
 			// patterns contains 'x' at colId
 			if (attrValueToCheck != 'x') {
@@ -111,7 +112,7 @@ public class PatternSet {
 	 * @param p
 	 * @return
 	 */
-	public boolean containsDescendantOf(Pattern p) {
+	public boolean hasDescendantTo(Pattern p) {
 		if (patternSet.isEmpty())
 			return false;
 

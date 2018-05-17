@@ -48,9 +48,9 @@ public class SmartSearch extends NaiveSearch {
 			
 			if (currentPattern.covereage >= 0)
 				ifUncovered = currentPattern.covereage < threshold;
-			else if (coveredPatternSet.containsDescendantOf(currentPattern))
+			else if (coveredPatternSet.hasDescendantTo(currentPattern))
 				ifUncovered = false;
-			else if (uncoveredPatternSet.containsAncestorOf(currentPattern))
+			else if (uncoveredPatternSet.hasAncestorTo(currentPattern))
 				ifUncovered = true;
 			else {
 				numNodesVisited++;
@@ -76,9 +76,9 @@ public class SmartSearch extends NaiveSearch {
 				for (Pattern parentPattern : parents.values()) {
 					if (parentPattern.covereage >= 0)
 						ifUncovered = parentPattern.covereage < threshold;
-					else if (coveredPatternSet.containsDescendantOf(parentPattern))
+					else if (coveredPatternSet.hasDescendantTo(parentPattern))
 						ifUncovered = false;
-					else if (uncoveredPatternSet.containsAncestorOf(parentPattern)) {
+					else if (uncoveredPatternSet.hasAncestorTo(parentPattern)) {
 						ifUncovered = true;
 						ifMup = false;
 						break;

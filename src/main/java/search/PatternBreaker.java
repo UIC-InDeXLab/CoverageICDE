@@ -55,7 +55,7 @@ public class PatternBreaker extends NaiveSearch {
 
 			numNodesVisited++;
 			// Make sure none of its ancestor is in MUP
-			if (mups.containsAncestorOf(currentPattern)) {
+			if (mups.hasAncestorTo(currentPattern)) {
 				continue;
 			}
 
