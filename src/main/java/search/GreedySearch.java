@@ -1,5 +1,6 @@
 package search;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,9 +9,9 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
-import Pattern.Pattern;
-import Pattern.PatternSet;
 import io.DataSet;
+import pattern.Pattern;
+import pattern.PatternSet;
 
 /**
  * PatternBreaker algorithm. Top-down search for MUPS
@@ -44,12 +45,13 @@ public class GreedySearch extends NaiveSearch {
 
 			if (currentPattern.covereage >= 0)
 				ifUncovered = currentPattern.covereage < threshold;
-			else if (mups.hasDescendantTo(currentPattern))
+			else if (mups.hasDescendantTo(currentPattern, false))
 				ifUncovered = false;
-			else if (mups.hasAncestorTo(currentPattern))
+			else if (mups.hasAncestorTo(currentPattern, true))
 				ifUncovered = true;
 			else {
 				numNodesVisited++;
+
 				int coverageValue = this.curDataSet
 						.checkCoverage(currentPattern);
 
@@ -71,15 +73,15 @@ public class GreedySearch extends NaiveSearch {
 							ifMup = false;
 							break;
 						}
-					}
-					else if (mups.hasDescendantTo(parentPattern))
+					} else if (mups.hasDescendantTo(parentPattern, false))
 						continue;
-					else if (mups.hasAncestorTo(parentPattern)) {
+					else if (mups.hasAncestorTo(parentPattern, true)) {
 						ifUncovered = true;
 						ifMup = false;
 						break;
 					} else {
 						numNodesVisited++;
+
 						int coverageValue = this.curDataSet
 								.checkCoverage(parentPattern);
 
@@ -110,25 +112,5 @@ public class GreedySearch extends NaiveSearch {
 		updateDebugMUPSSize(mups.size());
 
 		return mups.patternSet;
-	}
-
-	public boolean checkIfPatternIsAParentOfAny(Set<Pattern> patternSet,
-			Pattern patternToCheck) {
-		for (Pattern myPattern : patternSet) {
-			if (patternToCheck.isAncestorOf(myPattern))
-				return true;
-		}
-
-		return false;
-	}
-
-	public boolean checkIfPatternIsAChildOfAny(Set<Pattern> patternSet,
-			Pattern patternToCheck) {
-		for (Pattern myPattern : patternSet) {
-			if (myPattern.isAncestorOf(patternToCheck))
-				return true;
-		}
-
-		return false;
 	}
 }

@@ -3,12 +3,13 @@ package simpleTest;
 import java.util.Arrays;
 import java.util.Set;
 
-import Pattern.Pattern;
 import io.DataSet;
+import pattern.Pattern;
 import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
+import search.HybridRandomSearch;
 import search.GreedySearch;
 
 public class TestAllAlgorithms {
@@ -75,7 +76,7 @@ public class TestAllAlgorithms {
 				+ pc.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
-		// Test 4 with pattern combiner
+		// Test 4 with greedy search
 		GreedySearch ss = new GreedySearch(dataToCheck);
 
 		t0 = System.currentTimeMillis();
@@ -88,6 +89,21 @@ public class TestAllAlgorithms {
 				"MUPs: " + ss.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
 		System.out.println("Visited: "
 				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println("Total Time: " + (t1 - t0) + " ms");
+
+		// Test 5 with pattern combiner
+		HybridRandomSearch hrs = new HybridRandomSearch(dataToCheck);
+
+		t0 = System.currentTimeMillis();
+		mups = hrs.findMaxUncoveredPatternSet(threshold);
+		t1 = System.currentTimeMillis();
+
+		System.out.println(breakline);
+		System.out.println("Algo: HybridRandomSearch");
+		System.out.println("MUPs: "
+				+ hrs.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
+		System.out.println("Visited: "
+				+ hrs.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 	}
 

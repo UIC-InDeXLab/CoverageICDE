@@ -3,6 +3,9 @@ package io;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+
+import pattern.Pattern;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -13,8 +16,6 @@ import java.util.Set;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.LinkedList;
-
-import Pattern.Pattern;
 
 public class DataSet {
 	char[][] data;

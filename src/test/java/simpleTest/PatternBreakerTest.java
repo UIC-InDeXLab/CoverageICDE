@@ -3,8 +3,8 @@ package simpleTest;
 import java.util.Arrays;
 import java.util.Set;
 
-import Pattern.Pattern;
 import io.DataSet;
+import pattern.Pattern;
 import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternCombiner;

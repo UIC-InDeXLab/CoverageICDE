@@ -1,4 +1,4 @@
-package Pattern;
+package pattern;
 
 import java.util.Arrays;
 import java.util.BitSet;
@@ -76,12 +76,12 @@ public class PatternSet {
 	 * @param p
 	 * @return
 	 */
-	public boolean hasAncestorTo(Pattern p) {
+	public boolean hasAncestorTo(Pattern p, boolean returnTrueIfIdenticalIsFound) {
 		if (patternSet.isEmpty())
 			return false;
 		
 		if (patternSet.contains(p))
-			return true;
+			return returnTrueIfIdenticalIsFound;
 
 		BitSet match = new BitSet(size());
 		match.set(0, size());
@@ -115,12 +115,12 @@ public class PatternSet {
 	 * @param p
 	 * @return
 	 */
-	public boolean hasDescendantTo(Pattern p) {
+	public boolean hasDescendantTo(Pattern p, boolean returnTrueIfIdenticalIsFound) {
 		if (patternSet.isEmpty())
 			return false;
 		
 		if (patternSet.contains(p))
-			return false;
+			return returnTrueIfIdenticalIsFound;
 
 		BitSet match = new BitSet(size());
 		match.set(0, size());

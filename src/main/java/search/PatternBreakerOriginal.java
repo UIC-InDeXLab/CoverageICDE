@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import Pattern.Pattern;
 import io.DataSet;
+import pattern.Pattern;
 
 /**
  * PatternBreaker algorithm. Top-down search for MUPS

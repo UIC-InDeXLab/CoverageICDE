@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-import Pattern.Pattern;
-import Pattern.PatternSet;
 import io.DataSet;
+import pattern.Pattern;
+import pattern.PatternSet;
 
 /**
  * PatternBreaker algorithm. Top-down search for MUPS
@@ -54,7 +54,7 @@ public class PatternBreaker extends NaiveSearch {
 			Pattern currentPattern = patternToCheckQ.poll();
 
 			// Make sure none of its ancestor is in MUP
-			if (mups.hasAncestorTo(currentPattern)) {
+			if (mups.hasAncestorTo(currentPattern, true)) {
 				continue;
 			}
 

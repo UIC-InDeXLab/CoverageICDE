@@ -3,8 +3,8 @@ package simpleTest;
 import java.util.Arrays;
 import java.util.Set;
 
-import Pattern.Pattern;
 import io.DataSet;
+import pattern.Pattern;
 import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
@@ -36,7 +36,7 @@ public class PatternBreakerOriginalTest {
 		String breakline = String.format("%0" + 50 + "d", 0).replace("0", "-");
 
 		System.out.println(breakline);
-		System.out.println("Algo: Pattern Breaker");
+		System.out.println("Algo: Pattern Breaker Original");
 		System.out.println("MUPs: " + mups);
 		System.out.println("# of MUPs: " + mups.size());
 		System.out.println("Total Time: " + (t1 - t0) + " ms");

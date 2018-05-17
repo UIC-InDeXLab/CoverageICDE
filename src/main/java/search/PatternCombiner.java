@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import Pattern.Pattern;
 import io.DataSet;
+import pattern.Pattern;
 
 /**
  * PatternBreaker algorithm. Bottom-up search for MUPS
