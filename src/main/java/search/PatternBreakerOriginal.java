@@ -21,11 +21,8 @@ public class PatternBreakerOriginal extends NaiveSearch {
 
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
-		long numNodesVisited = 0;
 
 		Set<Pattern> mups = new HashSet<Pattern>();
-
-		// Queue<Pattern> patternToCheckQ = new LinkedList<Pattern>();
 
 		// Add root pattern
 		Pattern root = Pattern.getRootPattern(curDataSet.getDimension());
@@ -40,7 +37,7 @@ public class PatternBreakerOriginal extends NaiveSearch {
 		while (!curPatternSet.isEmpty()) {
 			Set<Pattern> patternsToRemove = new HashSet<Pattern>();
 			for (Pattern currentPattern : curPatternSet) {
-				numNodesVisited++;
+				updateDebugNodesAddAVisit();
 				
 				Map<Integer, Pattern> parentsOfCurPattern = currentPattern
 						.genParents();
@@ -87,7 +84,6 @@ public class PatternBreakerOriginal extends NaiveSearch {
 		}
 
 		// Update debug info
-		updateDebugNodesVisited(numNodesVisited);
 		updateDebugMUPSSize(mups.size());
 
 		return mups;

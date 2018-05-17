@@ -1,5 +1,7 @@
 package search;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -25,8 +27,6 @@ public class GreedySearch extends NaiveSearch {
 
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
-		long numNodesVisited = 0;
-
 		PatternSet mups = new PatternSet(curDataSet.cardinalities);
 		PriorityQueue<Pattern> patternToCheckQ = new PriorityQueue<Pattern>(
 				10000);
@@ -48,9 +48,9 @@ public class GreedySearch extends NaiveSearch {
 			else if (mups.hasDescendantTo(currentPattern, false))
 				ifUncovered = false;
 			else if (mups.hasAncestorTo(currentPattern, true))
-				ifUncovered = true;
+				continue;
 			else {
-				numNodesVisited++;
+				updateDebugNodesAddAVisit();
 
 				int coverageValue = this.curDataSet
 						.checkCoverage(currentPattern);
@@ -62,45 +62,14 @@ public class GreedySearch extends NaiveSearch {
 				ifUncovered = coverageValue < threshold;
 
 			}
-
+			
 			if (ifUncovered) {
-				Map<Integer, Pattern> parents = currentPattern.genParents();
-				boolean ifMup = true;
+				Pattern mup = bottomUpMupRandomSearch(currentPattern, mups,
+						threshold);
 
-				for (Pattern parentPattern : parents.values()) {
-					if (parentPattern.covereage >= 0) {
-						if (parentPattern.covereage < threshold) {
-							ifMup = false;
-							break;
-						}
-					} else if (mups.hasDescendantTo(parentPattern, false))
-						continue;
-					else if (mups.hasAncestorTo(parentPattern, true)) {
-						ifUncovered = true;
-						ifMup = false;
-						break;
-					} else {
-						numNodesVisited++;
-
-						int coverageValue = this.curDataSet
-								.checkCoverage(parentPattern);
-
-						parentPattern
-								.updateCoveragePercentage((double) coverageValue
-										/ curDataSet.getNumRecords());
-						parentPattern.setCoverage(coverageValue);
-
-						ifUncovered = coverageValue < threshold;
-						if (ifUncovered) {
-							ifMup = false;
-							break;
-						}
-					}
-
-				}
-
-				if (ifMup)
-					mups.add(currentPattern);
+				if (mup != null) 
+					mups.add(mup);
+				
 			} else {
 				patternToCheckQ.addAll(
 						curDataSet.getChildrenNextLevel(currentPattern));
@@ -108,9 +77,60 @@ public class GreedySearch extends NaiveSearch {
 		}
 
 		// Update debug info
-		updateDebugNodesVisited(numNodesVisited);
 		updateDebugMUPSSize(mups.size());
 
 		return mups.patternSet;
+	}
+	
+	/**
+	 * We got a node that is uncovered, we randomly do a bottom up search for a
+	 * mup node
+	 * 
+	 * @param uncoveredPattern
+	 * @param mups
+	 * @param threshold
+	 * @return
+	 */
+	public Pattern bottomUpMupRandomSearch(Pattern uncoveredPattern,
+			PatternSet mups, int threshold) {
+		Map<Integer, Pattern> parents = uncoveredPattern.genParents();
+		boolean ifMup = true;
+
+		Pattern nextPattern = null;
+
+		List<Pattern> listOfParentPatterns = new ArrayList<Pattern>(
+				parents.values());
+		Collections.shuffle(listOfParentPatterns);
+
+		for (Pattern parentPattern : listOfParentPatterns) {
+			// A mup is the descendant parentPattern. Hence, parentPattern is covered. 
+			if (mups.hasDescendantTo(parentPattern, false))
+				continue;
+			else {
+				updateDebugNodesAddAVisit();
+				int coverageValue = this.curDataSet
+						.checkCoverage(parentPattern);
+				
+				parentPattern
+				.updateCoveragePercentage((double) coverageValue
+						/ curDataSet.getNumRecords());
+		parentPattern.setCoverage(coverageValue);
+
+				if (coverageValue < threshold) {
+					ifMup = false;
+					nextPattern = parentPattern;
+					break;
+				}
+			}
+
+		}
+
+		if (ifMup)
+			return uncoveredPattern;
+		else if (nextPattern != null) {
+			return bottomUpMupRandomSearch(nextPattern, mups, threshold);
+		}
+
+		return null;
 	}
 }

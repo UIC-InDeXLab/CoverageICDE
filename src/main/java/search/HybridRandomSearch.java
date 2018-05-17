@@ -28,7 +28,6 @@ public class HybridRandomSearch extends NaiveSearch {
 
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
-		long numNodesVisited = 0;
 
 		PatternSet mups = new PatternSet(curDataSet.cardinalities);
 		Stack<Pattern> patternToCheckStack = new Stack<Pattern>();
@@ -46,8 +45,9 @@ public class HybridRandomSearch extends NaiveSearch {
 
 			if (mups.hasDescendantTo(currentPattern, false))
 				ifUncovered = false;
+			// We arrive at a region that is below and covered by a discovered mup. We abandon this search.
 			else if (mups.hasAncestorTo(currentPattern, true))
-				ifUncovered = true;
+				continue;
 			else {
 				updateDebugNodesAddAVisit();
 
@@ -62,8 +62,9 @@ public class HybridRandomSearch extends NaiveSearch {
 				Pattern mup = bottomUpMupRandomSearch(currentPattern, mups,
 						threshold);
 
-				if (mup != null)
+				if (mup != null) 
 					mups.add(mup);
+				
 			} else {
 				List<Pattern> listOfChildPatterns = new ArrayList<Pattern>(
 						curDataSet.getChildrenNextLevel(currentPattern));
@@ -99,13 +100,10 @@ public class HybridRandomSearch extends NaiveSearch {
 		Collections.shuffle(listOfParentPatterns);
 
 		for (Pattern parentPattern : listOfParentPatterns) {
+			// A mup is the descendant parentPattern. Hence, parentPattern is covered. 
 			if (mups.hasDescendantTo(parentPattern, false))
 				continue;
-			else if (mups.hasAncestorTo(parentPattern, true)) {
-				ifMup = false;
-				nextPattern = parentPattern;
-				break;
-			} else {
+			else {
 				updateDebugNodesAddAVisit();
 				int coverageValue = this.curDataSet
 						.checkCoverage(parentPattern);

@@ -15,10 +15,15 @@ public class NaiveSearch {
 
 	DataSet curDataSet;
 	Map<String, Long> debugInfo;
+	
+	// Debug info
+	long nodesVisited;
+	long mupsSize;
 
 	public NaiveSearch(DataSet curData) {
 		curDataSet = curData;
-		debugInfo = new HashMap<String, Long>();
+		nodesVisited = 0;
+		mupsSize = 0;
 	}
 
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
@@ -32,19 +37,21 @@ public class NaiveSearch {
 	 * @return
 	 */
 	public Map<String, Long> getDebugInfo() {
+		debugInfo = new HashMap<String, Long>();
+		debugInfo.put(DEBUG_NODES_VISITED, nodesVisited);
+		debugInfo.put(DEBUG_MUPS_SIZE, mupsSize);
 		return debugInfo;
 	}
 
 	public void updateDebugNodesVisited(long num) {
-		debugInfo.put(DEBUG_NODES_VISITED, num);
+		nodesVisited += num;
 	}
 
 	public void updateDebugNodesAddAVisit() {
-		debugInfo.put(DEBUG_NODES_VISITED,
-				debugInfo.getOrDefault(DEBUG_NODES_VISITED, (long) 0) + 1);
+		nodesVisited++;
 	}
 
 	public void updateDebugMUPSSize(long num) {
-		debugInfo.put(DEBUG_MUPS_SIZE, num);
+		mupsSize += num;
 	}
 }
