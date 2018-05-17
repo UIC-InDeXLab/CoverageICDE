@@ -9,9 +9,9 @@ import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
-import search.SmartSearch;
+import search.GreedySearch;
 
-public class SmartSearchTest {
+public class GreedySearchTest {
 	public static void main(String[] args) {
 		String fileName = "data/airbnb_1000.csv";
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
@@ -28,7 +28,7 @@ public class SmartSearchTest {
 				Arrays.copyOfRange(chosenAttributeIds, 0, d));
 
 		// Test 1 with pattern breaker
-		SmartSearch ss = new SmartSearch(dataToCheck);
+		GreedySearch ss = new GreedySearch(dataToCheck);
 
 		long t0 = System.currentTimeMillis();
 		Set<Pattern> mups = ss.findMaxUncoveredPatternSet(threshold);

@@ -79,6 +79,9 @@ public class PatternSet {
 	public boolean hasAncestorTo(Pattern p) {
 		if (patternSet.isEmpty())
 			return false;
+		
+		if (patternSet.contains(p))
+			return true;
 
 		BitSet match = new BitSet(size());
 		match.set(0, size());
@@ -114,6 +117,9 @@ public class PatternSet {
 	 */
 	public boolean hasDescendantTo(Pattern p) {
 		if (patternSet.isEmpty())
+			return false;
+		
+		if (patternSet.contains(p))
 			return false;
 
 		BitSet match = new BitSet(size());

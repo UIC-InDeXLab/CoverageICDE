@@ -9,7 +9,7 @@ import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
-import search.SmartSearch;
+import search.GreedySearch;
 
 public class TestAllAlgorithms {
 	public static void main(String[] args) {
@@ -76,14 +76,14 @@ public class TestAllAlgorithms {
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
 		// Test 4 with pattern combiner
-		SmartSearch ss = new SmartSearch(dataToCheck);
+		GreedySearch ss = new GreedySearch(dataToCheck);
 
 		t0 = System.currentTimeMillis();
 		mups = ss.findMaxUncoveredPatternSet(threshold);
 		t1 = System.currentTimeMillis();
 
 		System.out.println(breakline);
-		System.out.println("Algo: SmartSearch");
+		System.out.println("Algo: GreedySearch");
 		System.out.println(
 				"MUPs: " + ss.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
 		System.out.println("Visited: "

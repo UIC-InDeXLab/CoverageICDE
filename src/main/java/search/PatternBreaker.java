@@ -53,14 +53,13 @@ public class PatternBreaker extends NaiveSearch {
 
 			Pattern currentPattern = patternToCheckQ.poll();
 
-			numNodesVisited++;
 			// Make sure none of its ancestor is in MUP
 			if (mups.hasAncestorTo(currentPattern)) {
 				continue;
 			}
 
 			// Check coverage
-			
+			numNodesVisited++;
 			int coverageValue = this.curDataSet.checkCoverage(currentPattern);
 
 			if (coverageValue < threshold)
