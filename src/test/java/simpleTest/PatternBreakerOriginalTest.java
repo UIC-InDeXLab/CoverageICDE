@@ -18,9 +18,9 @@ public class PatternBreakerOriginalTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 3;
+		int d = 13;
 
-		int threshold = 200;
+		int threshold = 20;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
@@ -43,6 +43,8 @@ public class PatternBreakerOriginalTest {
 		
 		System.out.println("Visited: "
 				+ pbo.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println("Hits: "
+				+ pbo.getNumHits());
 
 	}
 

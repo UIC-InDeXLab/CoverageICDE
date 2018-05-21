@@ -28,8 +28,7 @@ public class GreedySearch extends NaiveSearch {
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
 		PatternSet mups = new PatternSet(curDataSet.cardinalities);
-		PriorityQueue<Pattern> patternToCheckQ = new PriorityQueue<Pattern>(
-				10000);
+		PriorityQueue<Pattern> patternToCheckQ = new PriorityQueue<Pattern>();
 
 		// Add root pattern
 		Pattern root = Pattern.getRootPattern(curDataSet.getDimension(),
@@ -39,7 +38,7 @@ public class GreedySearch extends NaiveSearch {
 		while (!patternToCheckQ.isEmpty()) {
 
 			Pattern currentPattern = patternToCheckQ.poll();
-
+			
 			// Check coverage
 			boolean ifUncovered;
 
@@ -50,8 +49,7 @@ public class GreedySearch extends NaiveSearch {
 			else if (mups.hasAncestorTo(currentPattern, true))
 				continue;
 			else {
-				updateDebugNodesAddAVisit();
-
+				updateDebugNodesAddAVisit(currentPattern);
 				int coverageValue = this.curDataSet
 						.checkCoverage(currentPattern);
 
@@ -62,14 +60,16 @@ public class GreedySearch extends NaiveSearch {
 				ifUncovered = coverageValue < threshold;
 
 			}
-			
+
 			if (ifUncovered) {
-				Pattern mup = bottomUpMupRandomSearch(currentPattern, mups,
+				Pattern mup = bottomUpMupGreedySearch(currentPattern, mups,
 						threshold);
 
-				if (mup != null) 
+				if (mup != null) {
 					mups.add(mup);
-				
+					updateDebugAddMupDiscoveryTimeline();
+				}
+
 			} else {
 				patternToCheckQ.addAll(
 						curDataSet.getChildrenNextLevel(currentPattern));
@@ -81,7 +81,7 @@ public class GreedySearch extends NaiveSearch {
 
 		return mups.patternSet;
 	}
-	
+
 	/**
 	 * We got a node that is uncovered, we randomly do a bottom up search for a
 	 * mup node
@@ -91,30 +91,31 @@ public class GreedySearch extends NaiveSearch {
 	 * @param threshold
 	 * @return
 	 */
-	public Pattern bottomUpMupRandomSearch(Pattern uncoveredPattern,
+	public Pattern bottomUpMupGreedySearch(Pattern uncoveredPattern,
 			PatternSet mups, int threshold) {
-		Map<Integer, Pattern> parents = uncoveredPattern.genParents();
+		Map<Integer, Pattern> parents = uncoveredPattern.genParents(this.curDataSet.coveragePercentageOfEachValueInEachAttr);
 		boolean ifMup = true;
 
 		Pattern nextPattern = null;
 
 		List<Pattern> listOfParentPatterns = new ArrayList<Pattern>(
 				parents.values());
-		Collections.shuffle(listOfParentPatterns);
+		Collections.sort(listOfParentPatterns);
 
 		for (Pattern parentPattern : listOfParentPatterns) {
-			// A mup is the descendant parentPattern. Hence, parentPattern is covered. 
+
+			// A mup is the descendant parentPattern. Hence, parentPattern is
+			// covered.
 			if (mups.hasDescendantTo(parentPattern, false))
 				continue;
 			else {
-				updateDebugNodesAddAVisit();
+				updateDebugNodesAddAVisit(parentPattern);
 				int coverageValue = this.curDataSet
 						.checkCoverage(parentPattern);
-				
-				parentPattern
-				.updateCoveragePercentage((double) coverageValue
-						/ curDataSet.getNumRecords());
-		parentPattern.setCoverage(coverageValue);
+
+				parentPattern.updateCoveragePercentage(
+						(double) coverageValue / curDataSet.getNumRecords());
+				parentPattern.setCoverage(coverageValue);
 
 				if (coverageValue < threshold) {
 					ifMup = false;
@@ -128,9 +129,9 @@ public class GreedySearch extends NaiveSearch {
 		if (ifMup)
 			return uncoveredPattern;
 		else if (nextPattern != null) {
-			return bottomUpMupRandomSearch(nextPattern, mups, threshold);
+			return bottomUpMupGreedySearch(nextPattern, mups, threshold);
 		}
-
+		
 		return null;
 	}
 }

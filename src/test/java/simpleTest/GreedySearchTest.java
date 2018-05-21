@@ -9,6 +9,7 @@ import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
+import utils.Plot;
 import search.GreedySearch;
 
 public class GreedySearchTest {
@@ -21,7 +22,7 @@ public class GreedySearchTest {
 
 		int d = 13;
 
-		int threshold = 50;
+		int threshold = 3;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
@@ -38,11 +39,16 @@ public class GreedySearchTest {
 
 		System.out.println(breakline);
 		System.out.println("Algo: Greedy Search");
-		System.out.println("MUPs: " + mups);
 		System.out.println("# of MUPs: " + mups.size());
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 		System.out.println("Visited: "
 				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println("Hits: "
+				+ ss.getNumHits());
+
+		// Plot
+		Plot pl = new Plot(ss.getTimeSeries());
+		pl.setVisible(true);
 
 	}
 

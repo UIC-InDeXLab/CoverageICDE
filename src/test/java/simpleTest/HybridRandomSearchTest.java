@@ -9,6 +9,7 @@ import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
+import utils.Plot;
 import search.HybridRandomSearch;
 import search.GreedySearch;
 
@@ -20,9 +21,9 @@ public class HybridRandomSearchTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 13;
+		int d = 4;
 
-		int threshold = 50;
+		int threshold = 200;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
@@ -39,11 +40,16 @@ public class HybridRandomSearchTest {
 
 		System.out.println(breakline);
 		System.out.println("Algo: HybridRandomSearch");
-		System.out.println("MUPs: " + mups);
 		System.out.println("# of MUPs: " + mups.size());
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 		System.out.println("Visited: "
 				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println("Hits: "
+				+ ss.getNumHits());
+		
+//		// Plot
+//		Plot pl = new Plot(ss.getTimeSeries());
+//		pl.setVisible(true);
 
 	}
 

@@ -25,7 +25,7 @@ public class TestAllAlgorithms {
 
 		int d = 13;
 
-		int threshold = 50;
+		int threshold = 10;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),

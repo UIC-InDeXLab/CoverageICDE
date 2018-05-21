@@ -84,7 +84,7 @@ public class PatternCombiner extends NaiveSearch {
 			// parent pattern). If so, put it in mups.
 			for (Map.Entry<Pattern, Integer> e : coverageHashThisLevel
 					.entrySet()) {
-				updateDebugNodesAddAVisit();
+				updateDebugNodesAddAVisit(e.getKey());
 				if (e.getValue() < threshold) {
 					Pattern curPattern = e.getKey();
 					Map<Integer, Pattern> allParentPatterns = curPattern

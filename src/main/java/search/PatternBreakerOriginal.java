@@ -37,7 +37,7 @@ public class PatternBreakerOriginal extends NaiveSearch {
 		while (!curPatternSet.isEmpty()) {
 			Set<Pattern> patternsToRemove = new HashSet<Pattern>();
 			for (Pattern currentPattern : curPatternSet) {
-				updateDebugNodesAddAVisit();
+				
 				
 				Map<Integer, Pattern> parentsOfCurPattern = currentPattern
 						.genParents();
@@ -56,6 +56,7 @@ public class PatternBreakerOriginal extends NaiveSearch {
 					continue;
 				}
 
+				updateDebugNodesAddAVisit(currentPattern);
 				if (this.curDataSet
 						.checkCoverage(currentPattern) < threshold) {
 					mups.add(currentPattern);

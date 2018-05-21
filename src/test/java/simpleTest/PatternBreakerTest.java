@@ -42,6 +42,8 @@ public class PatternBreakerTest {
 		
 		System.out.println("Visited: "
 				+ pb.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println("Hits: "
+				+ pb.getNumHits());
 
 	}
 

@@ -58,7 +58,7 @@ public class PatternBreaker extends NaiveSearch {
 			}
 
 			// Check coverage
-			updateDebugNodesAddAVisit();
+			updateDebugNodesAddAVisit(currentPattern);
 			int coverageValue = this.curDataSet.checkCoverage(currentPattern);
 
 			if (coverageValue < threshold)

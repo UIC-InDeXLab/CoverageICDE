@@ -42,9 +42,9 @@ public class PatternCombinerTest {
 		
 		System.out.println("Visited: "
 				+ pc.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
-
-		// for (Pattern p : mups)
-		// System.out.println(p.data);
+		
+		System.out.println("Hits: "
+				+ pc.getNumHits());
 	}
 
 }

@@ -18,10 +18,12 @@ public class Pattern implements Comparable<Pattern> {
 		this.data = Arrays.copyOf(data, data.length);
 		this.covereage = -1;
 	}
-	
-	public Pattern(char[] data, List<double[]> coveragePercentageOfEachValueInEachAttr) {
+
+	public Pattern(char[] data,
+			List<double[]> coveragePercentageOfEachValueInEachAttr) {
 		this.data = Arrays.copyOf(data, data.length);
-		this.covereagePercentage = predictCoveragePercentage(coveragePercentageOfEachValueInEachAttr);
+		this.covereagePercentage = predictCoveragePercentage(
+				coveragePercentageOfEachValueInEachAttr);
 		this.covereage = -1;
 	}
 
@@ -30,11 +32,21 @@ public class Pattern implements Comparable<Pattern> {
 		this.data[idx] = chrToReplace;
 		this.covereage = -1;
 	}
-	
-	public Pattern(char[] data, int idx, char chrToReplace, List<double[]> coveragePercentageOfEachValueInEachAttr, double curPercentage) {
-		this.data = data.clone();
+
+	public Pattern(char[] dataContent, int idx, char chrToReplace,
+			List<double[]> coveragePercentageOfEachValueInEachAttr,
+			double curPercentage) {
+		this.data = dataContent.clone();
 		this.data[idx] = chrToReplace;
-		this.covereagePercentage = curPercentage * coveragePercentageOfEachValueInEachAttr.get(idx)[Integer.parseInt(chrToReplace + "")];
+		if (chrToReplace != 'x')
+			this.covereagePercentage = curPercentage
+					* coveragePercentageOfEachValueInEachAttr.get(idx)[Integer
+							.parseInt(chrToReplace + "")];
+		else {
+			this.covereagePercentage = curPercentage
+					/ coveragePercentageOfEachValueInEachAttr.get(idx)[Integer
+							.parseInt(dataContent[idx] + "")];
+		}
 		this.covereage = -1;
 	}
 
@@ -53,7 +65,7 @@ public class Pattern implements Comparable<Pattern> {
 		if (size != other.getDimension()) {
 			return false;
 		}
-		
+
 		for (int i = 0; i < size; i++) {
 			char thisChar = data[i];
 			char otherChar = other.data[i];
@@ -79,14 +91,15 @@ public class Pattern implements Comparable<Pattern> {
 		}
 		return new Pattern(rootData);
 	}
-	
+
 	/**
 	 * Get the root pattern 'xxx...x' with coverage percentage info
 	 * 
 	 * @param dimension
 	 * @return
 	 */
-	public static Pattern getRootPattern(int dimension, List<double[]> coveragePercentageOfEachValueInEachAttr) {
+	public static Pattern getRootPattern(int dimension,
+			List<double[]> coveragePercentageOfEachValueInEachAttr) {
 		char[] rootData = new char[dimension];
 		for (int i = 0; i < dimension; i++) {
 			rootData[i] = 'x';
@@ -108,9 +121,10 @@ public class Pattern implements Comparable<Pattern> {
 		}
 		return idx;
 	}
-	
+
 	/**
 	 * Count occurences of a certain character in an array.
+	 * 
 	 * @param data
 	 * @param chr
 	 * @return
@@ -138,14 +152,26 @@ public class Pattern implements Comparable<Pattern> {
 		}
 		return idx;
 	}
-	
-
 
 	/**
 	 * Get parent patterns by replacing each non 'x' with an x
 	 * 
 	 * @return
 	 */
+	public Map<Integer, Pattern> genParents(List<double[]> coveragePercentageOfEachValueInEachAttr) {
+		Map<Integer, Pattern> replacedPositionToParentPatternMap = new HashMap<Integer, Pattern>();
+		for (int i = 0; i < getDimension(); i++) {
+			if (data[i] != 'x') {
+				replacedPositionToParentPatternMap.put(i,
+						new Pattern(data, i, 'x',
+								coveragePercentageOfEachValueInEachAttr,
+								this.covereagePercentage));
+			}
+		}
+
+		return replacedPositionToParentPatternMap;
+	}
+	
 	public Map<Integer, Pattern> genParents() {
 		Map<Integer, Pattern> replacedPositionToParentPatternMap = new HashMap<Integer, Pattern>();
 		for (int i = 0; i < getDimension(); i++) {
@@ -204,42 +230,44 @@ public class Pattern implements Comparable<Pattern> {
 
 		return msg;
 	}
-	
+
 	/**
 	 * Compute the percentage of each value in each attribute
+	 * 
 	 * @param coveragePercentageOfEachValueInEachAttr
 	 * @return
 	 */
-	private double predictCoveragePercentage(List<double[]> coveragePercentageOfEachValueInEachAttr) {
+	private double predictCoveragePercentage(
+			List<double[]> coveragePercentageOfEachValueInEachAttr) {
 		double percentage = 1;
 		for (int i = 0; i < data.length; i++) {
 			if (data[i] != 'x') {
-				percentage *= coveragePercentageOfEachValueInEachAttr.get(i)[Integer.parseInt(data[i] + "")];
+				percentage *= coveragePercentageOfEachValueInEachAttr
+						.get(i)[Integer.parseInt(data[i] + "")];
 			}
 		}
-		
+
 		return percentage;
 	}
 
 	public int compareTo(Pattern other) {
 		if (this.covereagePercentage == other.covereagePercentage) {
 			return 0;
-		}
-		else if (this.covereagePercentage < other.covereagePercentage) {
-			return 1;
-		}
-		else
+		} else if (this.covereagePercentage < other.covereagePercentage) {
 			return -1;
+		} else
+			return 1;
 	}
-	
+
 	/**
 	 * Update the coverage percentage after we checked the dataset
+	 * 
 	 * @param newPercentage
 	 */
 	public void updateCoveragePercentage(double newPercentage) {
 		this.covereagePercentage = newPercentage;
 	}
-	
+
 	public void setCoverage(int coverageValue) {
 		this.covereage = coverageValue;
 	}

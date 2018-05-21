@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 
@@ -34,7 +35,7 @@ public class HybridRandomSearch extends NaiveSearch {
 		// Add root pattern
 		Pattern root = Pattern.getRootPattern(curDataSet.getDimension(),
 				curDataSet.coveragePercentageOfEachValueInEachAttr);
-		patternToCheckStack.add(root);
+		patternToCheckStack.push(root);
 
 		while (!patternToCheckStack.isEmpty()) {
 
@@ -49,7 +50,7 @@ public class HybridRandomSearch extends NaiveSearch {
 			else if (mups.hasAncestorTo(currentPattern, true))
 				continue;
 			else {
-				updateDebugNodesAddAVisit();
+				updateDebugNodesAddAVisit(currentPattern);
 
 				int coverageValue = this.curDataSet
 						.checkCoverage(currentPattern);
@@ -62,12 +63,21 @@ public class HybridRandomSearch extends NaiveSearch {
 				Pattern mup = bottomUpMupRandomSearch(currentPattern, mups,
 						threshold);
 
-				if (mup != null) 
+				if (mup != null) {
 					mups.add(mup);
+					updateDebugAddMupDiscoveryTimeline();
+
+//					// We take the pattern in the bottom and put it on the top
+//					Pattern chosenPattern = new Pattern(patternToCheckStack.get(0).data);
+//					patternToCheckStack.remove(0);
+//					patternToCheckStack.push(chosenPattern);
+				}
 				
 			} else {
+				Set<Pattern> tmp = curDataSet.getChildrenNextLevel(currentPattern);
+				tmp.removeAll(mups.patternSet);
 				List<Pattern> listOfChildPatterns = new ArrayList<Pattern>(
-						curDataSet.getChildrenNextLevel(currentPattern));
+						tmp);
 				Collections.shuffle(listOfChildPatterns);
 				patternToCheckStack.addAll(listOfChildPatterns);
 			}
@@ -89,7 +99,8 @@ public class HybridRandomSearch extends NaiveSearch {
 	 * @return
 	 */
 	public Pattern bottomUpMupRandomSearch(Pattern uncoveredPattern,
-			PatternSet mups, int threshold) {
+			PatternSet mups, int threshold) {		
+		
 		Map<Integer, Pattern> parents = uncoveredPattern.genParents();
 		boolean ifMup = true;
 
@@ -100,11 +111,11 @@ public class HybridRandomSearch extends NaiveSearch {
 		Collections.shuffle(listOfParentPatterns);
 
 		for (Pattern parentPattern : listOfParentPatterns) {
-			// A mup is the descendant parentPattern. Hence, parentPattern is covered. 
+			// A mup is the descendant of the parentPattern. Hence, parentPattern is covered. 
 			if (mups.hasDescendantTo(parentPattern, false))
 				continue;
 			else {
-				updateDebugNodesAddAVisit();
+				updateDebugNodesAddAVisit(parentPattern);
 				int coverageValue = this.curDataSet
 						.checkCoverage(parentPattern);
 
