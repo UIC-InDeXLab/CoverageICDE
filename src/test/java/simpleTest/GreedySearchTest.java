@@ -22,7 +22,7 @@ public class GreedySearchTest {
 
 		int d = 13;
 
-		int threshold = 3;
+		int threshold = 50;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
@@ -47,8 +47,18 @@ public class GreedySearchTest {
 				+ ss.getNumHits());
 
 		// Plot
-		Plot pl = new Plot(ss.getTimeSeries());
+		Plot pl = new Plot();
+		pl.create2dPlot(ss.getTimeSeries());
 		pl.setVisible(true);
+		
+		long[] levelInfo = new long[mups.size()];
+		int i = 0;
+		for (Pattern p : mups) {
+			levelInfo[i++] = p.getLevel();
+		}
+		Plot pl2 = new Plot();
+		pl2.createBarchart(levelInfo, d);
+		pl2.setVisible(true);
 
 	}
 

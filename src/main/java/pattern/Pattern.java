@@ -231,6 +231,10 @@ public class Pattern implements Comparable<Pattern> {
 		return msg;
 	}
 
+	public int getLevel() {
+		return data.length - countOccurence(this.data, 'x');
+	}
+	
 	/**
 	 * Compute the percentage of each value in each attribute
 	 * 
