@@ -8,6 +8,7 @@ import pattern.Pattern;
 import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternCombiner;
+import utils.Plot;
 
 public class PatternCombinerTest {
 	public static void main(String[] args) {
@@ -17,13 +18,13 @@ public class PatternCombinerTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 13;
+		int d = 4;
 
 		int threshold = 200;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
-				Arrays.copyOfRange(chosenAttributeIds, 0, d));
+				Arrays.copyOfRange(chosenAttributeIds, 0, d), 1000);
 		String breakline = String.format("%0" + 50 + "d", 0).replace("0", "-");
 
 		// Test 2 with pattern combiner
@@ -45,6 +46,19 @@ public class PatternCombinerTest {
 		
 		System.out.println("Hits: "
 				+ pc.getNumHits());
+		
+//		Plot pl = new Plot();
+//		pl.create2dPlot(pc.getTimeSeries());
+//		pl.setVisible(true);
+//		
+//		long[] levelInfo = new long[mups.size()];
+//		int i = 0;
+//		for (Pattern p : mups) {
+//			levelInfo[i++] = p.getLevel();
+//		}
+//		Plot pl2 = new Plot();
+//		pl2.createBarchart(levelInfo, d);
+//		pl2.setVisible(true);
 	}
 
 }

@@ -52,7 +52,7 @@ public class Test {
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
-				Arrays.copyOfRange(chosenAttributeIds, 0, d));
+				Arrays.copyOfRange(chosenAttributeIds, 0, d), n);
 
 		Map<String, Long> debugInfo = new HashMap<String, Long>();
 		Set<Pattern> mups = new HashSet<Pattern>();

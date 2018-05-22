@@ -24,7 +24,7 @@ public class PatternBreakerOriginalTest {
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
-				Arrays.copyOfRange(chosenAttributeIds, 0, d));
+				Arrays.copyOfRange(chosenAttributeIds, 0, d), 1000);
 
 		// Test 1 with pattern breaker
 		PatternBreakerOriginal pbo = new PatternBreakerOriginal(dataToCheck);

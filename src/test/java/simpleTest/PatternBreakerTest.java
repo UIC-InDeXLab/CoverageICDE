@@ -17,13 +17,13 @@ public class PatternBreakerTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 13;
+		int d = 4;
 
-		int threshold = 50;
+		int threshold = 200;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
-				Arrays.copyOfRange(chosenAttributeIds, 0, d));
+				Arrays.copyOfRange(chosenAttributeIds, 0, d), 1000);
 
 		// Test 1 with pattern breaker
 		PatternBreaker pb = new PatternBreaker(dataToCheck);

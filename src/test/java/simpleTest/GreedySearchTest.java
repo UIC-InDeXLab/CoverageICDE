@@ -20,13 +20,13 @@ public class GreedySearchTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 13;
+		int d = 12;
 
-		int threshold = 50;
+		int threshold = 500;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
-				Arrays.copyOfRange(chosenAttributeIds, 0, d));
+				Arrays.copyOfRange(chosenAttributeIds, 0, d), 100000);
 
 		// Test 1 with pattern breaker
 		GreedySearch ss = new GreedySearch(dataToCheck);
@@ -46,19 +46,19 @@ public class GreedySearchTest {
 		System.out.println("Hits: "
 				+ ss.getNumHits());
 
-		// Plot
-		Plot pl = new Plot();
-		pl.create2dPlot(ss.getTimeSeries());
-		pl.setVisible(true);
-		
-		long[] levelInfo = new long[mups.size()];
-		int i = 0;
-		for (Pattern p : mups) {
-			levelInfo[i++] = p.getLevel();
-		}
-		Plot pl2 = new Plot();
-		pl2.createBarchart(levelInfo, d);
-		pl2.setVisible(true);
+//		// Plot
+//		Plot pl = new Plot();
+//		pl.create2dPlot(ss.getTimeSeries());
+//		pl.setVisible(true);
+//		
+//		long[] levelInfo = new long[mups.size()];
+//		int i = 0;
+//		for (Pattern p : mups) {
+//			levelInfo[i++] = p.getLevel();
+//		}
+//		Plot pl2 = new Plot();
+//		pl2.createBarchart(levelInfo, d);
+//		pl2.setVisible(true);
 
 	}
 

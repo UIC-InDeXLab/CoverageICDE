@@ -32,18 +32,14 @@ public class PatternCombiner extends NaiveSearch {
 			coverageHashThisLevel.put(p, 0);
 		}
 
-		// Count the pattern coverage from the bottom level.
-		for (int i = 0; i < curDataSet.getNumRecords(); i++) {
-			Pattern curRowPattern = new Pattern(curDataSet.getRow(i));
-			int count = coverageHashThisLevel.getOrDefault(curRowPattern, 0);
-			coverageHashThisLevel.put(curRowPattern, count + 1);
-		}
+		// Update the coverageHashThisLevel with the curDataSet data coverage information
+		coverageHashThisLevel.putAll(curDataSet.getPatternAndOccurences());
 
 		int curLevel = curDataSet.getDimension();
 		while (curLevel >= 0) {
 			Map<Pattern, Integer> coverageHashNextLevel = new HashMap<Pattern, Integer>();
 
-			// Calculate the coverages of the parent patterns and put them in
+			// Calculate the coverage of the parent patterns and put them in
 			// coverageHashNextLevel
 			for (Map.Entry<Pattern, Integer> e1 : coverageHashThisLevel
 					.entrySet()) {
@@ -93,6 +89,7 @@ public class PatternCombiner extends NaiveSearch {
 					if (Collections.disjoint(coverageHashNextLevel.keySet(),
 							allParentPatterns.values())) {
 						mups.add(curPattern);
+						updateDebugAddMupDiscoveryTimeline();
 					}
 				}
 

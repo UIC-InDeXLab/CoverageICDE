@@ -25,11 +25,11 @@ public class TestAllAlgorithms {
 
 		int d = 13;
 
-		int threshold = 10;
+		int threshold = 200;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
-				Arrays.copyOfRange(chosenAttributeIds, 0, d));
+				Arrays.copyOfRange(chosenAttributeIds, 0, d), 1000);
 
 		// Test 1 with pattern breaker
 		PatternBreakerOriginal pbo = new PatternBreakerOriginal(dataToCheck);

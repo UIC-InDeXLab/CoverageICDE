@@ -11,22 +11,30 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
 public class DataSet {
 	char[][] data;
+	int[] occurences;
+	int numOfRecords;
+
 	char[][] dataToAccess;
 	public int[] cardinalities;
 	int[] selectedAttrIds;
 	public List<double[]> coveragePercentageOfEachValueInEachAttr;
 
-	public DataSet(String fileName, int[] cardinalities,
-			int[] selectedAttrIds) {
-		List<char[]> listOfRecords = new ArrayList<char[]>();
+	public DataSet(String fileName, int[] cardinalities, int[] selectedAttrIds,
+			int size) {
+//		List<char[]> listOfRecords = new ArrayList<char[]>();
+		Map<String, Integer> recordCount = new HashMap<String, Integer>();
 		this.cardinalities = cardinalities;
 		this.selectedAttrIds = selectedAttrIds;
 
@@ -42,31 +50,46 @@ public class DataSet {
 			// header
 
 			// Read CSV file row by row
+			int count = 0;
 			for (CSVRecord csvRecord : csvParser) {
+				if (count++ >= size)
+					break;
+
 				char[] row = new char[dimensions];
 				int i = 0;
 				for (int attrId : selectedAttrIds) {
 					row[i++] = csvRecord.get(attrId).charAt(0);
 				}
-				listOfRecords.add(row);
+				
+				if (recordCount.containsKey(String.valueOf(row)))
+					recordCount.put(String.valueOf(row), recordCount.get(String.valueOf(row)) + 1);
+				else
+					recordCount.put(String.valueOf(row), 1);
 			}
 
 			csvParser.close();
+			List<String> orderedRecordSet = new ArrayList<String>(recordCount.keySet());
 
 			// Covert list to array
-			data = new char[dimensions][listOfRecords.size()];
-			dataToAccess = new char[listOfRecords.size()][dimensions];
+			data = new char[dimensions][orderedRecordSet.size()];
+			dataToAccess = new char[orderedRecordSet.size()][dimensions];
+			occurences = new int[orderedRecordSet.size()];
 
-			for (int n = 0; n < listOfRecords.size(); n++) {
+			for (int n = 0; n < orderedRecordSet.size(); n++) {
 				for (int d = 0; d < dimensions; d++) {
-					data[d][n] = listOfRecords.get(n)[d];
-					dataToAccess[n][d] = listOfRecords.get(n)[d];
+					data[d][n] = orderedRecordSet.get(n).charAt(d);
+					dataToAccess[n][d] = orderedRecordSet.get(n).charAt(d);
+					occurences[n] = recordCount.get(orderedRecordSet.get(n));
 				}
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		
+		
+		numOfRecords = sumOfArray(occurences);
 
 		updateCoveragePercentage();
 	}
@@ -98,8 +121,25 @@ public class DataSet {
 	 * @param rowId
 	 * @return
 	 */
-	public char[] getRow(int rowId) {
-		return dataToAccess[rowId];
+	public Map<Pattern, Integer> getPatternAndOccurences() {
+		Map<Pattern, Integer> patternCount = new HashMap<Pattern, Integer>(dataToAccess.length);
+		for (int i = 0; i < dataToAccess.length; i++) {
+			patternCount.put(new Pattern(dataToAccess[i]), occurences[i]);
+		}
+		return patternCount;
+	}
+	
+	/**
+	 * Sum of the int array
+	 * @param intArray
+	 * @return
+	 */
+	private static int sumOfArray(int[] intArray) {
+		int sum = 0;
+		for (int i = 0; i < intArray.length; i++) {
+			sum += intArray[i];
+		}
+		return sum;
 	}
 
 	/**
@@ -108,7 +148,7 @@ public class DataSet {
 	 * @return
 	 */
 	public int getNumRecords() {
-		return data[0].length;
+		return numOfRecords;
 	}
 
 	/**
@@ -137,20 +177,25 @@ public class DataSet {
 	 * @return
 	 */
 	public int checkCoverage(Pattern p) {
-		int numRecords = getNumRecords();
-		BitSet coverageBitVector = new BitSet(numRecords);
-		coverageBitVector.set(0, numRecords);
+		int length = dataToAccess.length;
+		BitSet coverageBitVector = new BitSet(length);
+		coverageBitVector.set(0, length);
 
 		for (int i = 0; i < getDimension(); i++) {
-			BitSet coverageBitVectorPerDimension = new BitSet(numRecords);
-			for (int n = 0; n < numRecords; n++) {
+			BitSet coverageBitVectorPerDimension = new BitSet(length);
+			for (int n = 0; n < length; n++) {
 				if (p.data[i] == 'x' || p.data[i] == data[i][n]) {
 					coverageBitVectorPerDimension.set(n);
 				}
 			}
 			coverageBitVector.and(coverageBitVectorPerDimension);
 		}
-		return coverageBitVector.cardinality();
+		
+		int coverage = 0;
+		for (int i = coverageBitVector.nextSetBit(0); i != -1; i = coverageBitVector.nextSetBit(i + 1)) {
+		    coverage += occurences[i];
+		}
+		return coverage;
 	}
 
 	/**
@@ -160,20 +205,8 @@ public class DataSet {
 	 * @return
 	 */
 	public double checkCoveragePercentage(Pattern p) {
-		int numRecords = getNumRecords();
-		BitSet coverageBitVector = new BitSet(numRecords);
-		coverageBitVector.set(0, numRecords);
-
-		for (int i = 0; i < getDimension(); i++) {
-			BitSet coverageBitVectorPerDimension = new BitSet(numRecords);
-			for (int n = 0; n < numRecords; n++) {
-				if (p.data[i] == 'x' || p.data[i] == data[i][n]) {
-					coverageBitVectorPerDimension.set(n);
-				}
-			}
-			coverageBitVector.and(coverageBitVectorPerDimension);
-		}
-		return coverageBitVector.cardinality() * 1.0 / numRecords;
+		
+		return (double)checkCoverage(p) / getNumRecords();
 	}
 
 	/**
