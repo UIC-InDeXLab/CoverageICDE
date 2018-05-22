@@ -23,8 +23,11 @@ import java.util.LinkedList;
 
 public class DataSet {
 	char[][] data;
+	BitSet[] dataBitVec;
+	
 	int[] occurences;
 	int numOfRecords;
+	int dimensions;
 
 	char[][] dataToAccess;
 	public int[] cardinalities;
@@ -33,12 +36,13 @@ public class DataSet {
 
 	public DataSet(String fileName, int[] cardinalities, int[] selectedAttrIds,
 			int size) {
-//		List<char[]> listOfRecords = new ArrayList<char[]>();
+
 		Map<String, Integer> recordCount = new HashMap<String, Integer>();
 		this.cardinalities = cardinalities;
 		this.selectedAttrIds = selectedAttrIds;
 
-		int dimensions = selectedAttrIds.length;
+		this.dimensions = selectedAttrIds.length;
+		
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(fileName));
 			CSVParser csvParser = new CSVParser(reader,
@@ -68,18 +72,29 @@ public class DataSet {
 			}
 
 			csvParser.close();
-			List<String> orderedRecordSet = new ArrayList<String>(recordCount.keySet());
+			List<String> uniquePatternList = new ArrayList<String>(recordCount.keySet());
 
 			// Covert list to array
-			data = new char[dimensions][orderedRecordSet.size()];
-			dataToAccess = new char[orderedRecordSet.size()][dimensions];
-			occurences = new int[orderedRecordSet.size()];
+			data = new char[dimensions][uniquePatternList.size()];
+			dataToAccess = new char[uniquePatternList.size()][dimensions];
+			occurences = new int[uniquePatternList.size()];
 
-			for (int n = 0; n < orderedRecordSet.size(); n++) {
+			for (int n = 0; n < uniquePatternList.size(); n++) {
 				for (int d = 0; d < dimensions; d++) {
-					data[d][n] = orderedRecordSet.get(n).charAt(d);
-					dataToAccess[n][d] = orderedRecordSet.get(n).charAt(d);
-					occurences[n] = recordCount.get(orderedRecordSet.get(n));
+					data[d][n] = uniquePatternList.get(n).charAt(d);
+					dataToAccess[n][d] = uniquePatternList.get(n).charAt(d);
+					occurences[n] = recordCount.get(uniquePatternList.get(n));
+				}
+			}
+			
+			dataBitVec = new BitSet[sumOfArray(this.cardinalities)];
+			for (int i = 0; i < dataBitVec.length; i++) {
+				dataBitVec[i] = new BitSet(uniquePatternList.size());
+			}
+			for (int n = 0; n < uniquePatternList.size(); n++) {
+				for (int d = 0; d < dimensions; d++) {
+					int rowIdx = checkRowIdxInDataBitVec(d, uniquePatternList.get(n).charAt(d));
+					dataBitVec[rowIdx].set(n);
 				}
 			}
 
@@ -87,11 +102,17 @@ public class DataSet {
 			e.printStackTrace();
 		}
 		
-		
+//		for (int i = 0; i < dataBitVec.length; i++) {
+//			System.out.println(dataBitVec[i]);
+//		}
 		
 		numOfRecords = sumOfArray(occurences);
 
 		updateCoveragePercentage();
+	}
+	
+	private int checkRowIdxInDataBitVec(int dimensionId, char c) {
+		return c - 48 + sumOfArray(this.cardinalities, dimensionId);
 	}
 
 	/**
@@ -141,6 +162,19 @@ public class DataSet {
 		}
 		return sum;
 	}
+	
+	/**
+	 * Sum of the int array
+	 * @param intArray
+	 * @return
+	 */
+	private static int sumOfArray(int[] intArray, int beforeEndIdx) {
+		int sum = 0;
+		for (int i = 0; i < intArray.length && i < beforeEndIdx; i++) {
+			sum += intArray[i];
+		}
+		return sum;
+	}
 
 	/**
 	 * Get number of data records
@@ -148,7 +182,7 @@ public class DataSet {
 	 * @return
 	 */
 	public int getNumRecords() {
-		return numOfRecords;
+		return this.numOfRecords;
 	}
 
 	/**
@@ -157,16 +191,18 @@ public class DataSet {
 	 * @return
 	 */
 	public int getDimension() {
-		return data.length;
+		return this.dimensions;
 	}
 
-	/**
-	 * Get the actual data
-	 * 
-	 * @return
-	 */
-	public char[][] getData() {
-		return data;
+	
+	private BitSet createBitVec(int numOfUniquePatterns, Pattern curPattern, int dimensionId) {
+		BitSet coverageBitVectorPerDimension = new BitSet(numOfUniquePatterns);
+		for (int n = 0; n < numOfUniquePatterns; n++) {
+			if (curPattern.data[dimensionId] == 'x' || curPattern.data[dimensionId] == data[dimensionId][n]) {
+				coverageBitVectorPerDimension.set(n);
+			}
+		}
+		return coverageBitVectorPerDimension;
 	}
 
 	/**
@@ -177,18 +213,19 @@ public class DataSet {
 	 * @return
 	 */
 	public int checkCoverage(Pattern p) {
-		int length = dataToAccess.length;
-		BitSet coverageBitVector = new BitSet(length);
-		coverageBitVector.set(0, length);
+		int numUniquePatterns = dataToAccess.length;
+		BitSet coverageBitVector = new BitSet(numUniquePatterns);
+		coverageBitVector.set(0, numUniquePatterns);
 
+//		for (int i = 0; i < getDimension(); i++) {
+//			BitSet coverageBitVectorPerDimension = createBitVec(numUniquePatterns, p, i);
+//			coverageBitVector.and(coverageBitVectorPerDimension);
+//		}
+		
 		for (int i = 0; i < getDimension(); i++) {
-			BitSet coverageBitVectorPerDimension = new BitSet(length);
-			for (int n = 0; n < length; n++) {
-				if (p.data[i] == 'x' || p.data[i] == data[i][n]) {
-					coverageBitVectorPerDimension.set(n);
-				}
+			if (p.data[i] != 'x') {
+				coverageBitVector.and(dataBitVec[checkRowIdxInDataBitVec(i, p.data[i])]);
 			}
-			coverageBitVector.and(coverageBitVectorPerDimension);
 		}
 		
 		int coverage = 0;
