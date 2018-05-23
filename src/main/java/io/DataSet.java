@@ -155,7 +155,7 @@ public class DataSet {
 	 * @param intArray
 	 * @return
 	 */
-	private static int sumOfArray(int[] intArray) {
+	public static int sumOfArray(int[] intArray) {
 		int sum = 0;
 		for (int i = 0; i < intArray.length; i++) {
 			sum += intArray[i];
@@ -168,7 +168,7 @@ public class DataSet {
 	 * @param intArray
 	 * @return
 	 */
-	private static int sumOfArray(int[] intArray, int beforeEndIdx) {
+	public static int sumOfArray(int[] intArray, int beforeEndIdx) {
 		int sum = 0;
 		for (int i = 0; i < intArray.length && i < beforeEndIdx; i++) {
 			sum += intArray[i];

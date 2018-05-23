@@ -7,26 +7,23 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import io.DataSet;
+
 public class PatternSet {
 	public Set<Pattern> patternSet;
-	public Map<Integer, Map<Character, BitSet>> attributeValueHash;
+	public BitSet[] patternBitVec;
 	public int[] cardinalities;
 
 	public PatternSet(int[] cardinalities) {
 		this.cardinalities = Arrays.copyOf(cardinalities,
 				cardinalities.length);;
 		this.patternSet = new HashSet<Pattern>();
-		this.attributeValueHash = new HashMap<Integer, Map<Character, BitSet>>(
-				cardinalities.length);
-		for (int attrId = 0; attrId < cardinalities.length; attrId++) {
-			Map<Character, BitSet> valueHash = attributeValueHash.getOrDefault(
-					attrId,
-					new HashMap<Character, BitSet>(cardinalities[attrId] + 1));
-			for (int value = 0; value < cardinalities[attrId]; value++) {
-				valueHash.put((char) (value + 48), null);
-			}
-			valueHash.put('x', null);
-			attributeValueHash.put(attrId, valueHash);
+		this.patternBitVec = new BitSet[DataSet.sumOfArray(this.cardinalities)
+				+ this.cardinalities.length]; // there are
+												// this.cardinalities.length
+												// many "x"s
+		for (int i = 0; i < this.patternBitVec.length; i++) {
+			this.patternBitVec[i] = new BitSet(10);
 		}
 	}
 
@@ -34,40 +31,23 @@ public class PatternSet {
 		if (this.patternSet.contains(p))
 			return;
 
-		int originalSize = size();
-
 		this.patternSet.add(p);
 		for (int attrId = 0; attrId < p.data.length; attrId++) {
-			Map<Character, BitSet> valueHash = attributeValueHash.get(attrId);
-			for (int value = 0; value < cardinalities[attrId]; value++) {
-				char curAttrValue = (char) (value + 48);
-				BitSet b = valueHash.get(curAttrValue);
-				if (b == null) {
-					b = new BitSet(1);
-				}
-
-				if (curAttrValue == p.data[attrId])
-					b.set(originalSize);
-				else
-					b.set(originalSize, false);
-				valueHash.put(curAttrValue, b);
-			}
-
-			// 'x'
-			char curAttrValue = 'x';
-			BitSet b = valueHash.get(curAttrValue);
-			if (b == null) {
-				b = new BitSet(1);
-			}
-
-			if (curAttrValue == p.data[attrId])
-				b.set(originalSize);
-			else
-				b.set(originalSize, false);
-			valueHash.put(curAttrValue, b);
-
-			attributeValueHash.put(attrId, valueHash);
+			char curAttrValue = p.data[attrId];
+			int colId = this.patternSet.size();
+			int rowId = checkRowIdxInPatternBitVec(attrId, curAttrValue);
+			this.patternBitVec[rowId].set(colId);
 		}
+	}
+
+	private int checkRowIdxInPatternBitVec(int attrId, char c) {
+		if (c == 'x')
+			return DataSet.sumOfArray(this.cardinalities, attrId + 1) + attrId;
+		return c - 48 + DataSet.sumOfArray(this.cardinalities, attrId) + attrId;
+	}
+
+	private int checkRowIdxOfXInPatternBitVec(int attrId) {
+		return DataSet.sumOfArray(this.cardinalities, attrId + 1) + attrId;
 	}
 
 	/**
@@ -76,34 +56,35 @@ public class PatternSet {
 	 * @param p
 	 * @return
 	 */
-	public boolean hasAncestorTo(Pattern p, boolean returnTrueIfIdenticalIsFound) {
+	public boolean hasAncestorTo(Pattern p,
+			boolean returnTrueIfIdenticalIsFound) {
 		if (patternSet.isEmpty())
 			return false;
-		
+
 		if (patternSet.contains(p))
 			return returnTrueIfIdenticalIsFound;
 
 		BitSet match = new BitSet(size());
 		match.set(0, size());
 
-		for (int colId = 0; colId < p.data.length; colId++) {
-			char attrValueToCheck = p.data[colId];
+		for (int attrId = 0; attrId < p.data.length; attrId++) {
+			char attrValueToCheck = p.data[attrId];
 
-			// patterns contains attrValueToCheck at colId
-			BitSet b1 = (BitSet) attributeValueHash.get(colId)
-					.get(attrValueToCheck).clone();
-
-			// patterns contains 'x' at colId
-			if (attrValueToCheck != 'x') {
-				BitSet b2 = attributeValueHash.get(colId).get('x');
-				b1.or(b2);
+			if (attrValueToCheck == 'x') {
+				match.and(this.patternBitVec[checkRowIdxInPatternBitVec(attrId,
+						attrValueToCheck)]);
+				if (match.isEmpty())
+					return false;
+			} else {
+				BitSet a = this.patternBitVec[checkRowIdxInPatternBitVec(attrId,
+						attrValueToCheck)];
+				BitSet b = (BitSet)this.patternBitVec[checkRowIdxOfXInPatternBitVec(attrId)].clone();
+				b.or(a);
+				match.and(b);
+				if (match.isEmpty())
+					return false;
 			}
 
-			// get matching patterns
-			match.and(b1);
-
-			if (match.isEmpty())
-				return false;
 		}
 
 		return !match.isEmpty();
@@ -115,31 +96,24 @@ public class PatternSet {
 	 * @param p
 	 * @return
 	 */
-	public boolean hasDescendantTo(Pattern p, boolean returnTrueIfIdenticalIsFound) {
+	public boolean hasDescendantTo(Pattern p,
+			boolean returnTrueIfIdenticalIsFound) {
 		if (patternSet.isEmpty())
 			return false;
-		
+
 		if (patternSet.contains(p))
 			return returnTrueIfIdenticalIsFound;
 
 		BitSet match = new BitSet(size());
 		match.set(0, size());
-		for (int colId = 0; colId < p.data.length; colId++) {
-			char attrValueToCheck = p.data[colId];
-
-			// If attrValueToCheck in pattern p is 'x', we skip it because all
-			// patterns will be descendant of p in this attribute
-			if (attrValueToCheck == 'x')
-				continue;
-
-			// patterns contains attrValueToCheck at colId
-			BitSet b1 = attributeValueHash.get(colId).get(attrValueToCheck);
-
-			// get matching patterns
-			match.and(b1);
-
-			if (match.isEmpty())
-				return false;
+		for (int attrId = 0; attrId < p.data.length; attrId++) {
+			char attrValueToCheck = p.data[attrId];
+			if (attrValueToCheck != 'x') {
+				match.and(this.patternBitVec[checkRowIdxInPatternBitVec(attrId,
+						attrValueToCheck)]);
+				if (match.isEmpty())
+					return false;
+			}
 		}
 
 		return !match.isEmpty();
@@ -147,6 +121,9 @@ public class PatternSet {
 
 	public int size() {
 		return patternSet.size();
+	}
+
+	public static void main(String[] argv) {
 	}
 
 }
