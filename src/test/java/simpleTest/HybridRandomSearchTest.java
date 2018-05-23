@@ -5,17 +5,13 @@ import java.util.Set;
 
 import io.DataSet;
 import pattern.Pattern;
-import search.NaiveSearch;
-import search.PatternBreaker;
-import search.PatternBreakerOriginal;
-import search.PatternCombiner;
-import utils.Plot;
 import search.HybridRandomSearch;
-import search.GreedySearch;
+import search.NaiveSearch;
+import utils.Plot;
 
 public class HybridRandomSearchTest {
 	public static void main(String[] args) {
-		String fileName = "data/airbnb_1000.csv";
+		String fileName = "data/airbnb_100000.csv";
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
@@ -23,11 +19,11 @@ public class HybridRandomSearchTest {
 
 		int d = 15;
 
-		int threshold = 50;
+		int threshold = 500;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
-				Arrays.copyOfRange(chosenAttributeIds, 0, d), 1000);
+				Arrays.copyOfRange(chosenAttributeIds, 0, d), 100000);
 
 		// Test 1 with pattern breaker
 		HybridRandomSearch ss = new HybridRandomSearch(dataToCheck);
@@ -44,12 +40,12 @@ public class HybridRandomSearchTest {
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 		System.out.println("Visited: "
 				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
-		System.out.println("Hits: "
-				+ ss.getNumHits());
-		
-//		// Plot
-//		Plot pl = new Plot(ss.getTimeSeries());
-//		pl.setVisible(true);
+		System.out.println("Hits: " + ss.getNumHits());
+
+		// Plot
+		Plot pl = new Plot();
+		pl.create2dPlot(ss.getTimeSeries());
+		pl.setVisible(true);
 
 	}
 

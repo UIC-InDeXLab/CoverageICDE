@@ -10,10 +10,12 @@ public class Pattern implements Comparable<Pattern> {
 	public char[] data; // the content of pattern (a sequence of characters)
 	public double covereagePercentage;
 	public double covereage;
+	public int level;
 
 	public Pattern(char[] data) {
 		this.data = Arrays.copyOf(data, data.length);
 		this.covereage = -1;
+		this.level = getLevel();
 	}
 
 	public Pattern(char[] data,
