@@ -2,9 +2,7 @@ package pattern;
 
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import io.DataSet;
@@ -30,22 +28,33 @@ public class PatternSet {
 	public void add(Pattern p) {
 		if (this.patternSet.contains(p))
 			return;
-
+		int colId = this.patternSet.size();
 		this.patternSet.add(p);
 		for (int attrId = 0; attrId < p.data.length; attrId++) {
-			char curAttrValue = p.data[attrId];
-			int colId = this.patternSet.size();
+			char curAttrValue = p.data[attrId];			
 			int rowId = checkRowIdxInPatternBitVec(attrId, curAttrValue);
 			this.patternBitVec[rowId].set(colId);
 		}
 	}
 
+	/**
+	 * Find the rowId in patternBitVec given the value and the attribute id
+	 * @param attrId
+	 * @param c
+	 * @return
+	 */
 	private int checkRowIdxInPatternBitVec(int attrId, char c) {
 		if (c == 'x')
 			return DataSet.sumOfArray(this.cardinalities, attrId + 1) + attrId;
 		return c - 48 + DataSet.sumOfArray(this.cardinalities, attrId) + attrId;
 	}
 
+	/**
+	 * Find the rowId in patternBitVec of value 'x' given the attribute id
+	 * @param attrId
+	 * @param c
+	 * @return
+	 */
 	private int checkRowIdxOfXInPatternBitVec(int attrId) {
 		return DataSet.sumOfArray(this.cardinalities, attrId + 1) + attrId;
 	}
@@ -69,21 +78,18 @@ public class PatternSet {
 
 		for (int attrId = 0; attrId < p.data.length; attrId++) {
 			char attrValueToCheck = p.data[attrId];
+			
+			BitSet bitVecForThisValueAtThisAttr = (BitSet) this.patternBitVec[checkRowIdxInPatternBitVec(attrId,
+					attrValueToCheck)].clone();
 
-			if (attrValueToCheck == 'x') {
-				match.and(this.patternBitVec[checkRowIdxInPatternBitVec(attrId,
-						attrValueToCheck)]);
-				if (match.isEmpty())
-					return false;
-			} else {
-				BitSet a = this.patternBitVec[checkRowIdxInPatternBitVec(attrId,
-						attrValueToCheck)];
-				BitSet b = (BitSet)this.patternBitVec[checkRowIdxOfXInPatternBitVec(attrId)].clone();
-				b.or(a);
-				match.and(b);
-				if (match.isEmpty())
-					return false;
+			if (attrValueToCheck != 'x') {
+				BitSet bitVecOfXAtThisAttr = this.patternBitVec[checkRowIdxOfXInPatternBitVec(attrId)];
+				bitVecForThisValueAtThisAttr.or(bitVecOfXAtThisAttr);
+				
 			}
+			match.and(bitVecForThisValueAtThisAttr);
+			if (match.isEmpty())
+				return false;
 
 		}
 

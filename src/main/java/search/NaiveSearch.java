@@ -74,10 +74,10 @@ public class NaiveSearch {
 	public void updateDebugNodesAddAVisit(Pattern p) {
 //		System.out.println(p);
 		numNodesVisited++;
-		if (nodesVisited.contains(p))
-			numOfHits++;
-		else
-			nodesVisited.add(p);			
+//		if (nodesVisited.contains(p))
+//			numOfHits++;
+//		else
+//			nodesVisited.add(p);			
 	}
 
 	public void updateDebugMUPSSize(long num) {
