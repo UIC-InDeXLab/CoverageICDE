@@ -57,7 +57,7 @@ public class GreedySearchTest {
 //			levelInfo[i++] = p.getLevel();
 //		}
 //		Plot pl2 = new Plot();
-//		pl2.createBarchart(levelInfo, d);
+//		pl2.createBarchart(levelInfo, d, true);
 //		pl2.setVisible(true);
 
 	}

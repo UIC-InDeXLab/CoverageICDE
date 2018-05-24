@@ -83,8 +83,12 @@ public class Plot extends JFrame {
 		initUI(chart);
 
 	}
-
+	
 	public void createBarchart(long[] values, int maxLevel) {
+		createBarchart(values, maxLevel, false);
+	}
+
+	public void createBarchart(long[] values, int maxLevel, boolean ifPrintCounter) {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		Map<Long, Integer> counter = new HashMap<Long, Integer>();
 		for (int i = 0; i <= maxLevel; i++) {
@@ -97,6 +101,8 @@ public class Plot extends JFrame {
 
 		for (int i = 0; i <= maxLevel; i++) {
 			dataset.setValue(counter.get((long) i), "Count", i + "");
+			if (ifPrintCounter) 
+				System.out.println(i + "," + counter.get((long) i));
 		}
 
 		String plotTitle = "# of Mups at each level";
