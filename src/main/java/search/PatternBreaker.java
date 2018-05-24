@@ -53,7 +53,7 @@ public class PatternBreaker extends NaiveSearch {
 			Pattern currentPattern = patternToCheckQ.poll();
 
 			// Make sure none of its ancestor is in MUP
-			if (mups.hasAncestorTo(currentPattern, true)) {
+			if (mups.ifDominates(currentPattern, true)) {
 				continue;
 			}
 

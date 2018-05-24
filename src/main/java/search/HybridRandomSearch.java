@@ -44,10 +44,10 @@ public class HybridRandomSearch extends NaiveSearch {
 			// Check coverage
 			boolean ifUncovered;
 
-			if (mups.hasDescendantTo(currentPattern, false))
+			if (mups.ifIsDominatedBy(currentPattern, false))
 				ifUncovered = false;
 			// We arrive at a region that is below and covered by a discovered mup. We abandon this search.
-			else if (mups.hasAncestorTo(currentPattern, true))
+			else if (mups.ifDominates(currentPattern, true))
 				continue;
 			else {
 				updateDebugNodesAddAVisit(currentPattern);
@@ -112,7 +112,7 @@ public class HybridRandomSearch extends NaiveSearch {
 
 		for (Pattern parentPattern : listOfParentPatterns) {
 			// A mup is the descendant of the parentPattern. Hence, parentPattern is covered. 
-			if (mups.hasDescendantTo(parentPattern, false))
+			if (mups.ifIsDominatedBy(parentPattern, false))
 				continue;
 			else {
 				updateDebugNodesAddAVisit(parentPattern);

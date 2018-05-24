@@ -1,6 +1,7 @@
 package search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,9 +45,9 @@ public class GreedySearch extends NaiveSearch {
 
 			if (currentPattern.covereage >= 0)
 				ifUncovered = currentPattern.covereage < threshold;
-			else if (mups.hasDescendantTo(currentPattern, false))
+			else if (mups.ifIsDominatedBy(currentPattern, false))
 				ifUncovered = false;
-			else if (mups.hasAncestorTo(currentPattern, true))
+			else if (mups.ifDominates(currentPattern, true))
 				continue;
 			else {
 				updateDebugNodesAddAVisit(currentPattern);
@@ -106,7 +107,7 @@ public class GreedySearch extends NaiveSearch {
 
 			// A mup is the descendant parentPattern. Hence, parentPattern is
 			// covered.
-			if (mups.hasDescendantTo(parentPattern, false))
+			if (mups.ifIsDominatedBy(parentPattern, false))
 				continue;
 			else {
 				updateDebugNodesAddAVisit(parentPattern);

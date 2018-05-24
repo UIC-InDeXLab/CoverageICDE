@@ -24,12 +24,14 @@ public class Pattern implements Comparable<Pattern> {
 		this.covereagePercentage = predictCoveragePercentage(
 				coveragePercentageOfEachValueInEachAttr);
 		this.covereage = -1;
+		this.level = getLevel();
 	}
 
 	public Pattern(char[] data, int idx, char chrToReplace) {
 		this.data = data.clone();
 		this.data[idx] = chrToReplace;
 		this.covereage = -1;
+		this.level = getLevel();
 	}
 
 	public Pattern(char[] dataContent, int idx, char chrToReplace,
@@ -47,6 +49,7 @@ public class Pattern implements Comparable<Pattern> {
 							.parseInt(dataContent[idx] + "")];
 		}
 		this.covereage = -1;
+		this.level = getLevel();
 	}
 
 	public int getDimension() {
