@@ -42,10 +42,10 @@ public class HybridRandomSearchTest {
 				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 		System.out.println("Hits: " + ss.getNumHits());
 
-		// Plot
-		Plot pl = new Plot();
-		pl.create2dPlot(ss.getTimeSeries());
-		pl.setVisible(true);
+//		// Plot
+//		Plot pl = new Plot();
+//		pl.create2dPlot(ss.getTimeSeries());
+//		pl.setVisible(true);
 
 	}
 

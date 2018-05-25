@@ -2,6 +2,8 @@ package pattern;
 
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,12 +15,15 @@ public class PatternSet {
 	public BitSet[][] patternBitVecForCheckingAncestor;
 	public BitSet[][] patternBitVecForCheckingDescendant;
 
+	public int[][] numOfTrueBitsForCheckingAncestor;
+	public int[][] numOfTrueBitsForCheckingDescendant;
+
 	public int[] patternBitVecForCheckingAncestorVectorLength;
 	public int[] patternBitVecForCheckingDescendantVectorLength;
 
 	public int[] cardinalities;
 
-//	public long time;
+	public long time;
 
 	public int maxLevel;
 	public int minLevel;
@@ -37,6 +42,13 @@ public class PatternSet {
 						+ this.cardinalities.length]; // there are
 														// this.cardinalities.length
 														// many "x"s
+		
+		this.numOfTrueBitsForCheckingAncestor = new int[cardinalities.length
+		                                   				+ 1][DataSet.sumOfArray(this.cardinalities)
+		                             						+ this.cardinalities.length];
+		this.numOfTrueBitsForCheckingDescendant = new int[cardinalities.length
+			                                   				+ 1][DataSet.sumOfArray(this.cardinalities)
+				                             						+ this.cardinalities.length];
 		// Initialize patternBitVecForCheckingAncestor and
 		// patternBitVecForCheckingDescendant
 		for (int level = 0; level <= cardinalities.length; level++) {
@@ -56,7 +68,7 @@ public class PatternSet {
 				+ 1];
 		patternBitVecForCheckingDescendantVectorLength = new int[this.cardinalities.length
 				+ 1];
-//		time = 0;
+		time = 0;
 
 		maxLevel = -1;
 		minLevel = Integer.MAX_VALUE;
@@ -80,9 +92,10 @@ public class PatternSet {
 			for (int attrId = 0; attrId < patternToAdd
 					.getDimension(); attrId++) {
 				char curAttrValue = patternToAdd.data[attrId];
-				int rowId = checkRowIdxInPatternBitVec(attrId, curAttrValue);
-				this.patternBitVecForCheckingAncestor[currentLevel][rowId]
+				int attrValueId = checkRowIdxInPatternBitVec(attrId, curAttrValue);
+				this.patternBitVecForCheckingAncestor[currentLevel][attrValueId]
 						.set(patternId);
+				this.numOfTrueBitsForCheckingAncestor[currentLevel][attrValueId]++;
 			}
 		}
 
@@ -95,6 +108,7 @@ public class PatternSet {
 						curAttrValue);
 				this.patternBitVecForCheckingDescendant[currentLevel][attrValudId]
 						.set(patternId);
+				this.numOfTrueBitsForCheckingDescendant[currentLevel][attrValudId]++;
 			}
 		}
 	}
@@ -146,24 +160,51 @@ public class PatternSet {
 				patternBitVecForCheckingAncestorVectorLength[patternToCheck.level]);
 		match.set(0,
 				patternBitVecForCheckingAncestorVectorLength[patternToCheck.level]);
+		
+		// count, ifX, attrValueIdx, attrXIdx
+		int[][] occurences = new int[patternToCheck.getDimension()][4];
 
 		// Only check attribute where value is 'x' in patternToCheck
 		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
 			char attrValueToCheck = patternToCheck.data[attrId];
-
-			BitSet bitVecForThisValueAtThisAttr = (BitSet) this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxInPatternBitVec(
-					attrId, attrValueToCheck)].clone();
+//			occurences[attrId][0] = attrId;
+			occurences[attrId][0] = numOfTrueBitsForCheckingAncestor[patternToCheck.level][checkRowIdxInPatternBitVec(
+					attrId, attrValueToCheck)];
+			occurences[attrId][2] = checkRowIdxInPatternBitVec(attrId, attrValueToCheck);
 			if (attrValueToCheck != 'x') {
-				BitSet bitVecOfXAtThisAttr = this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxOfXInPatternBitVec(
+				occurences[attrId][0] += numOfTrueBitsForCheckingAncestor[patternToCheck.level][checkRowIdxOfXInPatternBitVec(
 						attrId)];
+				occurences[attrId][1] = 1;
+				occurences[attrId][3] = checkRowIdxOfXInPatternBitVec(attrId);
+			}
+			else {
+				occurences[attrId][1] = 0;
+			}
+		}
+		
+		Arrays.sort(occurences, Comparator.comparingInt(arr -> arr[0]));
+		
+		for (int[] s : occurences) {
+			
+			int count = s[0];
+			int ifCharacterIsX = s[1];
+			
+//			System.out.println(count);
+
+			BitSet bitVecForThisValueAtThisAttr = (BitSet) this.patternBitVecForCheckingAncestor[patternToCheck.level][s[2]].clone();
+			if (ifCharacterIsX == 1) {
+				BitSet bitVecOfXAtThisAttr = this.patternBitVecForCheckingAncestor[patternToCheck.level][s[3]];
 				bitVecForThisValueAtThisAttr.or(bitVecOfXAtThisAttr);
 			}
 
 			match.and(bitVecForThisValueAtThisAttr);
-			if (match.isEmpty())
+			if (match.isEmpty()) {
+//				System.out.println();
 				return false;
+			}
 
 		}
+//		System.out.println();
 
 		return true;
 	}
