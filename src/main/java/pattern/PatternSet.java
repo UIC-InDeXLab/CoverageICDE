@@ -18,7 +18,7 @@ public class PatternSet {
 
 	public int[] cardinalities;
 
-	public long time;
+//	public long time;
 
 	public int maxLevel;
 	public int minLevel;
@@ -56,7 +56,7 @@ public class PatternSet {
 				+ 1];
 		patternBitVecForCheckingDescendantVectorLength = new int[this.cardinalities.length
 				+ 1];
-		time = 0;
+//		time = 0;
 
 		maxLevel = -1;
 		minLevel = Integer.MAX_VALUE;
@@ -150,34 +150,22 @@ public class PatternSet {
 		// Only check attribute where value is 'x' in patternToCheck
 		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
 			char attrValueToCheck = patternToCheck.data[attrId];
-			if (attrValueToCheck == 'x') {
-				BitSet bitVecForThisValueAtThisAttr = (BitSet) this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxInPatternBitVec(
-						attrId, attrValueToCheck)].clone();
 
-				match.and(bitVecForThisValueAtThisAttr);
-				if (match.isEmpty())
-					return false;
-			}
-		}
-
-		// Only check attribute where value is not 'x' in patternToCheck
-		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
-			char attrValueToCheck = patternToCheck.data[attrId];
+			BitSet bitVecForThisValueAtThisAttr = (BitSet) this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxInPatternBitVec(
+					attrId, attrValueToCheck)].clone();
 			if (attrValueToCheck != 'x') {
-				BitSet bitVecForThisValueAtThisAttr = (BitSet) this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxInPatternBitVec(
-						attrId, attrValueToCheck)].clone();
-
 				BitSet bitVecOfXAtThisAttr = this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxOfXInPatternBitVec(
 						attrId)];
 				bitVecForThisValueAtThisAttr.or(bitVecOfXAtThisAttr);
-
-				match.and(bitVecForThisValueAtThisAttr);
-				if (match.isEmpty())
-					return false;
 			}
+
+			match.and(bitVecForThisValueAtThisAttr);
+			if (match.isEmpty())
+				return false;
+
 		}
 
-		return !match.isEmpty();
+		return true;
 	}
 
 	/**
