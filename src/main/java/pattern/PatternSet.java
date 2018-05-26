@@ -203,7 +203,7 @@ public class PatternSet {
 			}
 		}
 
-		return !match.isEmpty();
+		return true;
 	}
 
 	public int size() {
