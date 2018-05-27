@@ -1,14 +1,18 @@
 package pattern;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import io.DataSet;
+import utils.FastIntersectCheckClass.FastIntersectCheck;
 
 public class PatternSet {
 	public Set<Pattern> patternSet;
+	FastIntersectCheck patternBitVecCpp;
 
 	public BitSet[][] patternBitVecForCheckingAncestor;
 	public BitSet[][] patternBitVecForCheckingDescendant;
@@ -60,6 +64,9 @@ public class PatternSet {
 
 		maxLevel = -1;
 		minLevel = Integer.MAX_VALUE;
+		
+		patternBitVecCpp = new FastIntersectCheck(DataSet.sumOfArray(this.cardinalities)
+				+ this.cardinalities.length);
 	}
 
 	public void add(Pattern patternToAdd) {
@@ -97,6 +104,20 @@ public class PatternSet {
 						.set(patternId);
 			}
 		}
+		
+		// Update patternBitVecCpp
+		int[] bitVecValues = new int[DataSet.sumOfArray(this.cardinalities)
+				+ this.cardinalities.length];
+		
+		for (int attrId = 0; attrId < patternToAdd
+				.getDimension(); attrId++) {
+			char curAttrValue = patternToAdd.data[attrId];
+			int attrValudId = checkRowIdxInPatternBitVec(attrId,
+					curAttrValue);
+			bitVecValues[attrValudId] = 1;
+		}
+
+		patternBitVecCpp.add(bitVecValues);
 	}
 
 	/**
@@ -186,24 +207,44 @@ public class PatternSet {
 		// descendant
 		if (patternToCheck.level >= maxLevel)
 			return false;
+		
+//		BitSet match = new BitSet(
+//				patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
+//		match.set(0,
+//				patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
+//		
+//		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
+//			char attrValueToCheck = patternToCheck.data[attrId];
+//			if (attrValueToCheck != 'x') {
+//				match.and(
+//						this.patternBitVecForCheckingDescendant[patternToCheck.level][checkRowIdxInPatternBitVec(
+//								attrId, attrValueToCheck)]);
+//				if (match.isEmpty())
+//					return false;
+//			}
+//		}
+//
+//		return true;
 
-		BitSet match = new BitSet(
-				patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
-		match.set(0,
-				patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
 
+		List<Integer> idxOfBitVecsToAnd = new ArrayList<Integer>();
+		
+		
 		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
 			char attrValueToCheck = patternToCheck.data[attrId];
 			if (attrValueToCheck != 'x') {
-				match.and(
-						this.patternBitVecForCheckingDescendant[patternToCheck.level][checkRowIdxInPatternBitVec(
-								attrId, attrValueToCheck)]);
-				if (match.isEmpty())
-					return false;
+				idxOfBitVecsToAnd.add(checkRowIdxInPatternBitVec(
+								attrId, attrValueToCheck));
+
 			}
 		}
-
-		return true;
+		
+		// If these bit vectors do not intersect, we think there is no mup that is a descendant of the patternToCheck.
+		return patternBitVecCpp.intersect(toIntArray(idxOfBitVecsToAnd));
+	}
+	
+	public int[] toIntArray(List<Integer> intList){
+	       return intList.stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	public int size() {

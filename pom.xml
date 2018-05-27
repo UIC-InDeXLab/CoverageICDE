@@ -7,6 +7,15 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>CoverageJava</name>
 	<url>http://maven.apache.org</url>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<javacpp.cppbuild.skip>false</javacpp.cppbuild.skip> <!-- To skip execution of cppbuild.sh: -Djavacpp.cppbuild.skip=true -->
+		<javacpp.parser.skip>false</javacpp.parser.skip>     <!-- To skip header file parsing phase: -Djavacpp.parser.skip=true -->
+		<javacpp.compiler.skip>false</javacpp.compiler.skip> <!-- To skip native compilation phase: -Djavacpp.compiler.skip=true -->
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -24,6 +33,56 @@
 							<classpathScope>test</classpathScope>
 							<argLine>-Xmx8G</argLine>
 							<argLine>-Xms4G</argLine>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.bytedeco</groupId>
+				<artifactId>javacpp</artifactId>
+				<version>1.4.1</version>
+				<configuration>
+					<properties>${javacpp.platform}</properties>
+					<propertyKeysAndValues>
+						<property>
+							<name>platform.root</name>
+							<value>${javacpp.platform.root}</value>
+						</property>
+						<property>
+							<name>platform.compiler</name>
+							<value>${javacpp.platform.compiler}</value>
+						</property>
+					</propertyKeysAndValues>
+					<classPath>${project.build.outputDirectory}</classPath>
+					<includePath>${basedir}/cppbuild/${javacpp.platform}/include/</includePath>
+					<linkPath>${basedir}/cppbuild/${javacpp.platform}/lib/</linkPath>
+					<preloadPath>${basedir}/cppbuild/${javacpp.platform}/bin/</preloadPath>
+				</configuration>
+				<executions>
+					<execution>
+						<id>javacpp.parser</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+						<configuration>
+							<skip>${javacpp.parser.skip}</skip>
+							<outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+							<!-- Change to your package name -->
+							<classOrPackageName>utils.*</classOrPackageName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>javacpp.compiler</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+						<configuration>
+							<skip>${javacpp.compiler.skip}</skip>
+							<!-- Change to your package name -->
+							<classOrPackageName>utils.*</classOrPackageName>
+							<copyLibs>true</copyLibs>
 						</configuration>
 					</execution>
 				</executions>
@@ -71,6 +130,12 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.8.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacpp</artifactId>
+			<version>1.4.1</version>
 		</dependency>
 	</dependencies>
 </project>
