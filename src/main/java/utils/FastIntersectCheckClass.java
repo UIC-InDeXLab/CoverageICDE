@@ -17,7 +17,15 @@ public class FastIntersectCheckClass {
 
 		// to add a pattern
 		public native void add(int[] newVal);
+		
+		// add a string pattern
 		public native void add(@StdString String newPattern);
+		
+		// print num_bit_vecs
+		public native void get_num_bit_vecs();
+		
+		// print num_patterns
+		public native void get_num_patterns();
 
 		// check if a selection of bit vectors intersect
 		public native boolean intersect(@StdVector int[] indices);
@@ -30,9 +38,12 @@ public class FastIntersectCheckClass {
 		// Pointer.deallocate()
 		FastIntersectCheck l = new FastIntersectCheck(3);
 
-		l.add(new int[]{0,1,0});
-		l.add(new int[]{1,0,0});
-		l.add(new int[]{1,1,1});
-		System.out.println(l.intersect(new int[]{0,2}));
+		l.add(new int[]{1,0,1});
+		for (int i = 0; i < 3; i++)
+			l.add(new int[]{1,1,1});
+		
+		l.add(new int[]{0,0,1});
+
+		System.out.println(l.intersect(new int[]{0,1,2}));
 	}
 }

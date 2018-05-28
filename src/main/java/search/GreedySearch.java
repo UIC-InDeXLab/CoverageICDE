@@ -79,7 +79,6 @@ public class GreedySearch extends NaiveSearch {
 
 		// Update debug info
 		updateDebugMUPSSize(mups.size());
-
 		return mups.patternSet;
 	}
 

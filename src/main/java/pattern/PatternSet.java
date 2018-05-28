@@ -12,7 +12,8 @@ import utils.FastIntersectCheckClass.FastIntersectCheck;
 
 public class PatternSet {
 	public Set<Pattern> patternSet;
-	FastIntersectCheck patternBitVecCpp;
+	public List<Pattern> patternList;
+	public FastIntersectCheck patternBitVecCpp;
 
 	public BitSet[][] patternBitVecForCheckingAncestor;
 	public BitSet[][] patternBitVecForCheckingDescendant;
@@ -31,6 +32,7 @@ public class PatternSet {
 		this.cardinalities = Arrays.copyOf(cardinalities,
 				cardinalities.length);;
 		this.patternSet = new HashSet<Pattern>();
+		this.patternList = new ArrayList<Pattern>();
 		this.patternBitVecForCheckingAncestor = new BitSet[cardinalities.length
 				+ 1][DataSet.sumOfArray(this.cardinalities)
 						+ this.cardinalities.length]; // there are
@@ -65,6 +67,8 @@ public class PatternSet {
 		maxLevel = -1;
 		minLevel = Integer.MAX_VALUE;
 		
+		
+		// Initialize patternBitVecCpp
 		patternBitVecCpp = new FastIntersectCheck(DataSet.sumOfArray(this.cardinalities)
 				+ this.cardinalities.length);
 	}
@@ -74,6 +78,7 @@ public class PatternSet {
 			return;
 
 		this.patternSet.add(patternToAdd);
+		patternList.add(patternToAdd);
 
 		maxLevel = patternToAdd.level > maxLevel
 				? patternToAdd.level
@@ -208,6 +213,9 @@ public class PatternSet {
 		if (patternToCheck.level >= maxLevel)
 			return false;
 		
+//		boolean result1 = true;
+//		
+//		
 //		BitSet match = new BitSet(
 //				patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
 //		match.set(0,
@@ -220,10 +228,10 @@ public class PatternSet {
 //						this.patternBitVecForCheckingDescendant[patternToCheck.level][checkRowIdxInPatternBitVec(
 //								attrId, attrValueToCheck)]);
 //				if (match.isEmpty())
-//					return false;
+//					result1 = false;
 //			}
 //		}
-//
+
 //		return true;
 
 
@@ -240,7 +248,10 @@ public class PatternSet {
 		}
 		
 		// If these bit vectors do not intersect, we think there is no mup that is a descendant of the patternToCheck.
-		return patternBitVecCpp.intersect(toIntArray(idxOfBitVecsToAnd));
+		boolean result2 = patternBitVecCpp.intersect(toIntArray(idxOfBitVecsToAnd));
+
+		
+		return result2;
 	}
 	
 	public int[] toIntArray(List<Integer> intList){
