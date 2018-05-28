@@ -17,13 +17,23 @@ public class PatternSet {
 	public int[] patternBitVecForCheckingDescendantVectorLength;
 
 	public int[] cardinalities;
+	public int[] cardinalitiesSum;
 
 	public int maxLevel;
 	public int minLevel;
 
 	public PatternSet(int[] cardinalities) {
 		this.cardinalities = Arrays.copyOf(cardinalities,
-				cardinalities.length);;
+				cardinalities.length);
+		// Initialize cardinalitiesSum
+		this.cardinalitiesSum = new int[cardinalities.length];
+		
+		for (int i = 0; i < cardinalitiesSum.length; i++) {
+			this.cardinalitiesSum[i] = DataSet.sumOfArray(this.cardinalities, i + 1);
+		}
+		
+		
+		
 		this.patternSet = new HashSet<Pattern>();
 		this.patternBitVecForCheckingAncestor = new BitSet[cardinalities.length
 				+ 1][DataSet.sumOfArray(this.cardinalities)
@@ -116,8 +126,10 @@ public class PatternSet {
 	 */
 	private int checkRowIdxInPatternBitVec(int attrId, char c) {
 		if (c == 'x')
-			return DataSet.sumOfArray(this.cardinalities, attrId + 1) + attrId;
-		return c - 48 + DataSet.sumOfArray(this.cardinalities, attrId) + attrId;
+			return cardinalitiesSum[attrId] + attrId;
+		if (attrId == 0)
+			return c - 48;
+		return c - 48 + cardinalitiesSum[attrId - 1] + attrId;
 	}
 
 	/**
@@ -128,7 +140,7 @@ public class PatternSet {
 	 * @return
 	 */
 	private int checkRowIdxOfXInPatternBitVec(int attrId) {
-		return DataSet.sumOfArray(this.cardinalities, attrId + 1) + attrId;
+		return cardinalitiesSum[attrId] + attrId;
 	}
 
 	/**
@@ -207,24 +219,23 @@ public class PatternSet {
 
 		BitSet match = null;
 
-
 		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
 			char attrValueToCheck = patternToCheck.data[attrId];
 			if (attrValueToCheck != 'x') {
 				int rowIdx = checkRowIdxInPatternBitVec(attrId,
 						attrValueToCheck);
-
 				if (match == null)
 					match = (BitSet) this.patternBitVecForCheckingDescendant[patternToCheck.level][rowIdx]
 							.clone();
 				else
 					match.and(
 							this.patternBitVecForCheckingDescendant[patternToCheck.level][rowIdx]);
-				if (match.isEmpty())
+				if (match.isEmpty()) {
 					return false;
+				}
 			}
 		}
-
+		
 		return true;
 	}
 
