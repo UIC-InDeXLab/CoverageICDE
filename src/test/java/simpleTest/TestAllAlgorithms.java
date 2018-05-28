@@ -17,19 +17,19 @@ public class TestAllAlgorithms {
 
 		String breakline = String.format("%0" + 50 + "d", 0).replace("0", "-");
 
-		String fileName = "data/airbnb_1000.csv";
+		String fileName = "data/airbnb_100000.csv";
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 13;
+		int d = 15;
 
-		int threshold = 200;
+		int threshold = 500;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
-				Arrays.copyOfRange(chosenAttributeIds, 0, d), 1000);
+				Arrays.copyOfRange(chosenAttributeIds, 0, d), 100000);
 
 		// Test 1 with pattern breaker
 		PatternBreakerOriginal pbo = new PatternBreakerOriginal(dataToCheck);
