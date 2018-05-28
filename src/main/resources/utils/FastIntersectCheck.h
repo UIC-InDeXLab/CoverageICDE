@@ -26,8 +26,8 @@ namespace Beaver {
 			if (!rem) // bit_vecs are full
 				for (int i = 0; i < this->num_bit_vecs; i++) bit_vecs[i].push_back(0);
 			int word_id = num_patterns / bitsize; // points to the last element of the bit_vecs
-			unsigned long long mask = pow(2,(bitsize - rem - 1));
-
+			// unsigned long long mask = pow(2,(bitsize - rem - 1));
+			unsigned long long mask =  1L << (bitsize - rem - 1);
 			
 			for (int i = 0; i < this->num_bit_vecs; i++) {
 				if (newval[i] == 1) bit_vecs[i][word_id] |= mask; 

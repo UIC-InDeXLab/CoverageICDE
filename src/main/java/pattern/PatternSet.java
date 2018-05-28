@@ -23,7 +23,11 @@ public class PatternSet {
 
 	public int[] cardinalities;
 
-//	public long time;
+	public long time1;
+	public long time2;
+	
+	public int intersect;
+	public int noIntersect;
 
 	public int maxLevel;
 	public int minLevel;
@@ -213,6 +217,8 @@ public class PatternSet {
 		if (patternToCheck.level >= maxLevel)
 			return false;
 		
+//		
+//		long t0 = System.nanoTime();
 //		boolean result1 = true;
 //		
 //		
@@ -232,9 +238,8 @@ public class PatternSet {
 //			}
 //		}
 
-//		return true;
-
-
+		
+		
 		List<Integer> idxOfBitVecsToAnd = new ArrayList<Integer>();
 		
 		
@@ -246,11 +251,10 @@ public class PatternSet {
 
 			}
 		}
-		
+
 		// If these bit vectors do not intersect, we think there is no mup that is a descendant of the patternToCheck.
 		boolean result2 = patternBitVecCpp.intersect(toIntArray(idxOfBitVecsToAnd));
 
-		
 		return result2;
 	}
 	
