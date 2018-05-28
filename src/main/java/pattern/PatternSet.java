@@ -18,8 +18,6 @@ public class PatternSet {
 
 	public int[] cardinalities;
 
-	// public long time;
-
 	public int maxLevel;
 	public int minLevel;
 
@@ -152,30 +150,39 @@ public class PatternSet {
 		if (patternToCheck.level <= minLevel)
 			return false;
 
-		BitSet match = new BitSet(
-				patternBitVecForCheckingAncestorVectorLength[patternToCheck.level]);
-		match.set(0,
-				patternBitVecForCheckingAncestorVectorLength[patternToCheck.level]);
-
+		BitSet match = null;
+		
 		// Only check attribute where value is 'x' in patternToCheck
 		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
 			char attrValueToCheck = patternToCheck.data[attrId];
+			int rowIdx = checkRowIdxInPatternBitVec(attrId,
+					attrValueToCheck);
 
-			BitSet bitVecForThisValueAtThisAttr = (BitSet) this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxInPatternBitVec(
-					attrId, attrValueToCheck)].clone();
-			if (attrValueToCheck != 'x') {
-				BitSet bitVecOfXAtThisAttr = this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxOfXInPatternBitVec(
-						attrId)];
-				bitVecForThisValueAtThisAttr.or(bitVecOfXAtThisAttr);
+			if (match == null) {
+				match = (BitSet) this.patternBitVecForCheckingAncestor[patternToCheck.level][rowIdx].clone();
+				if (attrValueToCheck != 'x') {
+					BitSet bitVecOfXAtThisAttr = this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxOfXInPatternBitVec(
+							attrId)];
+					match.or(bitVecOfXAtThisAttr);
+				}
+			} else {
+				BitSet bitVecForThisValueAtThisAttr = null;
+				if (attrValueToCheck != 'x') {
+					bitVecForThisValueAtThisAttr = (BitSet) this.patternBitVecForCheckingAncestor[patternToCheck.level][rowIdx].clone();
+					BitSet bitVecOfXAtThisAttr = this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxOfXInPatternBitVec(
+							attrId)];
+					bitVecForThisValueAtThisAttr.or(bitVecOfXAtThisAttr);
+				} else {
+					bitVecForThisValueAtThisAttr = this.patternBitVecForCheckingAncestor[patternToCheck.level][rowIdx];
+				}
+
+				match.and(bitVecForThisValueAtThisAttr);
 			}
-
-			match.and(bitVecForThisValueAtThisAttr);
 			if (match.isEmpty()) {
 				return false;
 			}
 
 		}
-
 		return true;
 	}
 
@@ -198,17 +205,21 @@ public class PatternSet {
 		if (patternToCheck.level >= maxLevel)
 			return false;
 
-		BitSet match = new BitSet(
-				patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
-		match.set(0,
-				patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
+		BitSet match = null;
+
 
 		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
 			char attrValueToCheck = patternToCheck.data[attrId];
 			if (attrValueToCheck != 'x') {
-				match.and(
-						this.patternBitVecForCheckingDescendant[patternToCheck.level][checkRowIdxInPatternBitVec(
-								attrId, attrValueToCheck)]);
+				int rowIdx = checkRowIdxInPatternBitVec(attrId,
+						attrValueToCheck);
+
+				if (match == null)
+					match = (BitSet) this.patternBitVecForCheckingDescendant[patternToCheck.level][rowIdx]
+							.clone();
+				else
+					match.and(
+							this.patternBitVecForCheckingDescendant[patternToCheck.level][rowIdx]);
 				if (match.isEmpty())
 					return false;
 			}
