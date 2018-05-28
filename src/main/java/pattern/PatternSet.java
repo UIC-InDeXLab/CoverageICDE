@@ -1,9 +1,13 @@
 package pattern;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 
 import io.DataSet;
 
@@ -18,7 +22,10 @@ public class PatternSet {
 
 	public int[] cardinalities;
 
-//	public long time;
+	public List<Long>[] patternBitVecs;
+	public int numPatterns;
+
+	// public long time;
 
 	public int maxLevel;
 	public int minLevel;
@@ -56,10 +63,19 @@ public class PatternSet {
 				+ 1];
 		patternBitVecForCheckingDescendantVectorLength = new int[this.cardinalities.length
 				+ 1];
-//		time = 0;
+		// time = 0;
 
 		maxLevel = -1;
 		minLevel = Integer.MAX_VALUE;
+
+		// Initialize patternBitVecs
+		patternBitVecs = new List[DataSet.sumOfArray(this.cardinalities)
+				+ this.cardinalities.length];
+
+		for (int i = 0; i < this.patternBitVecs.length; i++) {
+			this.patternBitVecs[i] = new ArrayList<Long>();
+		}
+
 	}
 
 	public void add(Pattern patternToAdd) {
@@ -97,6 +113,27 @@ public class PatternSet {
 						.set(patternId);
 			}
 		}
+
+		int rem = this.numPatterns % Long.SIZE;
+		if (rem == 0)
+			for (int i = 0; i < this.patternBitVecs.length; i++) {
+				this.patternBitVecs[i].add(0L);
+			}
+		int wordId = numPatterns / Long.SIZE; // get floor
+		long mask = 1L << (Long.SIZE - rem - 1);
+		
+//		System.out
+//		.println(StringUtils.leftPad(Long.toBinaryString(mask), 64, "0"));
+
+		for (int attrId = 0; attrId < patternToAdd.getDimension(); attrId++) {
+			char curAttrValue = patternToAdd.data[attrId];
+			int attrValudId = checkRowIdxInPatternBitVec(attrId, curAttrValue);
+
+			long tempVal = this.patternBitVecs[attrValudId].get(wordId);
+			tempVal |= mask;
+			this.patternBitVecs[attrValudId].set(wordId, tempVal);
+		}
+		numPatterns++;
 	}
 
 	/**
@@ -187,23 +224,55 @@ public class PatternSet {
 		if (patternToCheck.level >= maxLevel)
 			return false;
 
-		BitSet match = new BitSet(
-				patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
-		match.set(0,
-				patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
+		// BitSet match = new BitSet(
+		// patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
+		// match.set(0,
+		// patternBitVecForCheckingDescendantVectorLength[patternToCheck.level]);
+		//
+		// for (int attrId = 0; attrId < patternToCheck.getDimension();
+		// attrId++) {
+		// char attrValueToCheck = patternToCheck.data[attrId];
+		// if (attrValueToCheck != 'x') {
+		// match.and(
+		// this.patternBitVecForCheckingDescendant[patternToCheck.level][checkRowIdxInPatternBitVec(
+		// attrId, attrValueToCheck)]);
+		// if (match.isEmpty())
+		// return false;
+		// }
+		// }
+		//
+		// return true;
+		List<Integer> idxOfBitVecsToAnd = new ArrayList<Integer>();
 
 		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
 			char attrValueToCheck = patternToCheck.data[attrId];
 			if (attrValueToCheck != 'x') {
-				match.and(
-						this.patternBitVecForCheckingDescendant[patternToCheck.level][checkRowIdxInPatternBitVec(
-								attrId, attrValueToCheck)]);
-				if (match.isEmpty())
-					return false;
+				idxOfBitVecsToAnd.add(
+						checkRowIdxInPatternBitVec(attrId, attrValueToCheck));
+
 			}
 		}
 
-		return true;
+		return intersect(idxOfBitVecsToAnd);
+	}
+
+	private boolean intersect(List<Integer> attrValIds) {
+		if (attrValIds.size() == 0 || this.numPatterns == 0)
+			return false;
+		int wordId = (this.numPatterns - 1) / Long.SIZE;
+
+		for (int i = 0; i <= wordId; i++) {
+			long match = this.patternBitVecs[attrValIds.get(0)].get(i);
+			for (int j = 0; j < attrValIds.size(); j++) {
+				match &= this.patternBitVecs[attrValIds.get(j)].get(i);
+				if (match == 0)
+					break;
+			}
+
+			if (match != 0)
+				return true;
+		}
+		return false;
 	}
 
 	public int size() {
@@ -211,6 +280,14 @@ public class PatternSet {
 	}
 
 	public static void main(String[] argv) {
+		long t = System.currentTimeMillis();
+		System.out.println(Long.toBinaryString(t));
+
+		long l = (long) 1;
+		System.out
+				.println(StringUtils.leftPad(Long.toBinaryString(l), 64, "0"));
+		
+		System.out.println(127/64);
 	}
 
 }
