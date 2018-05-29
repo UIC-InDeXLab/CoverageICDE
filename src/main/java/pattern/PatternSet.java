@@ -1,8 +1,10 @@
 package pattern;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
+import utils.BitSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import io.DataSet;
@@ -18,6 +20,9 @@ public class PatternSet {
 
 	public int[] cardinalities;
 	public int[] cardinalitiesSum;
+	
+	public long time1;
+	public long time2;
 
 	public int maxLevel;
 	public int minLevel;
@@ -216,27 +221,19 @@ public class PatternSet {
 		// descendant
 		if (patternToCheck.level >= maxLevel)
 			return false;
-
-		BitSet match = null;
-
+		
+		List<BitSet> bitSetToCheck = new ArrayList<BitSet>();
 		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
 			char attrValueToCheck = patternToCheck.data[attrId];
 			if (attrValueToCheck != 'x') {
 				int rowIdx = checkRowIdxInPatternBitVec(attrId,
 						attrValueToCheck);
-				if (match == null)
-					match = (BitSet) this.patternBitVecForCheckingDescendant[patternToCheck.level][rowIdx]
-							.clone();
-				else
-					match.and(
-							this.patternBitVecForCheckingDescendant[patternToCheck.level][rowIdx]);
-				if (match.isEmpty()) {
-					return false;
-				}
+				bitSetToCheck.add(this.patternBitVecForCheckingDescendant[patternToCheck.level][rowIdx]);
 			}
 		}
 		
-		return true;
+		
+		return BitSet.intersect(bitSetToCheck);
 	}
 
 	public int size() {

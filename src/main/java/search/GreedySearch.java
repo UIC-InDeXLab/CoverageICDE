@@ -131,7 +131,7 @@ public class GreedySearch extends NaiveSearch {
 		else if (nextPattern != null) {
 			return bottomUpMupGreedySearch(nextPattern, mups, threshold);
 		}
-		
+				
 		return null;
 	}
 }
