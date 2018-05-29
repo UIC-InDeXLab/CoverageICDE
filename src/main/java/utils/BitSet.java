@@ -1,19 +1,19 @@
 package utils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.LongBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
-import java.util.Spliterators;
 
 /**
  * This class implements a vector of bits that grows as needed. Each
@@ -870,17 +870,17 @@ public class BitSet implements Cloneable, java.io.Serializable {
         return false;
     }
     
-    public static boolean intersect(List<BitSet> bitSetList) {
-    	List<Integer> wordsInUseList = new ArrayList<Integer>(bitSetList.size());
-    	int minWordsInUse = bitSetList.get(0).wordsInUse;
-    	for (int i = 1; i < bitSetList.size(); i++)
-    		if (minWordsInUse > bitSetList.get(i).wordsInUse)
-    			minWordsInUse = bitSetList.get(i).wordsInUse;
+    public static boolean intersect(BitSet[] bitVecArray) {
+    	if (bitVecArray == null || bitVecArray.length < 1)
+    		return false;
+    	int minWordsInUse = bitVecArray[0].wordsInUse;
+    	for (int i = 1; i < bitVecArray.length; i++)
+    		minWordsInUse = Math.min(bitVecArray[i].wordsInUse, minWordsInUse);
     	
     	for (int i = minWordsInUse - 1; i >= 0; i--) {
-    		long match = bitSetList.get(0).words[i];
-    		for (int j = 1; j < bitSetList.size() && match != 0; j++) {
-    			match &= bitSetList.get(j).words[i];
+    		long match = bitVecArray[0].words[i];
+    		for (int j = 1; j < bitVecArray.length && match != 0; j++) {
+    			match &= bitVecArray[j].words[i];
     		}
     		if (match != 0)
     			return true;

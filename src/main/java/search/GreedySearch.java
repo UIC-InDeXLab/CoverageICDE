@@ -67,7 +67,7 @@ public class GreedySearch extends NaiveSearch {
 						threshold);
 
 				if (mup != null) {
-					mups.add(mup, 10);
+					mups.add(mup);
 					updateDebugAddMupDiscoveryTimeline();
 				}
 

@@ -64,7 +64,7 @@ public class HybridRandomSearch extends NaiveSearch {
 						threshold);
 
 				if (mup != null) {
-					mups.add(mup, 10);
+					mups.add(mup);
 					updateDebugAddMupDiscoveryTimeline();
 
 //					// We take the pattern in the bottom and put it on the top
