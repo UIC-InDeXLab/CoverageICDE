@@ -46,6 +46,7 @@ public class HybridRandomSearch extends NaiveSearch {
 
 			if (mups.ifIsDominatedBy(currentPattern, false))
 				ifUncovered = false;
+//				continue;
 			// We arrive at a region that is below and covered by a discovered mup. We abandon this search.
 			else if (mups.ifDominates(currentPattern, true))
 				continue;

@@ -17,7 +17,7 @@ public class HybridRandomSearchTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 15;
+		int d = 10;
 
 		int threshold = 500;
 
@@ -43,9 +43,9 @@ public class HybridRandomSearchTest {
 		System.out.println("Hits: " + ss.getNumHits());
 
 		// Plot
-		Plot pl = new Plot();
-		pl.create2dPlot(ss.getTimeSeries());
-		pl.setVisible(true);
+//		Plot pl = new Plot();
+//		pl.create2dPlot(ss.getTimeSeries());
+//		pl.setVisible(true);
 
 	}
 

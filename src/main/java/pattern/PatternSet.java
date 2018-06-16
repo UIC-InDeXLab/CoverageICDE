@@ -3,6 +3,8 @@ package pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import utils.BitSet;
+import wildcardtrie.Trie;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +32,8 @@ public class PatternSet {
 
 	public int maxLevel;
 	public int minLevel;
+	
+	public Trie mupsTrie;
 
 	public PatternSet(int[] cardinalities) {
 		this.cardinalities = Arrays.copyOf(cardinalities, cardinalities.length);
@@ -87,10 +91,13 @@ public class PatternSet {
 
 		maxLevel = -1;
 		minLevel = Integer.MAX_VALUE;
+		
+		mupsTrie = new Trie();
 	}
 
 	public void add(Pattern patternToAdd) {
 		add(patternToAdd, 0);
+		mupsTrie.add(patternToAdd.data);
 	}
 
 	public void add(Pattern patternToAdd, int numLevelsSkipped) {
@@ -202,20 +209,24 @@ public class PatternSet {
 		// ancestor
 		if (patternToCheck.level <= minLevel)
 			return false;
+		
+		return mupsTrie.ifDominates(patternToCheck.data);
 
-		BitSet[] bitSetToCheckArray = new BitSet[patternToCheck.getDimension()];
-		int i = 0;
-		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
-			if (patternToCheck.data[attrId] == 'x') {
-				bitSetToCheckArray[i++] = this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxInPatternBitVec(
-						attrId, patternToCheck.data[attrId])];
-			} else {
-				bitSetToCheckArray[i++] = patternBitVecForCheckingAncestorOrWithX[patternToCheck.level][checkRowIdxInPatternBitVec(
-						attrId, patternToCheck.data[attrId])];
-			}
-		}
-
-		return BitSet.intersect(bitSetToCheckArray);
+//		BitSet[] bitSetToCheckArray = new BitSet[patternToCheck.getDimension()];
+//		int i = 0;
+//		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
+//			if (patternToCheck.data[attrId] == 'x') {
+//				bitSetToCheckArray[i++] = this.patternBitVecForCheckingAncestor[patternToCheck.level][checkRowIdxInPatternBitVec(
+//						attrId, patternToCheck.data[attrId])];
+//			} else {
+//				bitSetToCheckArray[i++] = patternBitVecForCheckingAncestorOrWithX[patternToCheck.level][checkRowIdxInPatternBitVec(
+//						attrId, patternToCheck.data[attrId])];
+//			}
+//		}
+//
+//		boolean s = BitSet.intersect(bitSetToCheckArray);
+//		
+//		return s;
 	}
 
 	/**
@@ -236,19 +247,21 @@ public class PatternSet {
 		// descendant
 		if (patternToCheck.level >= maxLevel)
 			return false;
+		
+		return mupsTrie.ifDominatedBy(patternToCheck.data);
 
-		// The number of bitSets to check intersection equals to
-		// patternToCheck.level
-		BitSet[] bitSetToCheckArray = new BitSet[patternToCheck.level];
-		int i = 0;
-		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
-			if (patternToCheck.data[attrId] != 'x') {
-				bitSetToCheckArray[i++] = this.patternBitVecForCheckingDescendant[patternToCheck.level][checkRowIdxInPatternBitVec(
-						attrId, patternToCheck.data[attrId])];
-			}
-		}
-
-		return BitSet.intersect(bitSetToCheckArray);
+//		// The number of bitSets to check intersection equals to
+//		// patternToCheck.level
+//		BitSet[] bitSetToCheckArray = new BitSet[patternToCheck.level];
+//		int i = 0;
+//		for (int attrId = 0; attrId < patternToCheck.getDimension(); attrId++) {
+//			if (patternToCheck.data[attrId] != 'x') {
+//				bitSetToCheckArray[i++] = this.patternBitVecForCheckingDescendant[patternToCheck.level][checkRowIdxInPatternBitVec(
+//						attrId, patternToCheck.data[attrId])];
+//			}
+//		}
+//
+//		return BitSet.intersect(bitSetToCheckArray);
 	}
 
 	public int size() {
