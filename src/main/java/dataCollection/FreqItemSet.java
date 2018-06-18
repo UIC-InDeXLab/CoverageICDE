@@ -19,9 +19,20 @@ public class FreqItemSet {
 		do {
 			boolean[] maximals= new boolean[current.size()];
 			nextset = genNext(current, maximals, dimensions);
-			for(int i=0;i<current.size();i++)
-				if(maximals[i]) output.add(current.get(i));
+			//System.out.print("maximals:");
+			for(int i=0;i<current.size();i++) if(maximals[i]) 
+				{
+					output.add(current.get(i));
+					//System.out.print(i);System.out.print(", ");
+				}
+			//System.out.println();
 			current = nextset;
+			/*for(PatternHit h:current)
+			{
+				for(int i:h.patternsIndices)
+					{System.out.print(i);System.out.print(", ");}
+				System.out.println();
+			}*/
 		}while(current.size()>0);
 		return output;
 	}
@@ -32,27 +43,33 @@ public class FreqItemSet {
 		for(int i=0;i<size;i++) maximals[i]=true;
 		for(int i=0;i<size-1;i++)
 			for(int j=i+1;j<size;j++)
-				if(current.get(i).patternsIndices.size()==1 || current.get(i).patternsIndices.subList(0, size-3) == current.get(j).patternsIndices.subList(0, size-3))
+			{
+				int size2 = current.get(i).patternsIndices.size();
+				/*if(size2>1) {// delete this whole "if" block later
+					for(int k:current.get(i).patternsIndices.subList(0, size2-1)) System.out.print(k); 
+					for(int k:current.get(j).patternsIndices.subList(0, size2-1)) System.out.print(k); 
+				}*/
+				if(size2==1 || current.get(i).patternsIndices.subList(0, size2-1).equals(current.get(j).patternsIndices.subList(0, size2-1)))
 				{
 					char[] intersect = getIntersect(current.get(i).vcomb, current.get(j).vcomb, dimensions);
 					if(intersect[0]=='n') continue;// if the intersection is not empty
-					maximals[i] = maximals[j]=false;
+					maximals[i] = false; maximals[j]=false;		
+					int si = current.get(i).patternsIndices.get(size2-1);
+					int sj = current.get(j).patternsIndices.get(size2-1);
 					ArrayList<Integer> ps = new ArrayList<Integer>();
-					int pts = current.get(i).patternsIndices.size()-1;
-					int si = current.get(i).patternsIndices.get(pts);
-					int sj = current.get(j).patternsIndices.get(pts);
 					if(si<sj)
 					{
-						ps = current.get(i).patternsIndices;
+						ps = (ArrayList<Integer>)current.get(i).patternsIndices.clone();
 						ps.add(sj);
 					}
 					else
 					{
-						ps = current.get(j).patternsIndices;
+						ps = (ArrayList<Integer>)current.get(j).patternsIndices.clone();
 						ps.add(si);
 					}
 					output.add(new PatternHit(intersect, ps));
 				}
+			}
 		return output;
 	}
 	private static char[] getIntersect(char[] a, char[] b,int dimensions)

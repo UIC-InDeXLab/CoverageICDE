@@ -17,11 +17,12 @@ public class HittingSet {
 			ArrayList<Integer> ptrns = PHs.get(next).patternsIndices;
 			PHs.remove(next);
 			universe.removeAll(ptrns);
-			for(PatternHit ph:PHs)
+			if(universe.size()==0) break;
+			for(int i=PHs.size()-1;i>=0;i--)
 			{
-				ph.patternsIndices.removeAll(ptrns);
-				if(ph.patternsIndices.size()==0)
-					PHs.remove(ph);
+				PHs.get(i).patternsIndices.removeAll(ptrns);
+				if(PHs.get(i).patternsIndices.size()==0)
+					PHs.remove(i);
 			}			
 		}
 		return output;

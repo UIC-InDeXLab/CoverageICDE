@@ -37,20 +37,19 @@ public class DataCollection {
 			patterns.add(P);
 			return patterns;
 		}
-		int k = level-xlevel;
-		int[] comb = new int[level];
-		int[] c = new int[k];
-		for(int i=0;i<level;i++) c[i]=1;
-		for(int i=level;i<k;i++) c[i]=0;
+		int k = level-xlevel; // the goal is to generate combinations of (Xindex.size() choose k)
+		int[] comb = new int[k];
+		int[] c = new int[Xindex.size()];
+		for(int i=0;i<k;i++) c[i]=1;
+		for(int i=k;i<Xindex.size();i++) c[i]=0;
 		for(boolean stat=true; stat;stat = getnextComb(c,dimensions))
 		{			
-			for(int i=0,j=0;i<k;i++)
-				if(c[i]==1) comb[j++] = Xindex.get(i);
-			patterns.addAll(Arrays.asList(_patternsfor(P,comb,level,dimensions,cardinalities)));
+			for(int i=0,j=0;i<Xindex.size();i++) if(c[i]==1) comb[j++] = Xindex.get(i);
+			patterns.addAll(Arrays.asList(_patternsfor(P,comb,dimensions,cardinalities)));
 		}
 		return patterns;
 	}
-	private static Pattern[] _patternsfor(Pattern P, int[] comb, int level,int dimensions,int[] cardinalities)
+	private static Pattern[] _patternsfor(Pattern P, int[] comb,int dimensions,int[] cardinalities)
 	{
 		int setsize = 1;
 		for(int i:comb) setsize*=cardinalities[i];
@@ -58,7 +57,7 @@ public class DataCollection {
 		char[] current = P.data.clone();
 		for(int i:comb) current[i]='0';
 		int j=0;
-		for(boolean stat=true; stat;stat = getnextPattern(current,comb, level,dimensions,cardinalities))
+		for(boolean stat=true; stat;stat = getnextPattern(current,comb,dimensions,cardinalities))
 		{
 			patterns[j++] = new Pattern(current);
 		}
@@ -69,12 +68,12 @@ public class DataCollection {
 		// 1- find the first zero from the right
 		int padding=0;
 		for(;c[dimensions-1-padding]==1 && padding<dimensions;padding++)
-			c[dimensions-1-padding]=1;
+			c[dimensions-1-padding]=0; // is this correct?
 		if(padding == dimensions) return false;
 		
 		//2- find the first 1 after that
 		int k = dimensions-1-padding;
-		for (; c[k]!=1 && k>=0;k--);
+		for (; k>=0 && c[k]!=1;k--);
 		if(k<0) return false;
 		//3- replace it with 0 and add the padding after that
 		c[k++]=0;
@@ -83,17 +82,19 @@ public class DataCollection {
 		return true;
 	}
 
-	private static boolean getnextPattern(char[] current, int[] comb, int level,int dimensions,int[] cardinalities)
+	private static boolean getnextPattern(char[] current, int[] comb,int dimensions,int[] cardinalities)
 	{
-		int c=0,j,k = dimensions-level;
-		for(j=k-1; j>=0 ;j++)
+		int c=0,j,k = comb.length;
+		j = k-1;
+		while(j>=0)
 		{
 			c = Integer.parseInt(String.valueOf(current[comb[j]]));
-			if(c<cardinalities[comb[j]]) break;
-			current[j]='0';
+			if(c<cardinalities[comb[j]]-1) break;
+			current[comb[j]]='0';
+			j--;
 		}
 		if(j<0) return false;
-		current[j] = (char)(48+c+1);
+		current[comb[j]] = (char)(48+c+1);
 		return true;
 	}
 }
