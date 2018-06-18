@@ -78,7 +78,7 @@ public class HybridRandomSearch extends NaiveSearch {
 				tmp.removeAll(mups.patternSet);
 				List<Pattern> listOfChildPatterns = new ArrayList<Pattern>(
 						tmp);
-				Collections.shuffle(listOfChildPatterns);
+//				Collections.shuffle(listOfChildPatterns);
 				patternToCheckStack.addAll(listOfChildPatterns);
 			}
 		}
@@ -108,7 +108,7 @@ public class HybridRandomSearch extends NaiveSearch {
 
 		List<Pattern> listOfParentPatterns = new ArrayList<Pattern>(
 				parents.values());
-		Collections.shuffle(listOfParentPatterns);
+//		Collections.shuffle(listOfParentPatterns);
 
 		for (Pattern parentPattern : listOfParentPatterns) {
 			// A mup is the descendant of the parentPattern. Hence, parentPattern is covered. 

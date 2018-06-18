@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.LongBuffer;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
@@ -873,13 +874,14 @@ public class BitSet implements Cloneable, java.io.Serializable {
     public static boolean intersect(BitSet[] bitVecArray) {
     	if (bitVecArray == null || bitVecArray.length < 1)
     		return false;
+    	
     	int minWordsInUse = bitVecArray[0].wordsInUse;
     	for (int i = 1; i < bitVecArray.length; i++)
     		minWordsInUse = Math.min(bitVecArray[i].wordsInUse, minWordsInUse);
     	
     	for (int i = minWordsInUse - 1; i >= 0; i--) {
     		long match = bitVecArray[0].words[i];
-    		for (int j = 1; j < bitVecArray.length && match != 0; j++) {
+    		for (int j = 1;  match != 0 && j < bitVecArray.length; j++) {
     			match &= bitVecArray[j].words[i];
     		}
     		if (match != 0)
