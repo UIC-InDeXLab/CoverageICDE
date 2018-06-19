@@ -74,7 +74,7 @@ public class TestDC {
 		System.out.println(breakline);
 		System.out.println(n+','+d+','+threshold+','+l+','+mups.size()+','+timespan+','+wtc.size());
 		
-
+/*
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {			
 			Map<String, String> testResults = cmd.getArguments();
 			testResults.put("n", n + "");
@@ -85,9 +85,10 @@ public class TestDC {
 			testResults.put("TIME", timespan + "");
 			testResults.put("|wtc|", wtc.size() + "");
 			testResults.put("TIME", timespan + "");
-			FileIOHandle.writeTextToFile(new Gson().toJson(testResults), genFileName(cmd)
+			
+			FileIOHandle.appendTextToFile(new Gson().toJson(testResults), genFileName(cmd)
 					, DIR_RESULT);
 		}
-
+*/
 	}
 }

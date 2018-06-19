@@ -30,6 +30,18 @@
 							<argLine>-Xms4G</argLine>
 						</configuration>
 					</execution>
+					<execution>
+						<id>testdc</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<mainClass>sigmod.TestCD</mainClass>
+							<classpathScope>test</classpathScope>
+							<argLine>-Xmx8G</argLine>
+							<argLine>-Xms4G</argLine>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

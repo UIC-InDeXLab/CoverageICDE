@@ -25,6 +25,7 @@ public class Cli {
 	public static final String CMD_ALGORITHM_SHORT = "a";
 	public static final String CMD_THRESHOLD_SHORT = "t";
 	public static final String CMD_OUTPUT_SHORT = "o";
+	public static final String CMD_LEVEL_SHORT = "l";
 
 	public static final String CMD_HELP_LONG = "help";
 	public static final String CMD_FILE_LONG = "file";
