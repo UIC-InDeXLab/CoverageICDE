@@ -279,9 +279,13 @@ public class DataSet {
 		for (int i = rightMostDeterministicIdx + 1; i < parentPattern
 				.getDimension(); i++) {
 			for (char valueToReplace : getValueRange(i)) {
-				childPatterns.add(new Pattern(parentPattern.data, i,
+				Pattern childPattern = new Pattern(parentPattern.data, i,
 						valueToReplace, coveragePercentageOfEachValueInEachAttr,
-						parentPattern.covereagePercentage));
+						parentPattern.covereagePercentage);
+				childPattern.parentPattern = parentPattern;
+				childPattern.parentDominatesMups = parentPattern.selfDominatesMups;
+				childPattern.parentVisitId = parentPattern.visitId;
+				childPatterns.add(childPattern);
 			}
 		}
 

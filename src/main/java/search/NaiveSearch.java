@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -30,6 +31,9 @@ public class NaiveSearch {
 	
 	Set<Pattern> nodesVisited;
 	int numOfHits;
+	
+	// Sequence id generater
+	AtomicInteger seq;
 
 	public NaiveSearch(DataSet curData) {
 		this.curDataSet = curData;
@@ -39,6 +43,8 @@ public class NaiveSearch {
 		this.timeSeries = new LinkedList<Long>();
 		this.nodesVisited = new HashSet<Pattern>();
 		this.numOfHits = 0;
+		
+		this.seq = new AtomicInteger();
 	}
 
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {

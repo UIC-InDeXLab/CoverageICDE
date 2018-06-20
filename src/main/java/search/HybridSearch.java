@@ -35,18 +35,24 @@ public class HybridSearch extends NaiveSearch {
 		// Add root pattern
 		Pattern root = Pattern.getRootPattern(curDataSet.getDimension(),
 				curDataSet.coveragePercentageOfEachValueInEachAttr);
+
 		patternToCheckStack.push(root);
 
 		while (!patternToCheckStack.isEmpty()) {
 
 			Pattern currentPattern = patternToCheckStack.pop();
+			currentPattern.visitId = seq.getAndIncrement();
 
 			// Check coverage
 			boolean ifUncovered;
-
-			if (mups.ifIsDominatedBy(currentPattern, false))
+			
+			if ((currentPattern.parentVisitId < mups.lastAddedMupId
+					|| currentPattern.parentDominatesMups)
+					&& mups.ifIsDominatedBy(currentPattern, false)) {
 				ifUncovered = false;
-			// We arrive at a region that is below and covered by a discovered mup. We abandon this search.
+			}
+			// We arrive at a region that is below and covered by a discovered
+			// mup. We abandon this search.
 			else if (mups.ifDominates(currentPattern, true))
 				continue;
 			else {
@@ -67,9 +73,10 @@ public class HybridSearch extends NaiveSearch {
 					mups.add(mup);
 					updateDebugAddMupDiscoveryTimeline();
 				}
-				
+
 			} else {
-				Set<Pattern> tmp = curDataSet.getChildrenNextLevel(currentPattern);
+				Set<Pattern> tmp = curDataSet
+						.getChildrenNextLevel(currentPattern);
 				tmp.removeAll(mups.patternSet);
 				patternToCheckStack.addAll(tmp);
 			}
@@ -91,8 +98,10 @@ public class HybridSearch extends NaiveSearch {
 	 * @return
 	 */
 	public Pattern bottomUpMupRandomSearch(Pattern uncoveredPattern,
-			PatternSet mups, int threshold) {		
-		
+			PatternSet mups, int threshold) {
+
+		uncoveredPattern.visitId = seq.getAndIncrement();
+
 		Map<Integer, Pattern> parents = uncoveredPattern.genParents();
 		boolean ifMup = true;
 
@@ -102,7 +111,8 @@ public class HybridSearch extends NaiveSearch {
 				parents.values());
 
 		for (Pattern parentPattern : listOfParentPatterns) {
-			// A mup is the descendant of the parentPattern. Hence, parentPattern is covered. 
+			// A mup is the descendant of the parentPattern. Hence,
+			// parentPattern is covered.
 			if (mups.ifIsDominatedBy(parentPattern, false))
 				continue;
 			else {
@@ -119,9 +129,10 @@ public class HybridSearch extends NaiveSearch {
 
 		}
 
-		if (ifMup)
+		if (ifMup) {
+			mups.lastAddedMupId = uncoveredPattern.visitId;
 			return uncoveredPattern;
-		else if (nextPattern != null) {
+		} else if (nextPattern != null) {
 			return bottomUpMupRandomSearch(nextPattern, mups, threshold);
 		}
 

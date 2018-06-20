@@ -11,6 +11,13 @@ public class Pattern implements Comparable<Pattern> {
 	public double covereagePercentage;
 	public double covereage;
 	public int level;
+	
+	public Pattern parentPattern = null;
+	public boolean selfDominatesMups = false;
+	public boolean parentDominatesMups = false;
+	
+	public int visitId;
+	public int parentVisitId;
 
 	public Pattern(char[] data) {
 		this.data = Arrays.copyOf(data, data.length);

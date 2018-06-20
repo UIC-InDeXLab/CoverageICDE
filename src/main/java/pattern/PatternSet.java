@@ -30,6 +30,8 @@ public class PatternSet {
 
 	public int maxLevel;
 	public int minLevel;
+	
+	public int lastAddedMupId;
 
 	public PatternSet(int[] cardinalities) {
 		this.cardinalities = Arrays.copyOf(cardinalities, cardinalities.length);
@@ -87,6 +89,8 @@ public class PatternSet {
 
 		maxLevel = -1;
 		minLevel = Integer.MAX_VALUE;
+		
+		lastAddedMupId = -1;
 	}
 
 	public void add(Pattern patternToAdd) {
@@ -226,16 +230,22 @@ public class PatternSet {
 	 */
 	public boolean ifIsDominatedBy(Pattern patternToCheck,
 			boolean returnTrueIfIdenticalIsFound) {
-		if (patternSet.isEmpty())
+		if (patternSet.isEmpty()) {
+			patternToCheck.selfDominatesMups = false;
 			return false;
+		}
 
-		if (patternSet.contains(patternToCheck))
+		if (patternSet.contains(patternToCheck)) {
+			patternToCheck.selfDominatesMups = returnTrueIfIdenticalIsFound;
 			return returnTrueIfIdenticalIsFound;
+		}
 
 		// If the lowest node is still higher than node p, there cannot be any
 		// descendant
-		if (patternToCheck.level >= maxLevel)
+		if (patternToCheck.level >= maxLevel) {
+			patternToCheck.selfDominatesMups = false;
 			return false;
+		}
 
 		// The number of bitSets to check intersection equals to
 		// patternToCheck.level
@@ -248,7 +258,8 @@ public class PatternSet {
 			}
 		}
 
-		return BitSet.intersect(bitSetToCheckArray);
+		patternToCheck.selfDominatesMups = BitSet.intersect(bitSetToCheckArray);
+		return patternToCheck.selfDominatesMups;
 	}
 
 	public int size() {
