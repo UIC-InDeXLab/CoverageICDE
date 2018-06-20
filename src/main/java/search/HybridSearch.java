@@ -21,9 +21,9 @@ import pattern.PatternSet;
  * PatternBreaker algorithm. Top-down search for MUPS
  *
  */
-public class HybridRandomSearch extends NaiveSearch {
+public class HybridSearch extends NaiveSearch {
 
-	public HybridRandomSearch(DataSet curData) {
+	public HybridSearch(DataSet curData) {
 		super(curData);
 	}
 
@@ -66,20 +66,12 @@ public class HybridRandomSearch extends NaiveSearch {
 				if (mup != null) {
 					mups.add(mup);
 					updateDebugAddMupDiscoveryTimeline();
-
-//					// We take the pattern in the bottom and put it on the top
-//					Pattern chosenPattern = new Pattern(patternToCheckStack.get(0).data);
-//					patternToCheckStack.remove(0);
-//					patternToCheckStack.push(chosenPattern);
 				}
 				
 			} else {
 				Set<Pattern> tmp = curDataSet.getChildrenNextLevel(currentPattern);
 				tmp.removeAll(mups.patternSet);
-				List<Pattern> listOfChildPatterns = new ArrayList<Pattern>(
-						tmp);
-//				Collections.shuffle(listOfChildPatterns);
-				patternToCheckStack.addAll(listOfChildPatterns);
+				patternToCheckStack.addAll(tmp);
 			}
 		}
 
@@ -108,7 +100,6 @@ public class HybridRandomSearch extends NaiveSearch {
 
 		List<Pattern> listOfParentPatterns = new ArrayList<Pattern>(
 				parents.values());
-//		Collections.shuffle(listOfParentPatterns);
 
 		for (Pattern parentPattern : listOfParentPatterns) {
 			// A mup is the descendant of the parentPattern. Hence, parentPattern is covered. 

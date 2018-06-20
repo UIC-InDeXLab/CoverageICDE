@@ -9,7 +9,7 @@ import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
-import search.HybridRandomSearch;
+import search.HybridSearch;
 import search.GreedySearch;
 
 public class TestAllAlgorithms {
@@ -92,7 +92,7 @@ public class TestAllAlgorithms {
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
 		// Test 5 with pattern combiner
-		HybridRandomSearch hrs = new HybridRandomSearch(dataToCheck);
+		HybridSearch hrs = new HybridSearch(dataToCheck);
 
 		t0 = System.currentTimeMillis();
 		mups = hrs.findMaxUncoveredPatternSet(threshold);

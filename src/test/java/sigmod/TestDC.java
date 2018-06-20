@@ -16,7 +16,7 @@ import cli.Cli;
 import io.DataSet;
 import pattern.Pattern;
 import search.GreedySearch;
-import search.HybridRandomSearch;
+import search.HybridSearch;
 import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;

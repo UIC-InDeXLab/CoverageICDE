@@ -72,8 +72,9 @@ public class GreedySearch extends NaiveSearch {
 				}
 
 			} else {
-				patternToCheckQ.addAll(
-						curDataSet.getChildrenNextLevel(currentPattern));
+				Set<Pattern> tmp = curDataSet.getChildrenNextLevel(currentPattern);
+				tmp.removeAll(mups.patternSet);
+				patternToCheckQ.addAll(tmp);
 			}
 		}
 

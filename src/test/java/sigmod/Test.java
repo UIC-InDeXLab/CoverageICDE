@@ -10,7 +10,7 @@ import cli.Cli;
 import io.DataSet;
 import pattern.Pattern;
 import search.GreedySearch;
-import search.HybridRandomSearch;
+import search.HybridSearch;
 import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
@@ -64,7 +64,7 @@ public class Test {
 			mups = search.findMaxUncoveredPatternSet(threshold);
 			debugInfo = search.getDebugInfo();
 		} else if (algorithm.equals("hybrid")) {
-			HybridRandomSearch search = new HybridRandomSearch(dataToCheck);
+			HybridSearch search = new HybridSearch(dataToCheck);
 			mups = search.findMaxUncoveredPatternSet(threshold);
 			debugInfo = search.getDebugInfo();
 		} else if (algorithm.equals("PatternBreaker")) {

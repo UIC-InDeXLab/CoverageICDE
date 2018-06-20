@@ -61,20 +61,7 @@ public class PatternBreakerOriginal extends NaiveSearch {
 						.checkCoverage(currentPattern) < threshold) {
 					mups.add(currentPattern);
 				} else {
-					// Find the right most deterministic cell
-					int rightMostDeterministicIdx = currentPattern
-							.findRightMostDeterministicIndex();
-
-					// Sequentially create new patterns by replacing each
-					// position with all possible values in that position
-					for (int i = rightMostDeterministicIdx
-							+ 1; i < currentPattern.getDimension(); i++) {
-						for (char valueToReplace : curDataSet
-								.getValueRange(i)) {
-							nextPatternSet.add(new Pattern(currentPattern.data,
-									i, valueToReplace));
-						}
-					}
+					nextPatternSet.addAll(curDataSet.getChildrenNextLevel(currentPattern));
 				}
 			}
 
