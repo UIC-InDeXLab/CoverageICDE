@@ -36,7 +36,7 @@
 							<goal>exec</goal>
 						</goals>
 						<configuration>
-							<mainClass>sigmod.TestCD</mainClass>
+							<mainClass>sigmod.TestDC</mainClass>
 							<classpathScope>test</classpathScope>
 							<argLine>-Xmx8G</argLine>
 							<argLine>-Xms4G</argLine>
