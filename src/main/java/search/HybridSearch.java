@@ -16,6 +16,7 @@ import java.util.Stack;
 import io.DataSet;
 import pattern.Pattern;
 import pattern.PatternSet;
+import utils.BitSet;
 
 /**
  * PatternBreaker algorithm. Top-down search for MUPS
@@ -44,14 +45,16 @@ public class HybridSearch extends NaiveSearch {
 			currentPattern.visitId = seq.getAndIncrement();
 
 			// Check coverage
-			boolean ifUncovered;
+			boolean ifUncovered = true;
 			
+			
+			// If pattern dominates mups, we know it is not covered.
 			if ((currentPattern.parentVisitId < mups.lastAddedMupId
 					|| currentPattern.parentDominatesMups)
 					&& mups.ifIsDominatedBy(currentPattern, false)) {
 				ifUncovered = false;
 			}
-			// We arrive at a region that is below and covered by a discovered
+			// We arrive at a region that is below and dominated by
 			// mup. We abandon this search.
 			else if (mups.ifDominates(currentPattern, true))
 				continue;
@@ -84,7 +87,7 @@ public class HybridSearch extends NaiveSearch {
 
 		// Update debug info
 		updateDebugMUPSSize(mups.size());
-
+		
 		return mups.patternSet;
 	}
 
