@@ -42,6 +42,18 @@
 							<argLine>-Xms4G</argLine>
 						</configuration>
 					</execution>
+					<execution>
+						<id>batchTest</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<mainClass>vldb.BatchTest</mainClass>
+							<classpathScope>test</classpathScope>
+							<argLine>-Xmx8G</argLine>
+							<argLine>-Xms4G</argLine>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

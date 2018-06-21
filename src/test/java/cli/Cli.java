@@ -103,9 +103,6 @@ public class Cli {
 				log.log(Level.INFO, "Using cli argument -a="
 						+ cmd.getOptionValue(CMD_ALGORITHM_SHORT));
 
-			} else {
-				log.log(Level.SEVERE, "Missing a option");
-				help();
 			}
 
 			if (cmd.hasOption(CMD_THRESHOLD_SHORT)) {
