@@ -1,5 +1,6 @@
 package vldb;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,8 @@ public class DataSizeTest {
 	public static void main(String[] args) {
 		Cli cmd = new Cli(args);
 		cmd.parse();
+		
+		DecimalFormat df = new DecimalFormat("#.###");
 
 		String fileName = cmd.getArgument(Cli.CMD_FILE_SHORT);
 		int d = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_DIMENSIONS_SHORT));
@@ -112,7 +115,7 @@ public class DataSizeTest {
 						+ debugInfo.get(NaiveSearch.DEBUG_NODES_VISITED));
 
 				Map<String, String> testResults = cmd.getArguments();
-				testResults.put("TIME", timespan + "");
+				testResults.put("TIME", df.format((double)timespan/1000) + "");
 				for (Map.Entry<String, Long> e : debugInfo.entrySet()) {
 					testResults.put(e.getKey(), e.getValue() + "");
 				}

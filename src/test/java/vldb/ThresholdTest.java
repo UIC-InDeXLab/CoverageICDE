@@ -22,11 +22,11 @@ import search.PatternBreakerOriginal;
 import search.PatternCombiner;
 import utils.FileIOHandle;
 
-public class DimensionTest {
+public class ThresholdTest {
 	private static final String DIR_RESULT = "result/";
 
 	private static String genFileName(Cli cmd) {
-		String s = "dimensionTest";
+		String s = "thresholdTest";
 
 		for (String debugType : cmd.commandTypes) {
 			if (cmd.getArgument(debugType) != null && !debugType.equals("a")) {
@@ -51,8 +51,7 @@ public class DimensionTest {
 
 		String fileName = cmd.getArgument(Cli.CMD_FILE_SHORT);
 
-		double thresholdRate = Double
-				.parseDouble(cmd.getArgument(Cli.CMD_THRESHOLD_SHORT));
+		int d = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_DIMENSIONS_SHORT));
 		int n = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_RECORDS_SHORT));
 
 		String[] algorithms = new String[]{"hybrid", "PatternBreakerOriginal",
@@ -62,12 +61,12 @@ public class DimensionTest {
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-		int[] dimensions = new int[]{5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+		double[] thresholdRates = new double[]{0.0001, 0.001, 0.01, 0.1};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
 
-		for (int d : dimensions) {
+		for (double thresholdRate : thresholdRates) {
 			int threshold = (int) (thresholdRate * n);
 
 			DataSet dataToCheck = new DataSet(fileName,
@@ -115,13 +114,13 @@ public class DimensionTest {
 						+ debugInfo.get(NaiveSearch.DEBUG_NODES_VISITED));
 
 				Map<String, String> testResults = cmd.getArguments();
-				testResults.put("TIME", timespan + "");
+				testResults.put("TIME", df.format((double)timespan/1000) + "");
 				for (Map.Entry<String, Long> e : debugInfo.entrySet()) {
 					testResults.put(e.getKey(), e.getValue() + "");
 				}
 
 				testResults.put("algorithm", algorithm);
-				testResults.put("dimension", d + "");
+				testResults.put("thresholdRate", thresholdRate + "");
 
 				outputTestResultRecords.add(testResults);
 
@@ -131,20 +130,20 @@ public class DimensionTest {
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {
 			String msg = "";
 			String[] resultItemNamesArray = new String[algorithms.length + 1];
-			resultItemNamesArray[0] = "dimension";
+			resultItemNamesArray[0] = "threshold";
 			for (int i = 0; i < algorithms.length; i++)
 				resultItemNamesArray[i + 1] = algorithms[i];
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
-			for (int dimension : dimensions) {
+			for (double thresholdRate : thresholdRates) {
 				String[] tmpMsg = new String[algorithms.length + 1];
-				tmpMsg[0] = dimension + "";
+				tmpMsg[0] = thresholdRate + "";
 
 				int i = 1;
 
 				for (String algorithm : algorithms) {
 					for (Map<String, String> resultEntry : outputTestResultRecords) {
-						if (resultEntry.get("dimension").equals(dimension + "") && resultEntry
+						if (resultEntry.get("thresholdRate").equals(thresholdRate + "") && resultEntry
 								.get("algorithm").equals(algorithm))
 							tmpMsg[i++] = resultEntry.get("TIME");
 

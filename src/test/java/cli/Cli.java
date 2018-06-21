@@ -103,9 +103,6 @@ public class Cli {
 				log.log(Level.INFO, "Using cli argument -t="
 						+ cmd.getOptionValue(CMD_THRESHOLD_SHORT));
 
-			} else {
-				log.log(Level.SEVERE, "Missing t option");
-				help();
 			}
 
 		} catch (ParseException e) {

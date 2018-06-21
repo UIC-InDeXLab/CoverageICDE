@@ -47,19 +47,19 @@ public class TestAllAlgorithms {
 
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
-//		// Test 2 with pattern breaker
-//		PatternBreaker pb = new PatternBreaker(dataToCheck);
-//
-//		t0 = System.currentTimeMillis();
-//		mups = pb.findMaxUncoveredPatternSet(threshold);
-//		t1 = System.currentTimeMillis();
-//		System.out.println(breakline);
-//		System.out.println("Algo: Pattern Breaker");
-//		System.out.println(
-//				"MUPs: " + pb.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
-//		System.out.println("Visited: "
-//				+ pb.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
-//		System.out.println("Total Time: " + (t1 - t0) + " ms");
+		// Test 2 with pattern breaker
+		PatternBreaker pb = new PatternBreaker(dataToCheck);
+
+		t0 = System.currentTimeMillis();
+		mups = pb.findMaxUncoveredPatternSet(threshold);
+		t1 = System.currentTimeMillis();
+		System.out.println(breakline);
+		System.out.println("Algo: Pattern Breaker");
+		System.out.println(
+				"MUPs: " + pb.getDebugInfo().get(NaiveSearch.DEBUG_MUPS_SIZE));
+		System.out.println("Visited: "
+				+ pb.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+		System.out.println("Total Time: " + (t1 - t0) + " ms");
 //
 //		// Test 3 with pattern combiner
 //		PatternCombiner pc = new PatternCombiner(dataToCheck);
