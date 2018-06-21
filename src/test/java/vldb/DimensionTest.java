@@ -66,8 +66,6 @@ public class DimensionTest {
 
 		for (int d : dimensions) {
 			int threshold = (int) (thresholdRate * n);
-			
-			System.out.print(threshold);
 
 			DataSet dataToCheck = new DataSet(fileName,
 					Arrays.copyOfRange(cardinalities, 0, d),
