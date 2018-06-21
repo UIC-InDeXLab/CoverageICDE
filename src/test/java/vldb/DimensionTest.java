@@ -21,11 +21,11 @@ import search.PatternBreakerOriginal;
 import search.PatternCombiner;
 import utils.FileIOHandle;
 
-public class DataSizeTest {
+public class DimensionTest {
 	private static final String DIR_RESULT = "result/";
 
 	private static String genFileName(Cli cmd) {
-		String s = "sizeTest";
+		String s = "dimensionTest";
 
 		for (String debugType : cmd.commandTypes) {
 			if (cmd.getArgument(debugType) != null && !debugType.equals("a")) {
@@ -47,9 +47,10 @@ public class DataSizeTest {
 		cmd.parse();
 
 		String fileName = cmd.getArgument(Cli.CMD_FILE_SHORT);
-		int d = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_DIMENSIONS_SHORT));
+
 		double thresholdRate = Double
 				.parseDouble(cmd.getArgument(Cli.CMD_THRESHOLD_SHORT));
+		int n = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_RECORDS_SHORT));
 
 		String[] algorithms = new String[]{"hybrid", "PatternBreakerOriginal",
 				"PatternCombiner"};
@@ -58,14 +59,15 @@ public class DataSizeTest {
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-
-		int[] dataSizes = new int[]{1000, 10000, 100000, 1000000};
+		int[] dimensions = new int[]{5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
 
-		for (int n : dataSizes) {
+		for (int d : dimensions) {
 			int threshold = (int) (thresholdRate * n);
+			
+			System.out.print(threshold);
 
 			DataSet dataToCheck = new DataSet(fileName,
 					Arrays.copyOfRange(cardinalities, 0, d),
@@ -118,7 +120,7 @@ public class DataSizeTest {
 				}
 
 				testResults.put("algorithm", algorithm);
-				testResults.put("size", n + "");
+				testResults.put("dimension", d + "");
 
 				outputTestResultRecords.add(testResults);
 
@@ -133,15 +135,15 @@ public class DataSizeTest {
 				resultItemNamesArray[i + 1] = algorithms[i];
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
-			for (int n : dataSizes) {
+			for (int dimension : dimensions) {
 				String[] tmpMsg = new String[algorithms.length + 1];
-				tmpMsg[0] = n + "";
+				tmpMsg[0] = dimension + "";
 
 				int i = 1;
 
 				for (String algorithm : algorithms) {
 					for (Map<String, String> resultEntry : outputTestResultRecords) {
-						if (resultEntry.get("size").equals(n + "") && resultEntry
+						if (resultEntry.get("dimension").equals(dimension + "") && resultEntry
 								.get("algorithm").equals(algorithm))
 							tmpMsg[i++] = resultEntry.get("TIME");
 

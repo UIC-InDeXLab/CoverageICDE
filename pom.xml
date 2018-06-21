@@ -66,6 +66,18 @@
 							<argLine>-Xms4G</argLine>
 						</configuration>
 					</execution>
+					<execution>
+						<id>dimensionTest</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<mainClass>vldb.DimensionTest</mainClass>
+							<classpathScope>test</classpathScope>
+							<argLine>-Xmx8G</argLine>
+							<argLine>-Xms4G</argLine>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
