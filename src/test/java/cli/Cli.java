@@ -86,35 +86,23 @@ public class Cli {
 			if (cmd.hasOption(CMD_NUM_RECORDS_SHORT)) {
 				log.log(Level.INFO, "Using cli argument -n="
 						+ cmd.getOptionValue(CMD_NUM_RECORDS_SHORT));
-			} else {
-				log.log(Level.SEVERE, "Missing n option");
-				help();
 			}
 
 			if (cmd.hasOption(CMD_NUM_DIMENSIONS_SHORT)) {
 				log.log(Level.INFO, "Using cli argument -d="
 						+ cmd.getOptionValue(CMD_NUM_DIMENSIONS_SHORT));
-			} else {
-				log.log(Level.SEVERE, "Missing d option");
-				help();
-			}
+			} 
 
 			if (cmd.hasOption(CMD_ALGORITHM_SHORT)) {
 				log.log(Level.INFO, "Using cli argument -a="
 						+ cmd.getOptionValue(CMD_ALGORITHM_SHORT));
 
-			} else {
-				log.log(Level.SEVERE, "Missing a option");
-				help();
 			}
 
 			if (cmd.hasOption(CMD_THRESHOLD_SHORT)) {
 				log.log(Level.INFO, "Using cli argument -t="
 						+ cmd.getOptionValue(CMD_THRESHOLD_SHORT));
 
-			} else {
-				log.log(Level.SEVERE, "Missing t option");
-				help();
 			}
 
 		} catch (ParseException e) {
