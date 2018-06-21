@@ -115,7 +115,7 @@ public class DimensionTest {
 						+ debugInfo.get(NaiveSearch.DEBUG_NODES_VISITED));
 
 				Map<String, String> testResults = cmd.getArguments();
-				testResults.put("TIME", timespan + "");
+				testResults.put("TIME", df.format((double)timespan/1000) + "");
 				for (Map.Entry<String, Long> e : debugInfo.entrySet()) {
 					testResults.put(e.getKey(), e.getValue() + "");
 				}
