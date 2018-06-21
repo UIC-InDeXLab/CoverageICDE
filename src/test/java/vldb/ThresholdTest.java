@@ -61,7 +61,7 @@ public class ThresholdTest {
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-		double[] thresholdRates = new double[]{0.0001, 0.001, 0.01, 0.1};
+		double[] thresholdRates = new double[]{0.00001, 0.0001, 0.001, 0.01, 0.1};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
