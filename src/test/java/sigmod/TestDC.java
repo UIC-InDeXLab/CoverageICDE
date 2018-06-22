@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-import cli.Cli;
+import cli.Cli2;
 import io.DataSet;
 import pattern.Pattern;
 import search.GreedySearch;
@@ -27,7 +27,7 @@ import com.google.gson.Gson;
 public class TestDC {
 	private static final String DIR_RESULT = "result/";
 	
-	private static String genFileName(Cli cmd) {
+	private static String genFileName(Cli2 cmd) {
 		String s = "test";
 		for (String debugType : cmd.commandTypes) {
 			if (cmd.getArgument(debugType) != null) {
@@ -41,15 +41,15 @@ public class TestDC {
 	}
 
 	public static void main(String[] args) {
-		Cli cmd = new Cli(args);
+		Cli2 cmd = new Cli2(args);
 		cmd.parse();
 
-		String fileName = cmd.getArgument(Cli.CMD_FILE_SHORT);
-		int n = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_RECORDS_SHORT));
-		int d = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_DIMENSIONS_SHORT));
-		int l = Integer.parseInt(cmd.getArgument(Cli.CMD_LEVEL_SHORT));
+		String fileName = cmd.getArgument(Cli2.CMD_FILE_SHORT);
+		int n = Integer.parseInt(cmd.getArgument(Cli2.CMD_NUM_RECORDS_SHORT));
+		int d = Integer.parseInt(cmd.getArgument(Cli2.CMD_NUM_DIMENSIONS_SHORT));
+		int l = Integer.parseInt(cmd.getArgument(Cli2.CMD_LEVEL_SHORT));
 		int threshold = Integer
-				.parseInt(cmd.getArgument(Cli.CMD_THRESHOLD_SHORT));
+				.parseInt(cmd.getArgument(Cli2.CMD_THRESHOLD_SHORT));
 
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
@@ -62,10 +62,13 @@ public class TestDC {
 
 		Map<String, Long> debugInfo = new HashMap<String, Long>();
 		Set<Pattern> mups = new HashSet<Pattern>();
+		
+		System.out.println('1');
 
 		
 		GreedySearch search = new GreedySearch(dataToCheck);
 		mups = search.findMaxUncoveredPatternSet(threshold);
+		System.out.println(mups.size());
 		long t0 = System.currentTimeMillis();
 		ArrayList<char[]> wtc = DataCollection.WhatToCollect(mups, l, d, cardinalities);
 		long timespan = System.currentTimeMillis() - t0;

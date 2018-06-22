@@ -42,7 +42,7 @@ public class DataCollection {
 		int[] c = new int[Xindex.size()];
 		for(int i=0;i<k;i++) c[i]=1;
 		for(int i=k;i<Xindex.size();i++) c[i]=0;
-		for(boolean stat=true; stat;stat = getnextComb(c,dimensions))
+		for(boolean stat=true; stat;stat = getnextComb(c,Xindex.size()))
 		{			
 			for(int i=0,j=0;i<Xindex.size();i++) if(c[i]==1) comb[j++] = Xindex.get(i);
 			patterns.addAll(Arrays.asList(_patternsfor(P,comb,dimensions,cardinalities)));
@@ -67,8 +67,9 @@ public class DataCollection {
 	{
 		// 1- find the first zero from the right
 		int padding=0;
-		for(;c[dimensions-1-padding]==1 && padding<dimensions;padding++)
+		for(;padding<dimensions && c[dimensions-1-padding]==1;padding++) {
 			c[dimensions-1-padding]=0; // is this correct?
+		}
 		if(padding == dimensions) return false;
 		
 		//2- find the first 1 after that
