@@ -1,5 +1,6 @@
 package vldb;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,8 @@ public class AnytimeTest {
 	public static void main(String[] args) {
 		Cli cmd = new Cli(args);
 		cmd.parse();
+		
+		DecimalFormat df = new DecimalFormat("#.###");
 
 		String fileName = cmd.getArgument(Cli.CMD_FILE_SHORT);
 		int n = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_RECORDS_SHORT));
@@ -98,8 +101,6 @@ public class AnytimeTest {
 				PatternCombiner search = new PatternCombiner(dataToCheck);
 				mups = search.findMaxUncoveredPatternSet(threshold);
 				numMupsAndTimeStampsMap.put(algorithm, search.numOfMupsDiscoveredAndTimeStamp);
-				for (long[] s :  search.numOfMupsDiscoveredAndTimeStamp)
-					System.out.println(s[0] + " " + s[1]);
 			}
 
 			long timespan = System.currentTimeMillis() - t0;
@@ -136,7 +137,7 @@ public class AnytimeTest {
 				tmpMsg[0] = numMupsAndTimeStampsMap.get(algorithms[0]).get(idx)[0] + "";
 				int j = 1;
 				for (String algorithm : algorithms) {
-					tmpMsg[j++] = numMupsAndTimeStampsMap.get(algorithm).get(idx)[1] + "";
+					tmpMsg[j++] = df.format((double)numMupsAndTimeStampsMap.get(algorithm).get(idx)[1]/1000) + "";
 				}
 				msg += String.join(",", tmpMsg) + "\n";
 			}
