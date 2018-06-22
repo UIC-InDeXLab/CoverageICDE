@@ -50,8 +50,8 @@ public class AnytimeTest {
 		String fileName = cmd.getArgument(Cli.CMD_FILE_SHORT);
 		int n = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_RECORDS_SHORT));
 		int d = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_DIMENSIONS_SHORT));
-		int threshold = Integer
-				.parseInt(cmd.getArgument(Cli.CMD_THRESHOLD_SHORT));
+		double thresholdRate = Double
+				.parseDouble(cmd.getArgument(Cli.CMD_THRESHOLD_SHORT));
 
 		String[] algorithms = new String[]{"hybrid", "PatternBreakerOriginal",
 				"PatternCombiner"};
@@ -73,6 +73,8 @@ public class AnytimeTest {
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 
 		for (String algorithm : algorithms) {
+			int threshold = (int) (thresholdRate * n);
+			
 			long t0 = System.currentTimeMillis();
 
 			if (algorithm.equals("greedy")) {
