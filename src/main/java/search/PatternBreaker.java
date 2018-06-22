@@ -61,8 +61,10 @@ public class PatternBreaker extends NaiveSearch {
 			updateDebugNodesAddAVisit(currentPattern);
 			int coverageValue = this.curDataSet.checkCoverage(currentPattern);
 
-			if (coverageValue < threshold)
+			if (coverageValue < threshold) {
 				mups.add(currentPattern);
+				addMupMetaData();
+			}
 			else {
 				patternToCheckQ.addAll(curDataSet.getChildrenNextLevel(currentPattern));
 			}

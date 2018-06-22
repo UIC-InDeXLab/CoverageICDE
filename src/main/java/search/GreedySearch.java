@@ -71,6 +71,7 @@ public class GreedySearch extends NaiveSearch {
 
 				if (mup != null) {
 					mups.add(mup);
+					addMupMetaData();
 				}
 
 			} else {
