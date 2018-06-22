@@ -60,6 +60,7 @@ public class PatternBreakerOriginal extends NaiveSearch {
 				if (this.curDataSet
 						.checkCoverage(currentPattern) < threshold) {
 					mups.add(currentPattern);
+					addMupMetaData();
 				} else {
 					nextPatternSet.addAll(curDataSet.getChildrenNextLevel(currentPattern));
 				}

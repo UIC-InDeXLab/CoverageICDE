@@ -20,18 +20,19 @@ public class NaiveSearch {
 
 	DataSet curDataSet;
 	Map<String, Long> debugInfo;
-	
+
 	int threshold;
-	
+
 	// Debug info
 	long numNodesVisited;
 	long mupsSize;
 	long initialTime;
-	List<Long> timeSeries;
-	
+	public List<long[]> numOfMupsDiscoveredAndTimeStamp;
+	public int mupsCounter;
+
 	Set<Pattern> nodesVisited;
 	int numOfHits;
-	
+
 	// Sequence id generater
 	AtomicInteger seq;
 
@@ -40,11 +41,23 @@ public class NaiveSearch {
 		this.numNodesVisited = 0;
 		this.mupsSize = 0;
 		this.initialTime = System.currentTimeMillis();
-		this.timeSeries = new LinkedList<Long>();
 		this.nodesVisited = new HashSet<Pattern>();
 		this.numOfHits = 0;
-		
+
 		this.seq = new AtomicInteger();
+
+		this.mupsCounter = 0;
+		this.numOfMupsDiscoveredAndTimeStamp = new LinkedList<long[]>();
+		this.numOfMupsDiscoveredAndTimeStamp.add(new long[]{0, 0});
+	}
+
+	public void addMupMetaData() {
+		// Update metadaata
+		mupsCounter++;
+		if (mupsCounter % 1000 == 0) {
+			this.numOfMupsDiscoveredAndTimeStamp.add(new long[]{mupsCounter,
+					System.currentTimeMillis() - this.initialTime});
+		}
 	}
 
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
@@ -64,27 +77,19 @@ public class NaiveSearch {
 		return debugInfo;
 	}
 
-	public void updateDebugAddMupDiscoveryTimeline() {
-		timeSeries.add(System.currentTimeMillis() - initialTime);
-	}
-	
-	public long[] getTimeSeries() {
-		Long[] tmp = timeSeries.toArray(new Long[timeSeries.size()]);
-		return ArrayUtils.toPrimitive(tmp);
-	}
-	
 	public int getNumHits() {
 		return numOfHits;
 	}
 
 	public void updateDebugNodesAddAVisit(Pattern p) {
-//		System.out.println(p);
+		// System.out.println(p);
 		numNodesVisited++;
-//		if (nodesVisited.contains(p))
-//			numOfHits++;
-//		else
-//			nodesVisited.add(p);			
+		// if (nodesVisited.contains(p))
+		// numOfHits++;
+		// else
+		// nodesVisited.add(p);
 	}
+
 
 	public void updateDebugMUPSSize(long num) {
 		mupsSize += num;

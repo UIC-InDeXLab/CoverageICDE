@@ -10,7 +10,7 @@ import java.util.Set;
 
 import io.DataSet;
 
-public class PatternSet {
+public class MupSet {
 	public Set<Pattern> patternSet;
 
 	public BitSet[][] patternBitVecForCheckingAncestor;
@@ -25,15 +25,12 @@ public class PatternSet {
 	public int[] cardinalities;
 	public int[] cardinalitiesSum;
 
-	public long time1;
-	public long time2;
-
 	public int maxLevel;
 	public int minLevel;
 	
 	public int lastAddedMupId;
 
-	public PatternSet(int[] cardinalities) {
+	public MupSet(int[] cardinalities) {
 		this.cardinalities = Arrays.copyOf(cardinalities, cardinalities.length);
 		// Initialize cardinalitiesSum
 		this.cardinalitiesSum = new int[cardinalities.length];
@@ -94,7 +91,7 @@ public class PatternSet {
 	}
 
 	public void add(Pattern patternToAdd) {
-		add(patternToAdd, 0);
+		add(patternToAdd, 0);		
 	}
 
 	public void add(Pattern patternToAdd, int numLevelsSkipped) {

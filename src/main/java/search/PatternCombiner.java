@@ -89,7 +89,7 @@ public class PatternCombiner extends NaiveSearch {
 					if (Collections.disjoint(coverageHashNextLevel.keySet(),
 							allParentPatterns.values())) {
 						mups.add(curPattern);
-						updateDebugAddMupDiscoveryTimeline();
+						addMupMetaData();
 					}
 				}
 

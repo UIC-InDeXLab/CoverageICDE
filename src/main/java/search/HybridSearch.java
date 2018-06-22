@@ -15,7 +15,7 @@ import java.util.Stack;
 
 import io.DataSet;
 import pattern.Pattern;
-import pattern.PatternSet;
+import pattern.MupSet;
 import utils.BitSet;
 
 /**
@@ -31,7 +31,7 @@ public class HybridSearch extends NaiveSearch {
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
 
-		PatternSet mups = new PatternSet(curDataSet.cardinalities);
+		MupSet mups = new MupSet(curDataSet.cardinalities);
 		Stack<Pattern> patternToCheckStack = new Stack<Pattern>();
 		// Add root pattern
 		Pattern root = Pattern.getRootPattern(curDataSet.getDimension(),
@@ -74,7 +74,7 @@ public class HybridSearch extends NaiveSearch {
 
 				if (mup != null) {
 					mups.add(mup);
-					updateDebugAddMupDiscoveryTimeline();
+					addMupMetaData();
 				}
 
 			} else {
@@ -101,7 +101,7 @@ public class HybridSearch extends NaiveSearch {
 	 * @return
 	 */
 	public Pattern bottomUpMupRandomSearch(Pattern uncoveredPattern,
-			PatternSet mups, int threshold) {
+			MupSet mups, int threshold) {
 
 		uncoveredPattern.visitId = seq.getAndIncrement();
 

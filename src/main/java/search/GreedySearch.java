@@ -14,7 +14,7 @@ import java.util.Set;
 
 import io.DataSet;
 import pattern.Pattern;
-import pattern.PatternSet;
+import pattern.MupSet;
 
 /**
  * PatternBreaker algorithm. Top-down search for MUPS
@@ -28,7 +28,7 @@ public class GreedySearch extends NaiveSearch {
 
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
-		PatternSet mups = new PatternSet(curDataSet.cardinalities);
+		MupSet mups = new MupSet(curDataSet.cardinalities);
 		PriorityQueue<Pattern> patternToCheckQ = new PriorityQueue<Pattern>();
 
 		// Add root pattern
@@ -68,7 +68,6 @@ public class GreedySearch extends NaiveSearch {
 
 				if (mup != null) {
 					mups.add(mup);
-					updateDebugAddMupDiscoveryTimeline();
 				}
 
 			} else {
@@ -93,7 +92,7 @@ public class GreedySearch extends NaiveSearch {
 	 * @return
 	 */
 	public Pattern bottomUpMupGreedySearch(Pattern uncoveredPattern,
-			PatternSet mups, int threshold) {
+			MupSet mups, int threshold) {
 		Map<Integer, Pattern> parents = uncoveredPattern.genParents(this.curDataSet.coveragePercentageOfEachValueInEachAttr);
 		boolean ifMup = true;
 

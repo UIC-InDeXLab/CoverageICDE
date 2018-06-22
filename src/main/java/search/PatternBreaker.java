@@ -7,7 +7,7 @@ import java.util.Set;
 
 import io.DataSet;
 import pattern.Pattern;
-import pattern.PatternSet;
+import pattern.MupSet;
 
 /**
  * PatternBreaker algorithm. Top-down search for MUPS
@@ -39,7 +39,7 @@ public class PatternBreaker extends NaiveSearch {
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
 
-		PatternSet mups = new PatternSet(this.curDataSet.cardinalities);
+		MupSet mups = new MupSet(this.curDataSet.cardinalities);
 
 		Queue<Pattern> patternToCheckQ = new LinkedList<Pattern>();
 
