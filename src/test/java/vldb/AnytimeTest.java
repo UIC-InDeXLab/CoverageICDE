@@ -56,7 +56,7 @@ public class AnytimeTest {
 		double thresholdRate = Double
 				.parseDouble(cmd.getArgument(Cli.CMD_THRESHOLD_SHORT));
 
-		String[] algorithms = new String[]{"hybrid", "PatternBreakerOriginal",
+		String[] algorithms = new String[]{"greedy", "hybrid", "PatternBreakerOriginal",
 				"PatternCombiner"};
 
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,

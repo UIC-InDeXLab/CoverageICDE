@@ -45,8 +45,11 @@ public class GreedySearch extends NaiveSearch {
 
 			if (currentPattern.covereage >= 0)
 				ifUncovered = currentPattern.covereage < threshold;
-			else if (mups.ifIsDominatedBy(currentPattern, false))
+			else if ((currentPattern.parentVisitId < mups.lastAddedMupId
+					|| currentPattern.parentDominatesMups)
+					&& mups.ifIsDominatedBy(currentPattern, false)) {
 				ifUncovered = false;
+			}
 			else if (mups.ifDominates(currentPattern, true))
 				continue;
 			else {
