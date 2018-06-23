@@ -267,7 +267,7 @@ public class DataSet {
 	 * @param parentPattern
 	 * @return
 	 */
-	public Set<Pattern> getChildrenNextLevel(Pattern parentPattern) {
+	public Set<Pattern> getChildrenRule1(Pattern parentPattern) {
 		Set<Pattern> childPatterns = new HashSet<Pattern>();
 
 		// Find the right most deterministic cell
@@ -290,6 +290,57 @@ public class DataSet {
 		}
 
 		return childPatterns;
+	}
+	
+	
+	/**
+	 * We generate all children at the next level for this pattern.
+	 * @param parentPattern
+	 * @return
+	 */
+	public Set<Pattern> getAllChildren(Pattern parentPattern) {
+		Set<Pattern> childPatterns = new HashSet<Pattern>();
+
+		// Sequentially create new patterns by replacing each
+		// position with all possible values in that position
+		for (int i = 0; i < parentPattern
+				.getDimension(); i++) {
+			if (parentPattern.data[i] == 'x') 
+				for (char valueToReplace : getValueRange(i)) {
+					Pattern childPattern = new Pattern(parentPattern.data, i,
+							valueToReplace, coveragePercentageOfEachValueInEachAttr,
+							parentPattern.covereagePercentage);
+					childPattern.parentPattern = parentPattern;
+					childPattern.parentDominatesMups = parentPattern.selfDominatesMups;
+					childPattern.parentVisitId = parentPattern.visitId;
+					childPatterns.add(childPattern);
+				}
+		}
+
+		return childPatterns;
+	}
+	
+	
+	public Set<Pattern> getPeakPatterns(Pattern p) {
+		Set<Pattern> peakPatterns = new HashSet<Pattern>();
+		
+		for (int i = 0; i < p.getDimension(); i++) {
+			if (p.data[i] != 'x') {
+				for (char valueToReplace : getValueRange(i)) {
+					if (valueToReplace != p.data[i]) {
+						Pattern childPattern = new Pattern(p.data, i,
+								valueToReplace, coveragePercentageOfEachValueInEachAttr,
+								p.covereagePercentage);
+						childPattern.parentPattern = p;
+						childPattern.parentDominatesMups = p.selfDominatesMups;
+						childPattern.parentVisitId = p.visitId;
+						peakPatterns.add(childPattern);
+					}
+				}
+			}
+		}
+		
+		return peakPatterns;
 	}
 
 	/**

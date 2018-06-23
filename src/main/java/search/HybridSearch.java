@@ -79,7 +79,7 @@ public class HybridSearch extends NaiveSearch {
 
 			} else {
 				Set<Pattern> tmp = curDataSet
-						.getChildrenNextLevel(currentPattern);
+						.getChildrenRule1(currentPattern);
 				tmp.removeAll(mups.patternSet);
 				patternToCheckStack.addAll(tmp);
 			}

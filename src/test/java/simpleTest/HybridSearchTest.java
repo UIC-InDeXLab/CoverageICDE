@@ -17,7 +17,7 @@ public class HybridSearchTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 16;
+		int d = 14;
 
 		int threshold = 5000;
 

@@ -62,7 +62,7 @@ public class PatternBreakerOriginal extends NaiveSearch {
 					mups.add(currentPattern);
 					addMupMetaData();
 				} else {
-					nextPatternSet.addAll(curDataSet.getChildrenNextLevel(currentPattern));
+					nextPatternSet.addAll(curDataSet.getChildrenRule1(currentPattern));
 				}
 			}
 
