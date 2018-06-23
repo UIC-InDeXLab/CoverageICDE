@@ -30,7 +30,7 @@ public class test {
 		
 		String fileName = "data/airbnb_100000.csv";
 		int n = 100000;
-		int d = 10;
+		int d = 5;
 		int level = 3;
 		int threshold = 200;
 
