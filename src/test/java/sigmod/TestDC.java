@@ -63,9 +63,6 @@ public class TestDC {
 		Map<String, Long> debugInfo = new HashMap<String, Long>();
 		Set<Pattern> mups = new HashSet<Pattern>();
 		
-		System.out.println('1');
-
-		
 		GreedySearch search = new GreedySearch(dataToCheck);
 		mups = search.findMaxUncoveredPatternSet(threshold);
 		System.out.println(mups.size());
