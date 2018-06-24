@@ -3,8 +3,8 @@ import java.util.ArrayList;
 
 public class PatternHit {
 	public char[] vcomb;
-	public ArrayList<Integer> patternsIndices;
-	public PatternHit(char[] vcomb, ArrayList<Integer> p)
+	public int[] patternsIndices;
+	public PatternHit(char[] vcomb, int[] p)
 	{
 		this.vcomb = vcomb;
 		this.patternsIndices = p;

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import pattern.Pattern;
 import dataCollection.PatternHit;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FreqItemSet {
 	public static ArrayList<PatternHit > FrequentItemset(ArrayList<Pattern> items, int dimensions)
@@ -11,51 +13,80 @@ public class FreqItemSet {
 		ArrayList<PatternHit > output = new ArrayList<PatternHit>();
 		ArrayList<PatternHit > current = new ArrayList<PatternHit>();
 		for(int i=0;i<items.size();i++)
+		{
 			current.add(
 					new PatternHit(items.get(i).data,
-					new ArrayList<Integer>(Arrays.asList(i))
+					new int[1]/*ArrayList<Integer>(Arrays.asList(i))*/
 					));
+			current.get(i).patternsIndices[0]=i;
+		}
 		ArrayList<PatternHit > nextset = new ArrayList<PatternHit>();
 		do {
 			boolean[] maximals= new boolean[current.size()];
 			nextset = genNext(current, maximals, dimensions); // the frequent item-sets in the next level
-			//System.out.print("maximals:");
 			for(int i=0;i<current.size();i++) if(maximals[i]) 
 				{
 					output.add(current.get(i));
-					//System.out.print(i);System.out.print(", ");
 				}
-			//System.out.println();
 			current = nextset;
-			/*for(PatternHit h:current)
-			{
-				for(int i:h.patternsIndices)
-					{System.out.print(i);System.out.print(", ");}
-				System.out.println();
-			}*/
 		}while(current.size()>0);
 		return output;
 	}
+	
 	private static ArrayList<PatternHit > genNext(ArrayList<PatternHit > current,boolean[] maximals, int dimensions)
 	{ // it combines the frequent item-sets at a specific level to get the ones in the next level
-		int size = current.size(); // the number of freq-item-sets at the current level
+		int i,j,k,si,sj,size2,hashcode;
+		int[] tmp;
+		HashMap<Integer, ArrayList<Integer>> cmap = new HashMap<>();
+		HashMap<Integer, ArrayList<Integer>> nmap = new HashMap<>(); // the next level map
+		ArrayList<PatternHit> output = new ArrayList<PatternHit>(); // the freq-item-sets in the next level
+		for(Integer key:cmap.keySet())
+		{
+			ArrayList<Integer> val = cmap.get(key);
+			for (i=0;i<val.size()-1;i++)
+			{
+				size2 = current.get(i).patternsIndices.length;
+				for(j=i+1;j<val.size();j++)
+				{
+					char[] intersect = getIntersect(current.get(i).vcomb, current.get(j).vcomb, dimensions);
+					if(intersect[0]=='n') continue;// if the intersection is not empty
+					si = current.get(i).patternsIndices[size2-1];
+					sj = current.get(j).patternsIndices[size2-1];
+					int[] ps = new int[size2+1];
+					if(si<sj)
+					{
+						tmp = (int[])current.get(i).patternsIndices.clone();
+						for(k=0;k<size2;k++) ps[k]=tmp[k];
+						ps[k] = sj;
+					}
+					else
+					{
+						tmp = (int[])current.get(j).patternsIndices.clone();
+						for(k=0;k<size2;k++) ps[k]=tmp[k];
+						ps[k] = si;
+					}
+					output.add(new PatternHit(intersect, ps));
+					hashcode = tmp.hashCode();
+					if(nmap.containsKey(hashcode)) nmap.get(hashcode).add(output.size()-1); // the index current output
+					else nmap.put(hashcode, new ArrayList<Integer>(output.size()-1));
+				}
+			}
+		}
+		
+		/*
 		ArrayList<PatternHit> output = new ArrayList<PatternHit>(); // the freq-item-sets in the next level
 		for(int i=0;i<size;i++) maximals[i]=true;
 		for(int i=0;i<size-1;i++)
 			for(int j=i+1;j<size;j++)
 			{
-				int size2 = current.get(i).patternsIndices.size();
-				/*if(size2>1) {// delete this whole "if" block later
-					for(int k:current.get(i).patternsIndices.subList(0, size2-1)) System.out.print(k); 
-					for(int k:current.get(j).patternsIndices.subList(0, size2-1)) System.out.print(k); 
-				}*/
+				size2 = current.get(i).patternsIndices.size();
 				if(size2==1 || current.get(i).patternsIndices.subList(0, size2-1).equals(current.get(j).patternsIndices.subList(0, size2-1)))
 				{
 					char[] intersect = getIntersect(current.get(i).vcomb, current.get(j).vcomb, dimensions);
 					if(intersect[0]=='n') continue;// if the intersection is not empty
 					maximals[i] = false; maximals[j]=false;		
-					int si = current.get(i).patternsIndices.get(size2-1);
-					int sj = current.get(j).patternsIndices.get(size2-1);
+					si = current.get(i).patternsIndices.get(size2-1);
+					sj = current.get(j).patternsIndices.get(size2-1);
 					ArrayList<Integer> ps = new ArrayList<Integer>();
 					if(si<sj)
 					{
@@ -70,6 +101,7 @@ public class FreqItemSet {
 					output.add(new PatternHit(intersect, ps));
 				}
 			}
+		*/
 		return output;
 	}
 	private static char[] getIntersect(char[] a, char[] b,int dimensions)
