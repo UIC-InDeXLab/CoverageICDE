@@ -18,7 +18,7 @@ public class FreqItemSet {
 		ArrayList<PatternHit > nextset = new ArrayList<PatternHit>();
 		do {
 			boolean[] maximals= new boolean[current.size()];
-			nextset = genNext(current, maximals, dimensions);
+			nextset = genNext(current, maximals, dimensions); // the frequent item-sets in the next level
 			//System.out.print("maximals:");
 			for(int i=0;i<current.size();i++) if(maximals[i]) 
 				{
@@ -37,9 +37,9 @@ public class FreqItemSet {
 		return output;
 	}
 	private static ArrayList<PatternHit > genNext(ArrayList<PatternHit > current,boolean[] maximals, int dimensions)
-	{
-		int size = current.size();
-		ArrayList<PatternHit> output = new ArrayList<PatternHit>();
+	{ // it combines the frequent item-sets at a specific level to get the ones in the next level
+		int size = current.size(); // the number of freq-item-sets at the current level
+		ArrayList<PatternHit> output = new ArrayList<PatternHit>(); // the freq-item-sets in the next level
 		for(int i=0;i<size;i++) maximals[i]=true;
 		for(int i=0;i<size-1;i++)
 			for(int j=i+1;j<size;j++)

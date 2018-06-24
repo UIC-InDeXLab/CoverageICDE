@@ -13,8 +13,11 @@ import java.util.Collection;
 public class DataCollection {
 	public static ArrayList<char[]> WhatToCollect(Set<Pattern> Mups,int k, int dimensions, int[] cardinalities)
 	{
+		System.out.println("starting to find the level k patterns");
 		ArrayList<Pattern> universe = new ArrayList<Pattern>(levelkPatterns(Mups, k, dimensions,cardinalities));
+		System.out.println("starting the freq itemset");
 		ArrayList<PatternHit> PC = FreqItemSet.FrequentItemset(universe,dimensions);
+		System.out.println("starting the hitting set");
 		return HittingSet.Hittingset(universe.size(),PC);
 	}
 	private static Set<Pattern> levelkPatterns(Set<Pattern> Mups,int k, int dimensions,int[] cardinalities)
