@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FreqItemSet {
-	public static ArrayList<PatternHit > FrequentItemset(ArrayList<Pattern> items, int dimensions)
+	private HashMap<Integer, ArrayList<Integer>> cmap;
+	public ArrayList<PatternHit > FrequentItemset(ArrayList<Pattern> items, int dimensions)
 	{
 		ArrayList<PatternHit > output = new ArrayList<PatternHit>();
 		ArrayList<PatternHit > current = new ArrayList<PatternHit>();
@@ -33,11 +34,11 @@ public class FreqItemSet {
 		return output;
 	}
 	
-	private static ArrayList<PatternHit > genNext(ArrayList<PatternHit > current,boolean[] maximals, int dimensions)
+	private ArrayList<PatternHit > genNext(ArrayList<PatternHit > current, boolean[] maximals, int dimensions)
 	{ // it combines the frequent item-sets at a specific level to get the ones in the next level
 		int i,j,k,si,sj,size2,hashcode;
 		int[] tmp;
-		HashMap<Integer, ArrayList<Integer>> cmap = new HashMap<>();
+		//HashMap<Integer, ArrayList<Integer>> cmap = new HashMap<>();
 		HashMap<Integer, ArrayList<Integer>> nmap = new HashMap<>(); // the next level map
 		ArrayList<PatternHit> output = new ArrayList<PatternHit>(); // the freq-item-sets in the next level
 		for(Integer key:cmap.keySet())
@@ -104,7 +105,7 @@ public class FreqItemSet {
 		*/
 		return output;
 	}
-	private static char[] getIntersect(char[] a, char[] b,int dimensions)
+	private char[] getIntersect(char[] a, char[] b,int dimensions)
 	{
 		char[] output = a.clone();
 		for(int i=0;i<dimensions;i++)
