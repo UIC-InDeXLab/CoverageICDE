@@ -17,9 +17,9 @@ public class FreqItemSet {
 		{
 			current.add(
 					new PatternHit(items.get(i).data,
-					new int[1]/*ArrayList<Integer>(Arrays.asList(i))*/
+					new ArrayList<Integer>(Arrays.asList(i))
 					));
-			current.get(i).patternsIndices[0]=i;
+			//current.get(i).patternsIndices[0]=i;
 		}
 		ArrayList<PatternHit > nextset = new ArrayList<PatternHit>();
 		do {
@@ -37,7 +37,7 @@ public class FreqItemSet {
 	private ArrayList<PatternHit > genNext(ArrayList<PatternHit > current, boolean[] maximals, int dimensions)
 	{ // it combines the frequent item-sets at a specific level to get the ones in the next level
 		int i,j,k,si,sj,size2,hashcode;
-		int[] tmp;
+		//int[] tmp;
 		if(cmap==null)
 		{
 			cmap = new HashMap<>();
@@ -52,29 +52,36 @@ public class FreqItemSet {
 			ArrayList<Integer> val = cmap.get(key);
 			for (i=0;i<val.size()-1;i++)
 			{
-				size2 = current.get(i).patternsIndices.length;
+				size2 = current.get(i).patternsIndices.size();
 				for(j=i+1;j<val.size();j++)
 				{
 					char[] intersect = getIntersect(current.get(i).vcomb, current.get(j).vcomb, dimensions);
 					if(intersect[0]=='n') continue;// if the intersection is not empty
 					maximals[i] = false; maximals[j]=false;	
-					si = current.get(i).patternsIndices[size2-1];
-					sj = current.get(j).patternsIndices[size2-1];
-					int[] ps = new int[size2+1];
+					si = current.get(i).patternsIndices.get(size2-1);
+					sj = current.get(j).patternsIndices.get(size2-1);
+					ArrayList<Integer> ps = new ArrayList<Integer>();
+					//int[] ps = new int[size2+1];
 					if(si<sj)
 					{
-						tmp = (int[])current.get(i).patternsIndices.clone();
-						for(k=0;k<size2;k++) ps[k]=tmp[k];
-						ps[k] = sj;
+						ps = (ArrayList<Integer>)current.get(i).patternsIndices.clone();
+						hashcode = ps.hashCode();
+						ps.add(sj);
+						//tmp = (int[])current.get(i).patternsIndices.clone();
+						//for(k=0;k<size2;k++) ps[k]=tmp[k];
+						//ps[k] = sj;
 					}
 					else
 					{
-						tmp = (int[])current.get(j).patternsIndices.clone();
-						for(k=0;k<size2;k++) ps[k]=tmp[k];
-						ps[k] = si;
+						ps = (ArrayList<Integer>)current.get(i).patternsIndices.clone();
+						hashcode = ps.hashCode();
+						ps.add(sj);
+						//tmp = (int[])current.get(j).patternsIndices.clone();
+						//for(k=0;k<size2;k++) ps[k]=tmp[k];
+						//ps[k] = si;
 					}
 					output.add(new PatternHit(intersect, ps));
-					hashcode = tmp.hashCode();
+					//hashcode = tmp.hashCode();
 					if(nmap.containsKey(hashcode)) nmap.get(hashcode).add(output.size()-1); // the index current output
 					else nmap.put(hashcode, new ArrayList<Integer>(output.size()-1));
 				}
