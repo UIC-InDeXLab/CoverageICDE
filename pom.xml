@@ -26,8 +26,8 @@
 						<configuration>
 							<mainClass>sigmod.Test</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx8G</argLine>
-							<argLine>-Xms4G</argLine>
+							<argLine>-Xmx64G</argLine>
+							<argLine>-Xms32G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -38,8 +38,8 @@
 						<configuration>
 							<mainClass>sigmod.TestDC</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx8G</argLine>
-							<argLine>-Xms4G</argLine>
+							<argLine>-Xmx64G</argLine>
+							<argLine>-Xms32G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -50,8 +50,8 @@
 						<configuration>
 							<mainClass>vldb.BatchTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx8G</argLine>
-							<argLine>-Xms4G</argLine>
+							<argLine>-Xmx64G</argLine>
+							<argLine>-Xms32G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -62,8 +62,8 @@
 						<configuration>
 							<mainClass>vldb.DataSizeTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx8G</argLine>
-							<argLine>-Xms4G</argLine>
+							<argLine>-Xmx64G</argLine>
+							<argLine>-Xms32G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -74,8 +74,8 @@
 						<configuration>
 							<mainClass>vldb.DimensionTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx8G</argLine>
-							<argLine>-Xms4G</argLine>
+							<argLine>-Xmx64G</argLine>
+							<argLine>-Xms32G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -86,8 +86,8 @@
 						<configuration>
 							<mainClass>vldb.ThresholdTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx8G</argLine>
-							<argLine>-Xms4G</argLine>
+							<argLine>-Xmx64G</argLine>
+							<argLine>-Xms32G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -98,8 +98,20 @@
 						<configuration>
 							<mainClass>vldb.AnytimeTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx8G</argLine>
-							<argLine>-Xms4G</argLine>
+							<argLine>-Xmx64G</argLine>
+							<argLine>-Xms32G</argLine>
+						</configuration>
+					</execution>
+					<execution>
+						<id>crimeDataTest</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<mainClass>vldb.CrimeDataTest</mainClass>
+							<classpathScope>test</classpathScope>
+							<argLine>-Xmx64G</argLine>
+							<argLine>-Xms32G</argLine>
 						</configuration>
 					</execution>
 				</executions>

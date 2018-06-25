@@ -284,6 +284,32 @@ public class Pattern implements Comparable<Pattern> {
 	public void setCoverage(int coverageValue) {
 		this.covereage = coverageValue;
 	}
+	
+	/**
+	 * Get data value
+	 * @param idx
+	 * @return
+	 */
+	public char getValue(int idx) {
+		return this.data[idx];
+	}
+	
+	
+	/**
+	 * Check of pattern a covers pattern b
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public static boolean covers(Pattern a, Pattern b) {
+		int len = a.getDimension();
+		
+		for (int i = 0; i < len; i++)
+			if (a.getValue(i) != 'x' && a.getValue(i) != b.getValue(i))
+				return false;
+		
+		return true;
+	}
 
 	public static void main(String[] args) {
 		Pattern p1 = new Pattern(new char[]{'1', 'x'});

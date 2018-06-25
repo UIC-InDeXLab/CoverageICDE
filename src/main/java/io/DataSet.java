@@ -24,7 +24,7 @@ import java.util.LinkedList;
 public class DataSet {
 	char[][] data;
 	BitSet[] dataBitVec;
-	
+
 	int[] occurences;
 	int numOfRecords;
 	int dimensions;
@@ -42,7 +42,7 @@ public class DataSet {
 		this.selectedAttrIds = selectedAttrIds;
 
 		this.dimensions = selectedAttrIds.length;
-		
+
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get(fileName));
 			CSVParser csvParser = new CSVParser(reader,
@@ -64,15 +64,17 @@ public class DataSet {
 				for (int attrId : selectedAttrIds) {
 					row[i++] = csvRecord.get(attrId).charAt(0);
 				}
-				
+
 				if (recordCount.containsKey(String.valueOf(row)))
-					recordCount.put(String.valueOf(row), recordCount.get(String.valueOf(row)) + 1);
+					recordCount.put(String.valueOf(row),
+							recordCount.get(String.valueOf(row)) + 1);
 				else
 					recordCount.put(String.valueOf(row), 1);
 			}
 
 			csvParser.close();
-			List<String> uniquePatternList = new ArrayList<String>(recordCount.keySet());
+			List<String> uniquePatternList = new ArrayList<String>(
+					recordCount.keySet());
 
 			// Covert list to array
 			data = new char[dimensions][uniquePatternList.size()];
@@ -86,14 +88,15 @@ public class DataSet {
 					occurences[n] = recordCount.get(uniquePatternList.get(n));
 				}
 			}
-			
+
 			dataBitVec = new BitSet[sumOfArray(this.cardinalities)];
 			for (int i = 0; i < dataBitVec.length; i++) {
 				dataBitVec[i] = new BitSet(uniquePatternList.size());
 			}
 			for (int n = 0; n < uniquePatternList.size(); n++) {
 				for (int d = 0; d < dimensions; d++) {
-					int rowIdx = checkRowIdxInDataBitVec(d, uniquePatternList.get(n).charAt(d));
+					int rowIdx = checkRowIdxInDataBitVec(d,
+							uniquePatternList.get(n).charAt(d));
 					dataBitVec[rowIdx].set(n);
 				}
 			}
@@ -101,16 +104,16 @@ public class DataSet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-//		for (int i = 0; i < dataBitVec.length; i++) {
-//			System.out.println(dataBitVec[i]);
-//		}
-		
+
+		// for (int i = 0; i < dataBitVec.length; i++) {
+		// System.out.println(dataBitVec[i]);
+		// }
+
 		numOfRecords = sumOfArray(occurences);
 
 		updateCoveragePercentage();
 	}
-	
+
 	private int checkRowIdxInDataBitVec(int dimensionId, char c) {
 		return c - 48 + sumOfArray(this.cardinalities, dimensionId);
 	}
@@ -143,15 +146,17 @@ public class DataSet {
 	 * @return
 	 */
 	public Map<Pattern, Integer> getPatternAndOccurences() {
-		Map<Pattern, Integer> patternCount = new HashMap<Pattern, Integer>(dataToAccess.length);
+		Map<Pattern, Integer> patternCount = new HashMap<Pattern, Integer>(
+				dataToAccess.length);
 		for (int i = 0; i < dataToAccess.length; i++) {
 			patternCount.put(new Pattern(dataToAccess[i]), occurences[i]);
 		}
 		return patternCount;
 	}
-	
+
 	/**
 	 * Sum of the int array
+	 * 
 	 * @param intArray
 	 * @return
 	 */
@@ -162,9 +167,10 @@ public class DataSet {
 		}
 		return sum;
 	}
-	
+
 	/**
 	 * Sum of the int array
+	 * 
 	 * @param intArray
 	 * @return
 	 */
@@ -194,11 +200,12 @@ public class DataSet {
 		return this.dimensions;
 	}
 
-	
-	private BitSet createBitVec(int numOfUniquePatterns, Pattern curPattern, int dimensionId) {
+	private BitSet createBitVec(int numOfUniquePatterns, Pattern curPattern,
+			int dimensionId) {
 		BitSet coverageBitVectorPerDimension = new BitSet(numOfUniquePatterns);
 		for (int n = 0; n < numOfUniquePatterns; n++) {
-			if (curPattern.data[dimensionId] == 'x' || curPattern.data[dimensionId] == data[dimensionId][n]) {
+			if (curPattern.data[dimensionId] == 'x'
+					|| curPattern.data[dimensionId] == data[dimensionId][n]) {
 				coverageBitVectorPerDimension.set(n);
 			}
 		}
@@ -217,20 +224,23 @@ public class DataSet {
 		BitSet coverageBitVector = new BitSet(numUniquePatterns);
 		coverageBitVector.set(0, numUniquePatterns);
 
-//		for (int i = 0; i < getDimension(); i++) {
-//			BitSet coverageBitVectorPerDimension = createBitVec(numUniquePatterns, p, i);
-//			coverageBitVector.and(coverageBitVectorPerDimension);
-//		}
-		
+		// for (int i = 0; i < getDimension(); i++) {
+		// BitSet coverageBitVectorPerDimension =
+		// createBitVec(numUniquePatterns, p, i);
+		// coverageBitVector.and(coverageBitVectorPerDimension);
+		// }
+
 		for (int i = 0; i < getDimension(); i++) {
 			if (p.data[i] != 'x') {
-				coverageBitVector.and(dataBitVec[checkRowIdxInDataBitVec(i, p.data[i])]);
+				coverageBitVector
+						.and(dataBitVec[checkRowIdxInDataBitVec(i, p.data[i])]);
 			}
 		}
-		
+
 		int coverage = 0;
-		for (int i = coverageBitVector.nextSetBit(0); i != -1; i = coverageBitVector.nextSetBit(i + 1)) {
-		    coverage += occurences[i];
+		for (int i = coverageBitVector.nextSetBit(
+				0); i != -1; i = coverageBitVector.nextSetBit(i + 1)) {
+			coverage += occurences[i];
 		}
 		return coverage;
 	}
@@ -242,8 +252,8 @@ public class DataSet {
 	 * @return
 	 */
 	public double checkCoveragePercentage(Pattern p) {
-		
-		return (double)checkCoverage(p) / getNumRecords();
+
+		return (double) checkCoverage(p) / getNumRecords();
 	}
 
 	/**
@@ -291,10 +301,10 @@ public class DataSet {
 
 		return childPatterns;
 	}
-	
-	
+
 	/**
 	 * We generate all children at the next level for this pattern.
+	 * 
 	 * @param parentPattern
 	 * @return
 	 */
@@ -303,12 +313,12 @@ public class DataSet {
 
 		// Sequentially create new patterns by replacing each
 		// position with all possible values in that position
-		for (int i = 0; i < parentPattern
-				.getDimension(); i++) {
-			if (parentPattern.data[i] == 'x') 
+		for (int i = 0; i < parentPattern.getDimension(); i++) {
+			if (parentPattern.data[i] == 'x')
 				for (char valueToReplace : getValueRange(i)) {
 					Pattern childPattern = new Pattern(parentPattern.data, i,
-							valueToReplace, coveragePercentageOfEachValueInEachAttr,
+							valueToReplace,
+							coveragePercentageOfEachValueInEachAttr,
 							parentPattern.covereagePercentage);
 					childPattern.parentPattern = parentPattern;
 					childPattern.parentDominatesMups = parentPattern.selfDominatesMups;
@@ -319,27 +329,42 @@ public class DataSet {
 
 		return childPatterns;
 	}
-	
-	
-	public Set<Pattern> getPeakPatterns(Pattern p) {
+
+	public Set<Pattern> getPeakPatterns(Pattern peakPattern,
+			Pattern patternToCheck) {
 		Set<Pattern> peakPatterns = new HashSet<Pattern>();
-		
-		for (int i = 0; i < p.getDimension(); i++) {
-			if (p.data[i] != 'x') {
+
+		for (int i = 0; i < patternToCheck.getDimension(); i++) {
+			if (peakPattern.getValue(i) != patternToCheck.getValue(i)) {
 				for (char valueToReplace : getValueRange(i)) {
-					if (valueToReplace != p.data[i]) {
-						Pattern childPattern = new Pattern(p.data, i,
-								valueToReplace, coveragePercentageOfEachValueInEachAttr,
-								p.covereagePercentage);
-						childPattern.parentPattern = p;
-						childPattern.parentDominatesMups = p.selfDominatesMups;
-						childPattern.parentVisitId = p.visitId;
+					if (valueToReplace != patternToCheck.getValue(i)) {
+						Pattern childPattern = new Pattern(peakPattern.data, i,
+								valueToReplace,
+								coveragePercentageOfEachValueInEachAttr,
+								peakPattern.covereagePercentage);
+						childPattern.parentPattern = peakPattern;
+						childPattern.parentDominatesMups = peakPattern.selfDominatesMups;
+						childPattern.parentVisitId = peakPattern.visitId;
+						peakPatterns.add(childPattern);
+					}
+				}
+			}
+			else if (peakPattern.getValue(i) == 'x'){
+				for (char valueToReplace : getValueRange(i)) {
+					if (valueToReplace != patternToCheck.getValue(i)) {
+						Pattern childPattern = new Pattern(peakPattern.data, i,
+								valueToReplace,
+								coveragePercentageOfEachValueInEachAttr,
+								peakPattern.covereagePercentage);
+						childPattern.parentPattern = peakPattern;
+						childPattern.parentDominatesMups = peakPattern.selfDominatesMups;
+						childPattern.parentVisitId = peakPattern.visitId;
 						peakPatterns.add(childPattern);
 					}
 				}
 			}
 		}
-		
+
 		return peakPatterns;
 	}
 

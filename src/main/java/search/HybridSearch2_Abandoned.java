@@ -22,9 +22,9 @@ import utils.BitSet;
  * PatternBreaker algorithm. Top-down search for MUPS
  *
  */
-public class HybridSearch2 extends NaiveSearch {
+public class HybridSearch2_Abandoned extends NaiveSearch {
 
-	public HybridSearch2(DataSet curData) {
+	public HybridSearch2_Abandoned(DataSet curData) {
 		super(curData);
 	}
 
@@ -32,27 +32,32 @@ public class HybridSearch2 extends NaiveSearch {
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
 
 		MupSet mups = new MupSet(curDataSet.cardinalities);
-		Stack<Pattern> patternToCheckStack = new Stack<Pattern>();
+		Stack<Pattern> peakPatternStack = new Stack<Pattern>();
 		// Add root pattern
 		Pattern root = Pattern.getRootPattern(curDataSet.getDimension(),
 				curDataSet.coveragePercentageOfEachValueInEachAttr);
 
-		patternToCheckStack.push(root);
+		peakPatternStack.push(root);
 
-		while (!patternToCheckStack.isEmpty()) {
+		while (!peakPatternStack.isEmpty()) {
 
-			Pattern newPatternToExplore = patternToCheckStack.pop();
+			Pattern peakPattern = peakPatternStack.pop();
 			
 			Stack<Pattern> deepDiveStack = new Stack<Pattern>();
-			deepDiveStack.add(newPatternToExplore);
+			deepDiveStack.add(peakPattern);
+			
+			System.out.println("peak start: " + peakPattern);
 
 			while(!deepDiveStack.isEmpty()) {
 				
 				Pattern currentPattern = deepDiveStack.pop();
-
+				
 				
 				// If pattern dominates mups or mups dominate pattern, we prune the node
-				if (mups.ifIsDominatedBy(currentPattern, true) || mups.ifDominates(currentPattern, true))
+				if (mups.ifIsDominatedBy(currentPattern, true))
+					continue;
+				else 
+					if (mups.ifDominates(currentPattern, true))
 					continue;
 				else {
 					updateDebugNodesAddAVisit(currentPattern);
@@ -62,7 +67,7 @@ public class HybridSearch2 extends NaiveSearch {
 		
 					if (coverageValue < threshold) {
 						Pattern mup = bottomUpMupRandomSearch(currentPattern, mups,
-								threshold);
+								threshold, peakPattern);
 		
 						if (mup != null) {
 							mups.add(mup);
@@ -70,9 +75,11 @@ public class HybridSearch2 extends NaiveSearch {
 							
 							// Clear the dfsStack to stop the deepdive search
 							deepDiveStack.clear();
+							System.out.println("mup: " + mup);
+							System.out.println(curDataSet.getPeakPatterns(peakPattern, mup));
 							
 							// Added peak patterns to patternToCheckStack
-							patternToCheckStack.addAll(curDataSet.getPeakPatterns(mup));
+							peakPatternStack.addAll(curDataSet.getPeakPatterns(peakPattern, mup));
 						}
 		
 					} else {
@@ -101,10 +108,13 @@ public class HybridSearch2 extends NaiveSearch {
 	 * @return
 	 */
 	public Pattern bottomUpMupRandomSearch(Pattern uncoveredPattern,
-			MupSet mups, int threshold) {
+			MupSet mups, int threshold, Pattern peakPattern) {
 
 		uncoveredPattern.visitId = seq.getAndIncrement();
 
+//		if (Pattern.covers(peekPattern, uncoveredPattern))
+//			return null;
+		
 		Map<Integer, Pattern> parents = uncoveredPattern.genParents();
 		boolean ifMup = true;
 
@@ -117,6 +127,8 @@ public class HybridSearch2 extends NaiveSearch {
 			// A mup is the descendant of the parentPattern. Hence,
 			// parentPattern is covered.
 			if (mups.ifIsDominatedBy(parentPattern, false))
+				continue;
+			if (!Pattern.covers(peakPattern, parentPattern))
 				continue;
 			else {
 				updateDebugNodesAddAVisit(parentPattern);
@@ -136,7 +148,7 @@ public class HybridSearch2 extends NaiveSearch {
 			mups.lastAddedMupId = uncoveredPattern.visitId;
 			return uncoveredPattern;
 		} else if (nextPattern != null) {
-			return bottomUpMupRandomSearch(nextPattern, mups, threshold);
+			return bottomUpMupRandomSearch(nextPattern, mups, threshold, peakPattern);
 		}
 
 		return null;

@@ -6,11 +6,11 @@ import java.util.Set;
 import io.DataSet;
 import pattern.Pattern;
 import search.HybridSearch;
-import search.HybridSearch2;
+import search.HybridSearch2_Abandoned;
 import search.NaiveSearch;
 import utils.Plot;
 
-public class HybridSearchTest2 {
+public class HybridSearch2Test_Abandoned {
 	public static void main(String[] args) {
 		String fileName = "data/airbnb_1million.csv";
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
@@ -18,7 +18,7 @@ public class HybridSearchTest2 {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 14;
+		int d = 5;
 
 		int threshold = 5000;
 
@@ -27,7 +27,7 @@ public class HybridSearchTest2 {
 				Arrays.copyOfRange(chosenAttributeIds, 0, d), 1000000);
 
 		// Test 1 with pattern breaker
-		HybridSearch2 ss = new HybridSearch2(dataToCheck);
+		HybridSearch2_Abandoned ss = new HybridSearch2_Abandoned(dataToCheck);
 
 		long t0 = System.currentTimeMillis();
 		Set<Pattern> mups = ss.findMaxUncoveredPatternSet(threshold);
@@ -42,6 +42,8 @@ public class HybridSearchTest2 {
 		System.out.println("Visited: "
 				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 		System.out.println("Hits: " + ss.getNumHits());
+		
+		System.out.println(mups);
 
 		// Plot
 //		Plot pl = new Plot();

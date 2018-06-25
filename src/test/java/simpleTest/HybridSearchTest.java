@@ -17,7 +17,7 @@ public class HybridSearchTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 14;
+		int d = 8;
 
 		int threshold = 5000;
 
@@ -41,6 +41,9 @@ public class HybridSearchTest {
 		System.out.println("Visited: "
 				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 		System.out.println("Hits: " + ss.getNumHits());
+		
+		System.out.println(mups);
+
 
 		// Plot
 //		Plot pl = new Plot();
