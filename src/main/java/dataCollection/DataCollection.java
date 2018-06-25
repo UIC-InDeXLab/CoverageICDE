@@ -16,7 +16,8 @@ public class DataCollection {
 		System.out.println("starting to find the level k patterns");
 		ArrayList<Pattern> universe = new ArrayList<Pattern>(levelkPatterns(Mups, k, dimensions,cardinalities));
 		System.out.println("starting the freq itemset");
-		ArrayList<PatternHit> PC = FreqItemSet.FrequentItemset(universe,dimensions);
+		FreqItemSet FIS = new FreqItemSet();
+		ArrayList<PatternHit> PC = FIS.FrequentItemset(universe,dimensions);
 		System.out.println("starting the hitting set");
 		return HittingSet.Hittingset(universe.size(),PC);
 	}

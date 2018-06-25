@@ -38,7 +38,13 @@ public class FreqItemSet {
 	{ // it combines the frequent item-sets at a specific level to get the ones in the next level
 		int i,j,k,si,sj,size2,hashcode;
 		int[] tmp;
-		//HashMap<Integer, ArrayList<Integer>> cmap = new HashMap<>();
+		if(cmap==null)
+		{
+			cmap = new HashMap<>();
+			ArrayList<Integer> tmp2 = new ArrayList<Integer>();
+			for(i=0;i<current.size();i++) tmp2.add(i);
+			cmap.put(0, tmp2);
+		}
 		HashMap<Integer, ArrayList<Integer>> nmap = new HashMap<>(); // the next level map
 		ArrayList<PatternHit> output = new ArrayList<PatternHit>(); // the freq-item-sets in the next level
 		for(Integer key:cmap.keySet())
@@ -51,6 +57,7 @@ public class FreqItemSet {
 				{
 					char[] intersect = getIntersect(current.get(i).vcomb, current.get(j).vcomb, dimensions);
 					if(intersect[0]=='n') continue;// if the intersection is not empty
+					maximals[i] = false; maximals[j]=false;	
 					si = current.get(i).patternsIndices[size2-1];
 					sj = current.get(j).patternsIndices[size2-1];
 					int[] ps = new int[size2+1];
@@ -103,6 +110,8 @@ public class FreqItemSet {
 				}
 			}
 		*/
+		
+		cmap = nmap;
 		return output;
 	}
 	private char[] getIntersect(char[] a, char[] b,int dimensions)
