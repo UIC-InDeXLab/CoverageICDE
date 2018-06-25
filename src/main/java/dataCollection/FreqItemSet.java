@@ -83,7 +83,7 @@ public class FreqItemSet {
 					output.add(new PatternHit(intersect, ps));
 					//hashcode = tmp.hashCode();
 					if(nmap.containsKey(hashcode)) nmap.get(hashcode).add(output.size()-1); // the index current output
-					else nmap.put(hashcode, new ArrayList<Integer>(output.size()-1));
+					else nmap.put(hashcode, new ArrayList<Integer>(Arrays.asList(output.size()-1)));
 				}
 			}
 		}
