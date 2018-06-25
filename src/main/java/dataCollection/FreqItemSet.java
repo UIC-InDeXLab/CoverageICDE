@@ -25,6 +25,7 @@ public class FreqItemSet {
 		ArrayList<PatternHit > nextset = new ArrayList<PatternHit>();
 		do {
 			boolean[] maximals= new boolean[current.size()];
+			Arrays.fill(maximals, true);
 			nextset = genNext(current, maximals, dimensions); // the frequent item-sets in the next level
 			for(int i=0;i<current.size();i++) if(maximals[i]) 
 				{
