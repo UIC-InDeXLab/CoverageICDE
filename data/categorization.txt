@@ -1,4 +1,4 @@
-=IF(D2="Male",0,(IF(D2="Female",1,2)))
-=IF(F2<=20,0,(IF(F2<=40,1,IF(F2<=60,2,3))))
-=IF(G2="African-American",0,IF(G2="Caucasian",1,IF(G2="Hispanic",2,3)))
-=IF(Z2="Single",0,IF(Z2="Married",1,IF(Z2="Separated",2,IF(Z2="Widowed",3,IF(Z2="Significant Other",4,IF(Z2="Divorced",5,6))))))
+Sex =IF(D2="Male",0,(IF(D2="Female",1,2)))
+Age =IF(F2<=20,0,(IF(F2<=40,1,IF(F2<=60,2,3))))
+Race =IF(G2="African-American",0,IF(G2="Caucasian",1,IF(G2="Hispanic",2,3)))
+Marital Status =IF(Z2="Single",0,IF(Z2="Married",1,IF(Z2="Separated",2,IF(Z2="Widowed",3,IF(Z2="Significant Other",4,IF(Z2="Divorced",5,6))))))

@@ -30,8 +30,8 @@ public class test {
 		
 		String fileName = "data/airbnb_100000.csv";
 		int n = 100000;
-		int d = 5;
-		int level = 2;
+		int d = 8;
+		int level = 3;
 		int threshold = 200;
 
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,

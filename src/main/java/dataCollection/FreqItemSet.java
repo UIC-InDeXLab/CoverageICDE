@@ -32,7 +32,7 @@ public class FreqItemSet {
 					output.add(current.get(i));
 				}
 			current = nextset;
-			//System.out.println(current.size());
+			System.out.println(current.size());
 		}while(current.size()>0);
 		//System.out.println("Done with freq itemset");
 		return output;
