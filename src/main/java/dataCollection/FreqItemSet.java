@@ -19,6 +19,7 @@ public class FreqItemSet {
 					new PatternHit(items.get(i).data,
 					new ArrayList<Integer>(Arrays.asList(i))
 					));
+			//System.out.println(items.get(i).data);
 			//current.get(i).patternsIndices[0]=i;
 		}
 		ArrayList<PatternHit > nextset = new ArrayList<PatternHit>();
@@ -30,13 +31,15 @@ public class FreqItemSet {
 					output.add(current.get(i));
 				}
 			current = nextset;
+			//System.out.println(current.size());
 		}while(current.size()>0);
+		//System.out.println("Done with freq itemset");
 		return output;
 	}
 	
 	private ArrayList<PatternHit > genNext(ArrayList<PatternHit > current, boolean[] maximals, int dimensions)
 	{ // it combines the frequent item-sets at a specific level to get the ones in the next level
-		int i,j,k,si,sj,size2,hashcode;
+		int i,j,ip,jp,k,si,sj,size2,hashcode;
 		//int[] tmp;
 		if(cmap==null)
 		{
@@ -52,19 +55,21 @@ public class FreqItemSet {
 			ArrayList<Integer> val = cmap.get(key);
 			for (i=0;i<val.size()-1;i++)
 			{
-				size2 = current.get(i).patternsIndices.size();
+				ip = val.get(i);
+				size2 = current.get(ip).patternsIndices.size();
 				for(j=i+1;j<val.size();j++)
 				{
-					char[] intersect = getIntersect(current.get(i).vcomb, current.get(j).vcomb, dimensions);
+					jp = val.get(j);
+					char[] intersect = getIntersect(current.get(ip).vcomb, current.get(jp).vcomb, dimensions);
 					if(intersect[0]=='n') continue;// if the intersection is not empty
-					maximals[i] = false; maximals[j]=false;	
-					si = current.get(i).patternsIndices.get(size2-1);
-					sj = current.get(j).patternsIndices.get(size2-1);
+					maximals[ip] = false; maximals[jp]=false;	
+					si = current.get(ip).patternsIndices.get(size2-1);
+					sj = current.get(jp).patternsIndices.get(size2-1);
 					ArrayList<Integer> ps = new ArrayList<Integer>();
 					//int[] ps = new int[size2+1];
 					if(si<sj)
 					{
-						ps = (ArrayList<Integer>)current.get(i).patternsIndices.clone();
+						ps = (ArrayList<Integer>)current.get(ip).patternsIndices.clone();
 						hashcode = ps.hashCode();
 						ps.add(sj);
 						//tmp = (int[])current.get(i).patternsIndices.clone();
@@ -73,9 +78,9 @@ public class FreqItemSet {
 					}
 					else
 					{
-						ps = (ArrayList<Integer>)current.get(i).patternsIndices.clone();
+						ps = (ArrayList<Integer>)current.get(jp).patternsIndices.clone();
 						hashcode = ps.hashCode();
-						ps.add(sj);
+						ps.add(si);
 						//tmp = (int[])current.get(j).patternsIndices.clone();
 						//for(k=0;k<size2;k++) ps[k]=tmp[k];
 						//ps[k] = si;
@@ -117,7 +122,8 @@ public class FreqItemSet {
 				}
 			}
 		*/
-		
+		cmap.clear();
+		//for(PatternHit o:output) {System.out.println(o.patternsIndices); System.out.println(o.vcomb);}
 		cmap = nmap;
 		return output;
 	}
