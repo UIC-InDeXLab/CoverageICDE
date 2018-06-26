@@ -310,6 +310,16 @@ public class Pattern implements Comparable<Pattern> {
 		
 		return true;
 	}
+	
+	public static boolean covers(char[] a, char[] b) {
+		int len = a.length;
+		
+		for (int i = 0; i < len; i++)
+			if (a[i] != 'x' && a[i] != b[i])
+				return false;
+		
+		return true;
+	}
 
 	public static void main(String[] args) {
 		Pattern p1 = new Pattern(new char[]{'1', 'x'});

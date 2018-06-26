@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import io.DataSet;
 
@@ -42,28 +43,27 @@ public class MupSet {
 
 		this.patternSet = new HashSet<Pattern>();
 		this.patternBitVecForCheckingAncestor = new BitSet[cardinalities.length
-				+ 1][DataSet.sumOfArray(this.cardinalities)
+				+ 1][IntStream.of(this.cardinalities).sum()
 						+ this.cardinalities.length]; // there are
 														// this.cardinalities.length
 														// many "x"s
 		this.patternBitVecForCheckingDescendant = new BitSet[cardinalities.length
-				+ 1][DataSet.sumOfArray(this.cardinalities)
+				+ 1][IntStream.of(this.cardinalities).sum()
 						+ this.cardinalities.length]; // there are
 														// this.cardinalities.length
 														// many "x"s
 
 		this.patternBitVecForCheckingAncestorOrWithX = new BitSet[cardinalities.length
-				+ 1][DataSet.sumOfArray(this.cardinalities)
+				+ 1][IntStream.of(this.cardinalities).sum()
 						+ this.cardinalities.length];
 		this.patternBitVecForCheckingDescendaandOrWithX = new BitSet[cardinalities.length
-				+ 1][DataSet.sumOfArray(this.cardinalities)
+				+ 1][IntStream.of(this.cardinalities).sum()
 						+ this.cardinalities.length];
 
 		// Initialize patternBitVecForCheckingAncestor and
 		// patternBitVecForCheckingDescendant
 		for (int level = 0; level <= cardinalities.length; level++) {
-			for (int attrValue = 0; attrValue < DataSet
-					.sumOfArray(this.cardinalities)
+			for (int attrValue = 0; attrValue < IntStream.of(this.cardinalities).sum()
 					+ this.cardinalities.length; attrValue++) {
 				this.patternBitVecForCheckingAncestor[level][attrValue] = new BitSet(
 						10);

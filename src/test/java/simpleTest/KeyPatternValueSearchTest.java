@@ -28,42 +28,49 @@ public class KeyPatternValueSearchTest {
 				Arrays.copyOfRange(cardinalities, 0, d),
 				Arrays.copyOfRange(chosenAttributeIds, 0, d), 1000000);
 
-		// Test 1 with pattern breaker
+		// Generate mups
 		HybridSearch ss = new HybridSearch(dataToCheck);
 
 		long t0 = System.currentTimeMillis();
 		Set<Pattern> mups = ss.findMaxUncoveredPatternSet(threshold);
 		long t1 = System.currentTimeMillis();
 
-		String breakline = String.format("%0" + 50 + "d", 0).replace("0", "-");
+		String breakline = String.format("%0" + 20 + "d", 0).replace("0", "-");
 
-		System.out.println(breakline);
+		System.out.println(breakline + " Create Mups " + breakline);
 		System.out.println("Algo: HybridRandomSearch");
 		System.out.println("# of MUPs: " + mups.size());
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 		System.out.println("Visited: "
 				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
-		System.out.println("Hits: " + ss.getNumHits());
 
-		
-		System.out.println("num mups:" + mups.size());
-		
-		System.out.println(mups);
-		
-		
-		
+		// Create min values covering mups
+		System.out.println(breakline + " Create Min Values " + breakline);
+
+		t0 = System.currentTimeMillis();
 		KeyPatternValuesSearch s = new KeyPatternValuesSearch(
 				dataToCheck.cardinalities, mups);
 		List<PatternValueNode> keyPatterns = s.findMinListOfKeyPatterns();
-		
+		t1 = System.currentTimeMillis();
+
 		System.out.println("num key patterns: " + keyPatterns.size());
-		System.out.println(keyPatterns);
+		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
-		// Plot
-		// Plot pl = new Plot();
-		// pl.create2dPlot(ss.getTimeSeries());
-		// pl.setVisible(true);
+		// Verification
+		System.out.println(breakline + " Verification " + breakline);
 
+		t0 = System.currentTimeMillis();
+		for (PatternValueNode v : keyPatterns) {
+			mups.removeIf(p -> p.covers(p.data, v.getData()));
+		}
+
+		t1 = System.currentTimeMillis();
+		if (mups.isEmpty())
+			System.out.println("Result: success");
+		else
+			System.out.println("Result: failure");
+
+		System.out.println("Total Time: " + (t1 - t0) + " ms");
 	}
 
 }

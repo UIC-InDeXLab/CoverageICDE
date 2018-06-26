@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -89,7 +90,7 @@ public class DataSet {
 				}
 			}
 
-			dataBitVec = new BitSet[sumOfArray(this.cardinalities)];
+			dataBitVec = new BitSet[IntStream.of(this.cardinalities).sum()];
 			for (int i = 0; i < dataBitVec.length; i++) {
 				dataBitVec[i] = new BitSet(uniquePatternList.size());
 			}
@@ -109,7 +110,7 @@ public class DataSet {
 		// System.out.println(dataBitVec[i]);
 		// }
 
-		numOfRecords = sumOfArray(occurences);
+		numOfRecords = IntStream.of(occurences).sum();
 
 		updateCoveragePercentage();
 	}
@@ -152,20 +153,6 @@ public class DataSet {
 			patternCount.put(new Pattern(dataToAccess[i]), occurences[i]);
 		}
 		return patternCount;
-	}
-
-	/**
-	 * Sum of the int array
-	 * 
-	 * @param intArray
-	 * @return
-	 */
-	public static int sumOfArray(int[] intArray) {
-		int sum = 0;
-		for (int i = 0; i < intArray.length; i++) {
-			sum += intArray[i];
-		}
-		return sum;
 	}
 
 	/**

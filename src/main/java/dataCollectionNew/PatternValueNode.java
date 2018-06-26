@@ -64,6 +64,10 @@ public class PatternValueNode implements Comparable<PatternValueNode> {
 			return 1;
 	}
 	
+	public char[] getData() {
+		return this.data;
+	}
+	
 	@Override
 	public String toString() {
 		String msg = "";
