@@ -22,11 +22,11 @@ import search.PatternBreakerOriginal;
 import search.PatternCombiner;
 import utils.FileIOHandle;
 
-public class ThresholdTestOnAribnb {
+public class ThresholdTestOnBlueNile {
 	private static final String DIR_RESULT = "result/";
 
 	private static String genFileName(Cli cmd) {
-		String s = "thresholdTestAirBnb";
+		String s = "thresholdTestBlueNile";
 
 		for (String debugType : cmd.commandTypes) {
 			if (cmd.getArgument(debugType) != null && !debugType.equals("a")) {
@@ -52,16 +52,14 @@ public class ThresholdTestOnAribnb {
 		String fileName = cmd.getArgument(Cli.CMD_FILE_SHORT);
 
 		int d = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_DIMENSIONS_SHORT));
-		int n = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_RECORDS_SHORT));
+		int n = Integer.MAX_VALUE;
 
 		String[] algorithms = new String[]{"hybrid", "PatternBreakerOriginal",
 				"PatternCombiner"};
 
-		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
-		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-		double[] thresholdRates = new double[]{0.000001, 0.0000032, 0.00001,
+		int[] chosenAttributeIds = {1, 2, 3, 4, 5, 6, 7};
+		int[] cardinalities = {10, 7, 4, 8, 3, 3, 5};
+		double[] thresholdRates = new double[]{ 0.00001,
 				0.000032, 0.0001, 0.00032, 0.001, 0.0032, 0.01};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
@@ -69,10 +67,12 @@ public class ThresholdTestOnAribnb {
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
-				Arrays.copyOfRange(chosenAttributeIds, 0, d), n);
+				Arrays.copyOfRange(chosenAttributeIds, 0, d),
+				Integer.MAX_VALUE);
 
 		for (double thresholdRate : thresholdRates) {
-			int threshold = (int) (thresholdRate * n);
+
+			int threshold = (int) (thresholdRate * dataToCheck.getNumRecords());
 
 			Map<String, Long> debugInfo = new HashMap<String, Long>();
 			Set<Pattern> mups = new HashSet<Pattern>();
