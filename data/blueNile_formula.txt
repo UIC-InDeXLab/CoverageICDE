@@ -1,0 +1,7 @@
+shape =IF(L2="RD",0,IF(L2="PS",1,IF(L2="EC",2,IF(L2="AS",3,IF(L2="CU",4,IF(L2="MQ",5,IF(L2="RA",6,IF(L2="OV",7,IF(L2="PR",8,IF(L2="HS",9,10))))))))))
+color =IF(D2="J",0,IF(D2="I",1,IF(D2="H",2,IF(D2="G",3,IF(D2="F",4,IF(D2="E",5,IF(D2="D",6,7)))))))
+cut =IF(E2="Good",0,IF(E2="Very Good",1,IF(E2="Ideal",2,IF(E2="Astor Ideal",3,4))))
+clarity =IF(C2="SI2",0,IF(C2="SI1",1,IF(C2="VS2",2,IF(C2="VS1",3,IF(C2="VVS2",4,IF(C2="VVS1",5,IF(C2="IF",6,IF(C2="FL",7,8))))))))
+polish =IF(J2="Good",0,IF(J2="Very Good",1,IF(J2="Excellent",2,3)))
+symmetry =IF(M2="Good",0,IF(M2="Very Good",1,IF(M2="Excellent",2,3)))
+florescence =IF(OR(G2="Very Strong", LEFT(G2,12)="Very Strong "),0,IF(OR(G2="Strong",LEFT(G2,7)="Strong "),1,IF(OR(G2="Medium",LEFT(G2,7)="Medium "),2,IF(OR(G2="Faint",LEFT(G2,6)="Faint "),3,IF(G2="None",4,5)))))
