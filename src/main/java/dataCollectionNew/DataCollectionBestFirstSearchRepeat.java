@@ -12,71 +12,22 @@ import java.util.stream.IntStream;
 
 import pattern.Pattern;
 
-public class KeyPatternValuesSearch {
-	BitSet[] attrValuesMatchedByPatterns;
-	int numberOfPatterns;
-	int dimensions;
-	public int[] cardinalities;
-	public int[] cardinalitiesSum;
+public class DataCollectionBestFirstSearchRepeat extends NaiveDataCollection {
 
-	public KeyPatternValuesSearch(int[] cardinality, Set<Pattern> mups) {
-		this.numberOfPatterns = mups.size();
-		this.dimensions = mups.iterator().next().getDimension();
-		PatternValueNode.maxDimensions = this.dimensions;
-		this.cardinalities = Arrays.copyOf(cardinality, cardinality.length);
-
-		// Update cardinalitiesSum
-		this.cardinalitiesSum = new int[this.dimensions];
-
-		int sum = 0;
-		for (int i = 0; i < cardinalitiesSum.length; i++) {
-			this.cardinalitiesSum[i] = sum;
-			sum += cardinality[i];
-		}
-
-		// update attrValuesMatchedByPatterns
-		attrValuesMatchedByPatterns = new BitSet[IntStream.of(cardinality)
-				.sum()];
-
-		for (int i = 0; i < IntStream.of(cardinality).sum(); i++)
-			attrValuesMatchedByPatterns[i] = new BitSet();
-
-		int patternId = 0;
-		for (Pattern mup : mups) {
-			for (int attrId = 0; attrId < this.dimensions; attrId++) {
-				char value = mup.getValue(attrId);
-				if (value != 'x') {
-					this.attrValuesMatchedByPatterns[getValueIdx(attrId, value)]
-							.set(patternId);
-				} else {
-					int baseIdx = getValueIdx(attrId, '0');
-					for (int i = 0; i < cardinality[attrId]; i++) {
-						this.attrValuesMatchedByPatterns[baseIdx + i]
-								.set(patternId);
-					}
-				}
-			}
-			patternId++;
-		}
-
-	}
-
-	/**
-	 * Given attribute and attribute value, compute index in
-	 * attrValuesMatchedByPatterns
-	 * 
-	 * @param attrId
-	 * @param c
-	 * @return
-	 */
-	private int getValueIdx(int attrId, char c) {
-		if (c != 'x')
-			return this.cardinalitiesSum[attrId] + c - '0';
-		return -1;
+	public DataCollectionBestFirstSearchRepeat(int[] cardinality,
+			Set<Pattern> mups) {
+		super(cardinality, mups);
 	}
 
 	public List<PatternValueNode> findMinListOfKeyPatterns() {
 		List<PatternValueNode> minListOfKeyPatterns = new LinkedList<PatternValueNode>();
+		PriorityQueue<PatternValueNode> patternTree = new PriorityQueue<PatternValueNode>(
+				10000);
+		for (char c : getValueRange(0)) {
+			patternTree.add(new PatternValueNode(c,
+					this.attrValuesMatchedByPatterns[getValueIdx(0, c)]));
+		}
+
 		PatternValueNode newNodeFound = findPatternValue();
 		if (newNodeFound == null)
 			return minListOfKeyPatterns;
@@ -92,6 +43,9 @@ public class KeyPatternValuesSearch {
 					.clone();
 			patternsToIgnoreBitSet.flip(0, this.numberOfPatterns);
 
+			for (PatternValueNode p : patternTree)
+				p.updatePatternsToIgnore(patternsToIgnoreBitSet);
+
 			// Get next key pattern
 			newNodeFound = findPatternValue(patternsToIgnoreBitSet);
 
@@ -103,7 +57,7 @@ public class KeyPatternValuesSearch {
 			// Update coveredPatternsBitSet
 			coveredPatternsBitSet.or(newNodeFound.matchingPatterns);
 		}
-		
+
 		return minListOfKeyPatterns;
 	}
 
@@ -141,9 +95,8 @@ public class KeyPatternValuesSearch {
 				10000);
 		for (char c : getValueRange(0)) {
 			BitSet tmpBitSet = (BitSet) patternsToIgnore.clone();
-			
-			tmpBitSet.and(
-					this.attrValuesMatchedByPatterns[getValueIdx(0, c)]);
+
+			tmpBitSet.and(this.attrValuesMatchedByPatterns[getValueIdx(0, c)]);
 			patternTree.add(new PatternValueNode(c, tmpBitSet));
 		}
 		while (!patternTree.isEmpty()) {
@@ -166,14 +119,5 @@ public class KeyPatternValuesSearch {
 			}
 		}
 		return null;
-	}
-
-	public char[] getValueRange(int columnId) {
-		char[] range = new char[this.cardinalities[columnId]];
-
-		for (int i = 0; i < this.cardinalities[columnId]; i++)
-			range[i] = (char) (i + 48);
-
-		return range;
 	}
 }
