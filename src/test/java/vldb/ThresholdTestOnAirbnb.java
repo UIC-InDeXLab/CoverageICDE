@@ -26,7 +26,7 @@ import timing.MupSearchRunnable;
 import timing.MupSearchTimeout;
 import utils.FileIOHandle;
 
-public class ThresholdTestOnAribnb {
+public class ThresholdTestOnAirbnb {
 	private static final String DIR_RESULT = "result/";
 
 	private static String genFileName(Cli cmd) {
