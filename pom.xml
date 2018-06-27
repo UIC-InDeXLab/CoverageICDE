@@ -79,7 +79,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>thresholdTestAirbnb</id>
+						<id>thresholdTestOnAirbnb</id>
 						<goals>
 							<goal>exec</goal>
 						</goals>
