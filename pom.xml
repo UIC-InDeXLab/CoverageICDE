@@ -115,6 +115,18 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>dcDimension</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<mainClass>vldb.DataCollectionVariousDimensionTest</mainClass>
+							<classpathScope>test</classpathScope>
+							<argLine>-Xmx64G</argLine>
+							<argLine>-Xms32G</argLine>
+						</configuration>
+					</execution>
+					<execution>
 						<id>anytimeTest</id>
 						<goals>
 							<goal>exec</goal>
