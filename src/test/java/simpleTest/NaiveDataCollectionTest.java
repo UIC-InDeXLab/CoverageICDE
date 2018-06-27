@@ -21,7 +21,7 @@ public class NaiveDataCollectionTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 12;
+		int d = 10;
 
 		int threshold = 5000;
 

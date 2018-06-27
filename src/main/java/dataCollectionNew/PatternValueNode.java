@@ -34,6 +34,10 @@ public class PatternValueNode implements Comparable<PatternValueNode> {
 
 		this.numCoveredPatterns = this.matchingPatterns.cardinality();
 	}
+	
+	public PatternValueNode(char[] patternData) {
+		this.data = patternData;
+	}
 
 	public int getDimension() {
 		return data.length;

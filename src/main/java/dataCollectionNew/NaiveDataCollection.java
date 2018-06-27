@@ -20,6 +20,8 @@ public class NaiveDataCollection {
 	int dimensions;
 	public int[] cardinalities;
 	public int[] cardinalitiesSum;
+	
+	private List<Pattern> mupsList;
 
 	public NaiveDataCollection(int[] cardinality, Set<Pattern> mups) {
 		this.numberOfPatterns = mups.size();
@@ -60,6 +62,8 @@ public class NaiveDataCollection {
 			}
 			patternId++;
 		}
+		
+		this.mupsList = new LinkedList<Pattern>(mups);
 
 	}
 
@@ -81,49 +85,74 @@ public class NaiveDataCollection {
 		List<PatternValueNode> minListOfKeyPatterns = new LinkedList<PatternValueNode>();
 
 		// Get all patterns
-		List<PatternValueNode> keyPatternList = new LinkedList<PatternValueNode>();
+		List<char[]> keyPatternList = new LinkedList<char[]>();
 		for (char c : getValueRange(0)) {
-			keyPatternList.add(new PatternValueNode(c,
-					this.attrValuesMatchedByPatterns[getValueIdx(0, c)]));
+			keyPatternList.add(new char[] {c});
 		}
 
 		for (int attrId = 1; attrId < this.dimensions; attrId++) {
-			List<PatternValueNode> tempPatternList = new LinkedList<PatternValueNode>(
+			List<char[]> tempPatternList = new LinkedList<char[]>(
 					keyPatternList);
 			keyPatternList.clear();
 
 			for (char c : getValueRange(attrId)) {
-				for (PatternValueNode p : tempPatternList)
-					keyPatternList.add(new PatternValueNode(p, c,
-							this.attrValuesMatchedByPatterns[getValueIdx(attrId,
-									c)]));
+				for (char[] curPatternValue : tempPatternList) {
+					char[] newPatternValue = new char[curPatternValue.length + 1];
+					System.arraycopy(curPatternValue, 0, newPatternValue, 0, curPatternValue.length);
+					newPatternValue[newPatternValue.length - 1] = c;
+					keyPatternList.add(newPatternValue);
+				}
 			}
 		}
 
-		BitSet patternCoverage = new BitSet();
-
+		boolean[] coverage = new boolean[this.numberOfPatterns];
+		
 		// Hitting set
-		while (patternCoverage.nextClearBit(0) < this.numberOfPatterns) {
-			// Get pattern with max coverage
-			PatternValueNode keyPatternValueWithMaxCoverage = Collections.min(keyPatternList);
-			keyPatternList.remove(keyPatternValueWithMaxCoverage);
-						
-			// update patternCoverage
-			patternCoverage.or(keyPatternValueWithMaxCoverage.matchingPatterns);
+		while (!ifAllTrue(coverage)) {
+			// find the pattern covers the most uncovered patterns
+			char[] patternValueFound = findMaxCoverPatternValue(coverage, keyPatternList);
 			
-			// Get patterns to ingore
-			BitSet patternsToIgnore = (BitSet) patternCoverage.clone();
-			patternsToIgnore.flip(0, this.numberOfPatterns);
+			// Update coverage
+			for (int i = 0; i < this.numberOfPatterns; i++)
+				if (!coverage[i] && Pattern.covers(mupsList.get(i).data,patternValueFound))
+					coverage[i] = true;
 			
-			// Update coverage of the rest of the key patterns
-			for (PatternValueNode p : keyPatternList)
-				p.updatePatternsToIgnore(patternsToIgnore);			
+			// Remove 
+			keyPatternList.remove(patternValueFound);
 			
 			// Add to minListOfKeyPatterns
-			minListOfKeyPatterns.add(keyPatternValueWithMaxCoverage);
+			minListOfKeyPatterns.add(new PatternValueNode(patternValueFound));
 		}
 
 		return minListOfKeyPatterns;
+	}
+	
+	private char[] findMaxCoverPatternValue(boolean[] currentCoverage, List<char[]> curKeyPatternList) {
+		char[] patternToReturn = null;
+		int coverageOfPatternToReturn = 0;
+		for (char[] currentPattern : curKeyPatternList) {
+			int curCoverage = 0;
+			for (int i = 0; i < this.numberOfPatterns; i++)
+				if (!currentCoverage[i] && Pattern.covers(mupsList.get(i).data,currentPattern))
+					curCoverage++;
+				
+			if (curCoverage > coverageOfPatternToReturn) {
+				coverageOfPatternToReturn = curCoverage;
+				patternToReturn = currentPattern;
+			}
+					
+		}
+		
+		return patternToReturn;
+	}
+	
+	/**
+	 * Check if a binary array is all true
+	 * @param binaryArray
+	 * @return
+	 */
+	private boolean ifAllTrue(boolean[] binaryArray) {
+		return IntStream.range(0, binaryArray.length).allMatch(i -> binaryArray[i]);
 	}
 
 	public char[] getValueRange(int columnId) {
