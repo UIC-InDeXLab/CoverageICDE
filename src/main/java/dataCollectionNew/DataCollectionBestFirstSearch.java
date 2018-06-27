@@ -21,13 +21,7 @@ public class DataCollectionBestFirstSearch extends NaiveDataCollection {
 
 	public List<PatternValueNode> findMinListOfKeyPatterns() {
 		List<PatternValueNode> minListOfKeyPatterns = new LinkedList<PatternValueNode>();
-		PriorityQueue<PatternValueNode> patternTree = new PriorityQueue<PatternValueNode>(
-				10000);
-		for (char c : getValueRange(0)) {
-			patternTree.add(new PatternValueNode(c,
-					this.attrValuesMatchedByPatterns[getValueIdx(0, c)]));
-		}
-
+		
 		PatternValueNode newNodeFound = findPatternValue();
 		if (newNodeFound == null)
 			return minListOfKeyPatterns;
@@ -42,9 +36,6 @@ public class DataCollectionBestFirstSearch extends NaiveDataCollection {
 			BitSet patternsToIgnoreBitSet = (BitSet) coveredPatternsBitSet
 					.clone();
 			patternsToIgnoreBitSet.flip(0, this.numberOfPatterns);
-
-			for (PatternValueNode p : patternTree)
-				p.updatePatternsToIgnore(patternsToIgnoreBitSet);
 
 			// Get next key pattern
 			newNodeFound = findPatternValue(patternsToIgnoreBitSet);

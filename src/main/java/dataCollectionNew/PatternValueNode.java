@@ -86,7 +86,7 @@ public class PatternValueNode implements Comparable<PatternValueNode> {
 
 	public void updatePatternsToIgnore(BitSet patternsToIgnore) {
 		this.matchingPatterns.and(patternsToIgnore);
-		numCoveredPatterns = this.matchingPatterns.cardinality();
+		this.numCoveredPatterns = this.matchingPatterns.cardinality();
 	}
 
 	@Override

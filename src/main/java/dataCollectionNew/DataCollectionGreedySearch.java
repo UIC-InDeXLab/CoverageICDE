@@ -22,33 +22,25 @@ public class DataCollectionGreedySearch extends NaiveDataCollection {
 
 	public List<PatternValueNode> findMinListOfKeyPatterns() {
 		List<PatternValueNode> minListOfKeyPatterns = new LinkedList<PatternValueNode>();
-		PriorityQueue<PatternValueNode> patternTree = new PriorityQueue<PatternValueNode>(
-				10000);
-		for (char c : getValueRange(0)) {
-			patternTree.add(new PatternValueNode(c,
-					this.attrValuesMatchedByPatterns[getValueIdx(0, c)]));
-		}
 
 		PatternValueNode newNodeFound = findPatternValue();
 		if (newNodeFound == null)
 			return minListOfKeyPatterns;
 		else
 			minListOfKeyPatterns.add(newNodeFound);
+		
 		BitSet coveredPatternsBitSet = (BitSet) newNodeFound.matchingPatterns
 				.clone();
 
 		// There are still patterns to cover
 		while (coveredPatternsBitSet.nextClearBit(0) < this.numberOfPatterns) {
 			// Get patternToIgnore BitSet
-			BitSet patternsToIgnoreBitSet = (BitSet) coveredPatternsBitSet
+			BitSet patternsNeedsToBeCovered = (BitSet) coveredPatternsBitSet
 					.clone();
-			patternsToIgnoreBitSet.flip(0, this.numberOfPatterns);
-
-			for (PatternValueNode p : patternTree)
-				p.updatePatternsToIgnore(patternsToIgnoreBitSet);
+			patternsNeedsToBeCovered.flip(0, this.numberOfPatterns);
 
 			// Get next key pattern
-			newNodeFound = findPatternValue(patternsToIgnoreBitSet);
+			newNodeFound = findPatternValue(patternsNeedsToBeCovered);
 
 			if (newNodeFound != null)
 				minListOfKeyPatterns.add(newNodeFound);
@@ -112,10 +104,10 @@ public class DataCollectionGreedySearch extends NaiveDataCollection {
 		return patternWithMaxCoverage;
 	}
 
-	public PatternValueNode findPatternValue(BitSet patternsToIgnore) {
+	public PatternValueNode findPatternValue(BitSet patternsToBeCovered) {
 		Stack<PatternValueNode> patternStack = new Stack<PatternValueNode>();
 		for (char c : getValueRange(0)) {
-			BitSet tmpBitSet = (BitSet) patternsToIgnore.clone();
+			BitSet tmpBitSet = (BitSet) patternsToBeCovered.clone();
 
 			tmpBitSet.and(this.attrValuesMatchedByPatterns[getValueIdx(0, c)]);
 			patternStack.add(new PatternValueNode(c, tmpBitSet));
@@ -128,7 +120,7 @@ public class DataCollectionGreedySearch extends NaiveDataCollection {
 			PatternValueNode curPatternValueNode = patternStack.pop();
 
 			// If the current node has an coverage lower than filter, prune it
-			if (curPatternValueNode.numCoveredPatterns <= filter)
+			if (curPatternValueNode.numCoveredPatterns < filter)
 				continue;
 			// Find a node that might has the max coverage, we save it and
 			// update the filter
@@ -153,7 +145,7 @@ public class DataCollectionGreedySearch extends NaiveDataCollection {
 
 					// Make them in reverse order, so that the one with high
 					// coverage is on top of stack
-					Collections.sort(listOfPatterns, (a, b) -> b.compareTo(a));
+					Collections.sort(listOfPatterns, Collections.reverseOrder());
 
 					patternStack.addAll(listOfPatterns);
 				}

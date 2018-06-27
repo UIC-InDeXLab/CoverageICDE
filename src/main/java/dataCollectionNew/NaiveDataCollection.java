@@ -101,21 +101,18 @@ public class NaiveDataCollection {
 		}
 
 		BitSet patternCoverage = new BitSet();
-		final Comparator<PatternValueNode> comp = (p1, p2) -> Integer
-				.compare(p1.numCoveredPatterns, p2.numCoveredPatterns);
 
 		// Hitting set
 		while (patternCoverage.nextClearBit(0) < this.numberOfPatterns) {
 			// Get pattern with max coverage
-			PatternValueNode keyPatternValueWithMaxCoverage = keyPatternList
-					.stream().max(comp).get();
+			PatternValueNode keyPatternValueWithMaxCoverage = Collections.min(keyPatternList);
 			keyPatternList.remove(keyPatternValueWithMaxCoverage);
 						
 			// update patternCoverage
 			patternCoverage.or(keyPatternValueWithMaxCoverage.matchingPatterns);
 			
 			// Get patterns to ingore
-			BitSet patternsToIgnore = (BitSet) keyPatternValueWithMaxCoverage.matchingPatterns.clone();
+			BitSet patternsToIgnore = (BitSet) patternCoverage.clone();
 			patternsToIgnore.flip(0, this.numberOfPatterns);
 			
 			// Update coverage of the rest of the key patterns

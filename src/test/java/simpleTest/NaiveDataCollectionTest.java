@@ -21,7 +21,7 @@ public class NaiveDataCollectionTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 15;
+		int d = 12;
 
 		int threshold = 5000;
 
@@ -55,6 +55,7 @@ public class NaiveDataCollectionTest {
 		t1 = System.currentTimeMillis();
 
 		System.out.println("num key patterns: " + keyPatterns.size());
+		System.out.println(keyPatterns);
 		System.out.println("Total Time: " + (t1 - t0) + " ms");
 
 		// Verification
