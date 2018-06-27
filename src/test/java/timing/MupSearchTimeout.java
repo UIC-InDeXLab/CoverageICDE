@@ -5,8 +5,8 @@ public class MupSearchTimeout {
 	private final long timeoutMilliSeconds;
 	private long timeoutInteval = 1000;
 
-	public MupSearchTimeout(long timeoutMilliSeconds) {
-		this.timeoutMilliSeconds = timeoutMilliSeconds;
+	public MupSearchTimeout(long timeoutSeconds) {
+		this.timeoutMilliSeconds = timeoutSeconds * 1000;
 	}
 
 	public void addBlock(Runnable runnable) throws Throwable {

@@ -5,8 +5,8 @@ public class DataCollectionTimeout {
 	private final long timeoutMilliSeconds;
 	private long timeoutInteval = 1000;
 
-	public DataCollectionTimeout(long timeoutMilliSeconds) {
-		this.timeoutMilliSeconds = timeoutMilliSeconds;
+	public DataCollectionTimeout(long timeoutSeconds) {
+		this.timeoutMilliSeconds = timeoutSeconds * 1000;
 	}
 
 	public void addBlock(Runnable runnable) throws Throwable {
