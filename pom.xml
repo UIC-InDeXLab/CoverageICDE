@@ -79,7 +79,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>thresholdTestAirbnb.sh</id>
+						<id>thresholdTestAirbnb</id>
 						<goals>
 							<goal>exec</goal>
 						</goals>
