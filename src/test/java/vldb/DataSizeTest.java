@@ -104,16 +104,7 @@ public class DataSizeTest {
 					} catch (Throwable e) {
 						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
 						resultsQueue.clear();			
-					} finally {
-						System.out.println("Wait for 1 second");
-						try {
-							
-							//sleep 10 milliseconds
-							Thread.sleep(10);
-							
-						} catch (InterruptedException e2) {
-							
-						}	
+					} finally {	
 					}
 					
 					debugInfo = search.getDebugInfo();
@@ -139,15 +130,6 @@ public class DataSizeTest {
 						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
 						resultsQueue.clear();			
 					} finally {
-						System.out.println("Wait for 1 second");
-						try {
-							
-							//sleep 10 milliseconds
-							Thread.sleep(10);
-							
-						} catch (InterruptedException e2) {
-							
-						}	
 					}
 					
 					debugInfo = search.getDebugInfo();
@@ -172,15 +154,6 @@ public class DataSizeTest {
 						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
 						resultsQueue.clear();			
 					} finally {
-						System.out.println("Wait for 1 second");
-						try {
-							
-							//sleep 10 milliseconds
-							Thread.sleep(10);
-							
-						} catch (InterruptedException e2) {
-							
-						}	
 					}
 					
 					debugInfo = search.getDebugInfo();

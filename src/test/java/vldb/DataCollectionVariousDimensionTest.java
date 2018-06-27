@@ -130,14 +130,6 @@ public class DataCollectionVariousDimensionTest {
 				System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
 				resultsQueue.clear();			
 			} finally {
-				try {
-					
-					//sleep 10 milliseconds
-					Thread.sleep(10);
-					
-				} catch (InterruptedException e2) {
-					
-				}	
 			}
 			t1 = System.currentTimeMillis();
 			
@@ -172,14 +164,6 @@ public class DataCollectionVariousDimensionTest {
 				System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
 				resultsQueue.clear();			
 			} finally {
-				try {
-					
-					//sleep 10 milliseconds
-					Thread.sleep(10);
-					
-				} catch (InterruptedException e2) {
-					
-				}	
 			}
 			t1 = System.currentTimeMillis();
 			

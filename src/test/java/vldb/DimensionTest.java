@@ -66,7 +66,7 @@ public class DimensionTest {
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-		int[] dimensions = new int[]{5, 10, 15, 20, 25};
+		int[] dimensions = new int[]{5, 10, 15, 20, 25, 30, 35};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
@@ -105,15 +105,6 @@ public class DimensionTest {
 						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
 						resultsQueue.clear();			
 					} finally {
-						System.out.println("Wait for 1 second");
-						try {
-							
-							//sleep 10 milliseconds
-							Thread.sleep(10);
-							
-						} catch (InterruptedException e2) {
-							
-						}	
 					}
 					
 					debugInfo = search.getDebugInfo();
@@ -139,15 +130,6 @@ public class DimensionTest {
 						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
 						resultsQueue.clear();			
 					} finally {
-						System.out.println("Wait for 1 second");
-						try {
-							
-							//sleep 10 milliseconds
-							Thread.sleep(10);
-							
-						} catch (InterruptedException e2) {
-							
-						}	
 					}
 					
 					debugInfo = search.getDebugInfo();
@@ -172,15 +154,6 @@ public class DimensionTest {
 						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
 						resultsQueue.clear();			
 					} finally {
-						System.out.println("Wait for 1 second");
-						try {
-							
-							//sleep 10 milliseconds
-							Thread.sleep(10);
-							
-						} catch (InterruptedException e2) {
-							
-						}	
 					}
 					
 					debugInfo = search.getDebugInfo();

@@ -3,7 +3,7 @@ package timing;
 public class DataCollectionTimeout {
 
 	private final long timeoutMilliSeconds;
-	private long timeoutInteval = 1000;
+	private long timeoutInteval = 10;
 
 	public DataCollectionTimeout(long timeoutSeconds) {
 		this.timeoutMilliSeconds = timeoutSeconds * 1000;
