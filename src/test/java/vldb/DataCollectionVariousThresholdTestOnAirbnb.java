@@ -7,8 +7,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import cli.Cli;
@@ -24,6 +26,10 @@ import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
+import timing.DataCollectionRunnable;
+import timing.DataCollectionTimeout;
+import timing.MupSearchRunnable;
+import timing.MupSearchTimeout;
 import utils.FileIOHandle;
 
 public class DataCollectionVariousThresholdTestOnAirbnb {
@@ -57,9 +63,6 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 
 		int d = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_DIMENSIONS_SHORT));
 		int n = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_RECORDS_SHORT));
-
-		String[] algorithms = new String[]{"hybrid", "PatternBreakerOriginal",
-				"PatternCombiner"};
 
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
@@ -102,16 +105,48 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 			// Create min values covering mups
 			System.out.println(breakline
 					+ " Create Min Values using GreedySearch " + breakline);
+			
+			
 
 			t0 = System.currentTimeMillis();
-			DataCollectionBestFirstSearch s = new DataCollectionBestFirstSearch(
+			DataCollectionBestFirstSearch search = new DataCollectionBestFirstSearch(
 					dataToCheck.cardinalities, mups);
-			List<PatternValueNode> keyPatterns = s.findMinListOfKeyPatterns();
+			
+			Queue<PatternValueNode> resultsQueue = new LinkedList<PatternValueNode>();
+			try {
+				DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(Constants.TIMEOUT);
+				DataCollectionRunnable block = new DataCollectionRunnable(resultsQueue) {
+
+					@Override
+					public void run() {
+						List<PatternValueNode> keyPatterns = search.findMinListOfKeyPatterns();
+						if (keyPatterns != null)
+							resultsQueue.addAll(keyPatterns);
+					}
+				};
+
+				timeoutBlock.addBlock(block);
+
+			} catch (Throwable e) {
+				System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
+				resultsQueue.clear();			
+			} finally {
+				try {
+					
+					//sleep 10 milliseconds
+					Thread.sleep(10);
+					
+				} catch (InterruptedException e2) {
+					
+				}	
+			}
+			
+			
 			t1 = System.currentTimeMillis();
 			
 			tmpResult[1] = df.format((double)(t1 - t0)/1000);
 
-			System.out.println("num key patterns: " + keyPatterns.size());
+			System.out.println("num key patterns: " + resultsQueue.size());
 			System.out.println("Total Time: " + (t1 - t0) + " ms");
 
 			// Create min values covering mups
@@ -121,12 +156,39 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 			t0 = System.currentTimeMillis();
 			NaiveDataCollection naive = new NaiveDataCollection(
 					dataToCheck.cardinalities, mups);
-			keyPatterns = naive.findMinListOfKeyPatterns();
+			resultsQueue.clear();
+			try {
+				DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(Constants.TIMEOUT);
+				DataCollectionRunnable block = new DataCollectionRunnable(resultsQueue) {
+
+					@Override
+					public void run() {
+						List<PatternValueNode> keyPatterns = naive.findMinListOfKeyPatterns();
+						if (keyPatterns != null)
+							resultsQueue.addAll(keyPatterns);
+					}
+				};
+
+				timeoutBlock.addBlock(block);
+
+			} catch (Throwable e) {
+				System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
+				resultsQueue.clear();			
+			} finally {
+				try {
+					
+					//sleep 10 milliseconds
+					Thread.sleep(10);
+					
+				} catch (InterruptedException e2) {
+					
+				}	
+			}
 			t1 = System.currentTimeMillis();
 			
 			tmpResult[2] = df.format((double)(t1 - t0)/1000);
 
-			System.out.println("num key patterns: " + keyPatterns.size());
+			System.out.println("num key patterns: " + resultsQueue.size());
 			System.out.println("Total Time: " + (t1 - t0) + " ms");
 			
 			testResults.add(tmpResult);

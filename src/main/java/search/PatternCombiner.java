@@ -43,6 +43,9 @@ public class PatternCombiner extends NaiveSearch {
 			// coverageHashNextLevel
 			for (Map.Entry<Pattern, Integer> e1 : coverageHashThisLevel
 					.entrySet()) {
+				if (Thread.currentThread().isInterrupted())
+					return null;
+				
 				Pattern curPattern = e1.getKey();
 				Map<Integer, Pattern> replacedPositionToParentPatternMap = curPattern
 						.genParentsBasedOnRule2();

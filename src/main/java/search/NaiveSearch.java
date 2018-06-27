@@ -90,7 +90,6 @@ public class NaiveSearch {
 		// nodesVisited.add(p);
 	}
 
-
 	public void updateDebugMUPSSize(long num) {
 		mupsSize += num;
 	}

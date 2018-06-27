@@ -41,6 +41,9 @@ public class DataCollectionGreedySearch extends NaiveDataCollection {
 
 			// Get next key pattern
 			newNodeFound = findPatternValue(patternsNeedsToBeCovered);
+			
+			if (Thread.currentThread().isInterrupted())
+				return null;
 
 			if (newNodeFound != null)
 				minListOfKeyPatterns.add(newNodeFound);
@@ -67,6 +70,7 @@ public class DataCollectionGreedySearch extends NaiveDataCollection {
 		int filter = 0;
 
 		while (!patternStack.isEmpty()) {
+
 			PatternValueNode curPatternValueNode = patternStack.pop();
 
 			// If the current node has an coverage lower than filter, prune it
@@ -116,7 +120,10 @@ public class DataCollectionGreedySearch extends NaiveDataCollection {
 
 		int filter = 0;
 
-		while (!patternStack.isEmpty()) {
+		while (!patternStack.isEmpty()) {			
+			if (Thread.currentThread().isInterrupted())
+				return null;
+			
 			PatternValueNode curPatternValueNode = patternStack.pop();
 
 			// If the current node has an coverage lower than filter, prune it

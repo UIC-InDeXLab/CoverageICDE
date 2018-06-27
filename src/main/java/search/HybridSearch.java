@@ -40,6 +40,8 @@ public class HybridSearch extends NaiveSearch {
 		patternToCheckStack.push(root);
 
 		while (!patternToCheckStack.isEmpty()) {
+			if (Thread.currentThread().isInterrupted())
+				return null;
 
 			Pattern currentPattern = patternToCheckStack.pop();
 			currentPattern.visitId = seq.getAndIncrement();

@@ -91,6 +91,9 @@ public class NaiveDataCollection {
 		}
 
 		for (int attrId = 1; attrId < this.dimensions; attrId++) {
+			if (Thread.currentThread().isInterrupted())
+				return null;
+			
 			List<char[]> tempPatternList = new LinkedList<char[]>(
 					keyPatternList);
 			keyPatternList.clear();
@@ -112,6 +115,9 @@ public class NaiveDataCollection {
 			// find the pattern covers the most uncovered patterns
 			char[] patternValueFound = findMaxCoverPatternValue(coverage, keyPatternList);
 			
+			if (Thread.currentThread().isInterrupted())
+				return null;
+			
 			// Update coverage
 			for (int i = 0; i < this.numberOfPatterns; i++)
 				if (!coverage[i] && Pattern.covers(mupsList.get(i).data,patternValueFound))
@@ -131,6 +137,9 @@ public class NaiveDataCollection {
 		char[] patternToReturn = null;
 		int coverageOfPatternToReturn = 0;
 		for (char[] currentPattern : curKeyPatternList) {
+			if (Thread.currentThread().isInterrupted())
+				return null;
+			
 			int curCoverage = 0;
 			for (int i = 0; i < this.numberOfPatterns; i++)
 				if (!currentCoverage[i] && Pattern.covers(mupsList.get(i).data,currentPattern))

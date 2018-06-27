@@ -7,8 +7,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import cli.Cli;
@@ -20,6 +22,8 @@ import search.NaiveSearch;
 import search.PatternBreaker;
 import search.PatternBreakerOriginal;
 import search.PatternCombiner;
+import timing.MupSearchRunnable;
+import timing.MupSearchTimeout;
 import utils.FileIOHandle;
 
 public class CrimeDataTest {
@@ -58,7 +62,7 @@ public class CrimeDataTest {
 
 		int[] chosenAttributeIds = {26,27,28,29};
 		int[] cardinalities = {2,4,4,7};
-		double[] thresholdRates = new double[]{0.01};
+		double[] thresholdRates = new double[]{0.001};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
@@ -73,31 +77,110 @@ public class CrimeDataTest {
 			int threshold = (int) (thresholdRate * dataToCheck.getNumRecords());
 			
 			Map<String, Long> debugInfo = new HashMap<String, Long>();
-			Set<Pattern> mups = new HashSet<Pattern>();
 
 			for (String algorithm : algorithms) {
 				long t0 = System.currentTimeMillis();
 
-				if (algorithm.equals("greedy")) {
-					GreedySearch search = new GreedySearch(dataToCheck);
-					mups = search.findMaxUncoveredPatternSet(threshold);
-					debugInfo = search.getDebugInfo();
-				} else if (algorithm.equals("hybrid")) {
+				Queue<Pattern> resultsQueue = new LinkedList<Pattern>();
+				if (algorithm.equals("hybrid")) {
 					HybridSearch search = new HybridSearch(dataToCheck);
-					mups = search.findMaxUncoveredPatternSet(threshold);
-					debugInfo = search.getDebugInfo();
-				} else if (algorithm.equals("PatternBreaker")) {
-					PatternBreaker search = new PatternBreaker(dataToCheck);
-					mups = search.findMaxUncoveredPatternSet(threshold);
+										
+					try {
+						MupSearchTimeout timeoutBlock = new MupSearchTimeout(Constants.TIMEOUT);
+						MupSearchRunnable block = new MupSearchRunnable(resultsQueue) {
+
+							@Override
+							public void run() {
+								Set<Pattern> mups = search.findMaxUncoveredPatternSet(threshold);
+								if (mups != null)
+									resultsQueue.addAll(mups);
+							}
+						};
+
+						timeoutBlock.addBlock(block);
+
+					} catch (Throwable e) {
+						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
+						resultsQueue.clear();			
+					} finally {
+						System.out.println("Wait for 1 second");
+						try {
+							
+							//sleep 10 milliseconds
+							Thread.sleep(10);
+							
+						} catch (InterruptedException e2) {
+							
+						}	
+					}
+					
 					debugInfo = search.getDebugInfo();
 				} else if (algorithm.equals("PatternBreakerOriginal")) {
 					PatternBreakerOriginal search = new PatternBreakerOriginal(
 							dataToCheck);
-					mups = search.findMaxUncoveredPatternSet(threshold);
+					
+					try {
+						MupSearchTimeout timeoutBlock = new MupSearchTimeout(Constants.TIMEOUT);
+						MupSearchRunnable block = new MupSearchRunnable(resultsQueue) {
+
+							@Override
+							public void run() {
+								Set<Pattern> mups = search.findMaxUncoveredPatternSet(threshold);
+								if (mups != null)
+									resultsQueue.addAll(mups);
+							}
+						};
+
+						timeoutBlock.addBlock(block);
+
+					} catch (Throwable e) {
+						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
+						resultsQueue.clear();			
+					} finally {
+						System.out.println("Wait for 1 second");
+						try {
+							
+							//sleep 10 milliseconds
+							Thread.sleep(10);
+							
+						} catch (InterruptedException e2) {
+							
+						}	
+					}
+					
 					debugInfo = search.getDebugInfo();
 				} else if (algorithm.equals("PatternCombiner")) {
 					PatternCombiner search = new PatternCombiner(dataToCheck);
-					mups = search.findMaxUncoveredPatternSet(threshold);
+					
+					try {
+						MupSearchTimeout timeoutBlock = new MupSearchTimeout(Constants.TIMEOUT);
+						MupSearchRunnable block = new MupSearchRunnable(resultsQueue) {
+
+							@Override
+							public void run() {
+								Set<Pattern> mups = search.findMaxUncoveredPatternSet(threshold);
+								if (mups != null)
+									resultsQueue.addAll(mups);
+							}
+						};
+
+						timeoutBlock.addBlock(block);
+
+					} catch (Throwable e) {
+						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
+						resultsQueue.clear();			
+					} finally {
+						System.out.println("Wait for 1 second");
+						try {
+							
+							//sleep 10 milliseconds
+							Thread.sleep(10);
+							
+						} catch (InterruptedException e2) {
+							
+						}	
+					}
+					
 					debugInfo = search.getDebugInfo();
 				}
 
@@ -107,7 +190,7 @@ public class CrimeDataTest {
 						.replace("0", "-");
 				System.out.println(breakline);
 				System.out.println("Algo: " + algorithm);
-				System.out.println("# of MUPs: " + mups.size());
+				System.out.println("# of MUPs: " + resultsQueue.size());
 				System.out.println("Total Time: " + timespan + " ms");
 				System.out.println("Visited: "
 						+ debugInfo.get(NaiveSearch.DEBUG_NODES_VISITED));

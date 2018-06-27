@@ -32,6 +32,9 @@ public class DataCollectionBestFirstSearch extends NaiveDataCollection {
 
 		// There are still patterns to cover
 		while (coveredPatternsBitSet.nextClearBit(0) < this.numberOfPatterns) {
+			if (Thread.currentThread().isInterrupted())
+				return null;
+			
 			// Get patternToIgnore BitSet
 			BitSet patternsToIgnoreBitSet = (BitSet) coveredPatternsBitSet
 					.clone();
@@ -92,7 +95,7 @@ public class DataCollectionBestFirstSearch extends NaiveDataCollection {
 			tmpBitSet.and(this.attrValuesMatchedByPatterns[getValueIdx(0, c)]);
 			patternTree.add(new PatternValueNode(c, tmpBitSet));
 		}
-		while (!patternTree.isEmpty()) {
+		while (!patternTree.isEmpty()) {			
 			PatternValueNode curPatternValueNode = patternTree.poll();
 			if (curPatternValueNode.ifComplete())
 				return curPatternValueNode;

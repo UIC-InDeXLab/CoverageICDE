@@ -35,6 +35,9 @@ public class PatternBreakerOriginal extends NaiveSearch {
 
 		// Top-down mup traveral
 		while (!curPatternSet.isEmpty()) {
+			if (Thread.currentThread().isInterrupted())
+				return null;
+			
 			Set<Pattern> patternsToRemove = new HashSet<Pattern>();
 			for (Pattern currentPattern : curPatternSet) {
 				
