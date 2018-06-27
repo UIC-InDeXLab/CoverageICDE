@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import dataCollectionNew.DataCollectionBestFirstSearchRepeat;
+import dataCollectionNew.DataCollectionBestFirstSearch;
 import dataCollectionNew.PatternValueNode;
 import io.DataSet;
 import pattern.Pattern;
@@ -12,7 +12,7 @@ import search.HybridSearch;
 import search.NaiveSearch;
 import utils.Plot;
 
-public class DataCollectionTest {
+public class DataCollectionBestFirstSearchTest {
 	public static void main(String[] args) {
 		String fileName = "data/airbnb_1million.csv";
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
@@ -48,7 +48,7 @@ public class DataCollectionTest {
 		System.out.println(breakline + " Create Min Values " + breakline);
 
 		t0 = System.currentTimeMillis();
-		DataCollectionBestFirstSearchRepeat s = new DataCollectionBestFirstSearchRepeat(
+		DataCollectionBestFirstSearch s = new DataCollectionBestFirstSearch(
 				dataToCheck.cardinalities, mups);
 		List<PatternValueNode> keyPatterns = s.findMinListOfKeyPatterns();
 		t1 = System.currentTimeMillis();

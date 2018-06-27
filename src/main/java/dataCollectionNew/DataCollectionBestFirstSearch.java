@@ -12,9 +12,9 @@ import java.util.stream.IntStream;
 
 import pattern.Pattern;
 
-public class DataCollectionBestFirstSearchRepeat extends NaiveDataCollection {
+public class DataCollectionBestFirstSearch extends NaiveDataCollection {
 
-	public DataCollectionBestFirstSearchRepeat(int[] cardinality,
+	public DataCollectionBestFirstSearch(int[] cardinality,
 			Set<Pattern> mups) {
 		super(cardinality, mups);
 	}
@@ -73,16 +73,18 @@ public class DataCollectionBestFirstSearchRepeat extends NaiveDataCollection {
 			if (curPatternValueNode.ifComplete())
 				return curPatternValueNode;
 			else {
-				Map<Character, BitSet> charAndBitSet = new HashMap<Character, BitSet>();
-				for (char c : getValueRange(
-						curPatternValueNode.getDimension())) {
-					charAndBitSet.put(c,
-							attrValuesMatchedByPatterns[getValueIdx(
-									curPatternValueNode.getDimension(), c)]);
+
+				char[] characterArray = getValueRange(
+						curPatternValueNode.getDimension());
+				BitSet[] coverageArray = new BitSet[characterArray.length];
+				for (int i = 0; i < characterArray.length; i++) {
+					coverageArray[i] = attrValuesMatchedByPatterns[getValueIdx(
+							curPatternValueNode.getDimension(),
+							characterArray[i])];
 				}
 
 				List<PatternValueNode> listOfPatterns = curPatternValueNode
-						.createChildren(charAndBitSet);
+						.createChildren(characterArray, coverageArray);
 				if (listOfPatterns != null && listOfPatterns.size() > 0)
 					patternTree.addAll(listOfPatterns);
 			}
@@ -104,16 +106,17 @@ public class DataCollectionBestFirstSearchRepeat extends NaiveDataCollection {
 			if (curPatternValueNode.ifComplete())
 				return curPatternValueNode;
 			else {
-				Map<Character, BitSet> charAndBitSet = new HashMap<Character, BitSet>();
-				for (char c : getValueRange(
-						curPatternValueNode.getDimension())) {
-					charAndBitSet.put(c,
-							attrValuesMatchedByPatterns[getValueIdx(
-									curPatternValueNode.getDimension(), c)]);
+				char[] characterArray = getValueRange(
+						curPatternValueNode.getDimension());
+				BitSet[] coverageArray = new BitSet[characterArray.length];
+				for (int i = 0; i < characterArray.length; i++) {
+					coverageArray[i] = attrValuesMatchedByPatterns[getValueIdx(
+							curPatternValueNode.getDimension(),
+							characterArray[i])];
 				}
 
 				List<PatternValueNode> listOfPatterns = curPatternValueNode
-						.createChildren(charAndBitSet);
+						.createChildren(characterArray, coverageArray);
 				if (listOfPatterns != null && listOfPatterns.size() > 0)
 					patternTree.addAll(listOfPatterns);
 			}

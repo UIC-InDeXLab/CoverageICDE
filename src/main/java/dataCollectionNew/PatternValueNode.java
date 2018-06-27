@@ -44,12 +44,14 @@ public class PatternValueNode implements Comparable<PatternValueNode> {
 	}
 
 	public List<PatternValueNode> createChildren(
-			Map<Character, BitSet> charAndCoverage) {
+			char[] characterArray, BitSet[] coverageArray) {
 		if (!ifComplete()) {
 			List<PatternValueNode> childrenList = new LinkedList<PatternValueNode>();
-			for (Map.Entry<Character, BitSet> e : charAndCoverage.entrySet()) {
+			int len = characterArray.length;
+			
+			for (int i = 0; i < len; i++) {
 				PatternValueNode newNode = new PatternValueNode(this,
-						e.getKey(), e.getValue());
+						characterArray[i], coverageArray[i]);
 				if (newNode.numCoveredPatterns > 0)
 					childrenList.add(newNode);
 			}
@@ -58,25 +60,25 @@ public class PatternValueNode implements Comparable<PatternValueNode> {
 			return null;
 	}
 
-	public int compareTo(PatternValueNode other) {
-		if (Math.pow(this.numCoveredPatterns, this.getDimension()) == Math
-				.pow(other.numCoveredPatterns, other.getDimension())) {
-			return 0;
-		} else if (Math.pow(this.numCoveredPatterns, this.getDimension()) > Math
-				.pow(other.numCoveredPatterns, other.getDimension())) {
-			return -1;
-		} else
-			return 1;
-	}
+//	public int compareTo(PatternValueNode other) {
+//		if (Math.pow(this.numCoveredPatterns, this.getDimension()) == Math
+//				.pow(other.numCoveredPatterns, other.getDimension())) {
+//			return 0;
+//		} else if (Math.pow(this.numCoveredPatterns, this.getDimension()) > Math
+//				.pow(other.numCoveredPatterns, other.getDimension())) {
+//			return -1;
+//		} else
+//			return 1;
+//	}
 
-	// public int compareTo(PatternValueNode other) {
-	// if (this.numCoveredPatterns == other.numCoveredPatterns) {
-	// return 0;
-	// } else if (this.numCoveredPatterns > other.numCoveredPatterns ) {
-	// return -1;
-	// } else
-	// return 1;
-	// }
+	 public int compareTo(PatternValueNode other) {
+	 if (this.numCoveredPatterns == other.numCoveredPatterns) {
+	 return 0;
+	 } else if (this.numCoveredPatterns > other.numCoveredPatterns ) {
+	 return -1;
+	 } else
+	 return 1;
+	 }
 
 	public char[] getData() {
 		return this.data;
