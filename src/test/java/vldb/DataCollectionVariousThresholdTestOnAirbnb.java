@@ -134,10 +134,11 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {
 			String msg = "";
-			String[] resultItemNamesArray = new String[algorithms.length + 1];
+			String[] resultItemNamesArray = new String[3];
 			resultItemNamesArray[0] = "threshold";
-			for (int i = 0; i < algorithms.length; i++)
-				resultItemNamesArray[i + 1] = algorithms[i];
+			resultItemNamesArray[1] = "greedy";
+			resultItemNamesArray[2] = "naive";
+
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
 			for (String[] resultRecord : testResults) {
