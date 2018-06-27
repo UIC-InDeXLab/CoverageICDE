@@ -120,7 +120,7 @@ public class DataCollectionGreedySearch extends NaiveDataCollection {
 			PatternValueNode curPatternValueNode = patternStack.pop();
 
 			// If the current node has an coverage lower than filter, prune it
-			if (curPatternValueNode.numCoveredPatterns < filter)
+			if (curPatternValueNode.numCoveredPatterns <= filter)
 				continue;
 			// Find a node that might has the max coverage, we save it and
 			// update the filter
