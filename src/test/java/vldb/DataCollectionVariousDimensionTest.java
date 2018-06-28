@@ -140,6 +140,7 @@ public class DataCollectionVariousDimensionTest {
 
 				tmpResult[tmpResultIdx*3 + 1] = df.format((double) (t1 - t0) / 1000);
 				tmpResult[tmpResultIdx*3 + 3] = resultsQueue.size() + "";
+				tmpResultIdx++;
 
 //				System.out.println("num key patterns: " + resultsQueue.size());
 //				System.out.println("Total Time: " + (t1 - t0) + " ms");
