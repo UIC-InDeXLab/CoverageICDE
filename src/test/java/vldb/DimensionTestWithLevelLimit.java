@@ -65,8 +65,8 @@ public class DimensionTestWithLevelLimit {
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-		int[] dimensions = new int[]{5, 10, 15, 20, 25, 30};
-		double[] maxLevelRates = new double[]{0.2, 0.4, 0.6, 0.8, 1.0};
+		int[] dimensions = new int[]{15, 17, 19, 21, 23, 25};
+		int[] maxLevels = new int[]{3, 5, 7, 9};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
@@ -75,13 +75,12 @@ public class DimensionTestWithLevelLimit {
 
 		for (int d : dimensions) {
 			
-			String[] resultRecord = new String[maxLevelRates.length + 1];
+			String[] resultRecord = new String[maxLevels.length + 1];
 			resultRecord[0] = d + "";
 			int resultRecordIdx = 1;
 			
-			for (double maxLevelRate : maxLevelRates) {
+			for (int maxLevel  : maxLevels) {
 				int threshold = (int) (thresholdRate * n);
-				int maxLevel = (int) (maxLevelRate * d);
 
 				DataSet dataToCheck = new DataSet(fileName,
 						Arrays.copyOfRange(cardinalities, 0, d),
@@ -129,9 +128,9 @@ public class DimensionTestWithLevelLimit {
 
 					resultRecord[resultRecordIdx++] = timespan + "";
 
-					String breakline = String.format("%0" + 50 + "d", 0)
+					String breakline = String.format("%0" + 25 + "d", 0)
 							.replace("0", "-");
-					System.out.println(breakline);
+					System.out.println(breakline + " d = " + d + ", maxLevel = " + maxLevel + " " + breakline);
 					System.out.println("Algo: " + algorithm);
 					System.out.println("# of MUPs: " + resultsQueue.size());
 					System.out.println("Total Time: " + timespan + " ms");
@@ -158,11 +157,11 @@ public class DimensionTestWithLevelLimit {
 
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {
 			String msg = "";
-			String[] resultItemNamesArray = new String[maxLevelRates.length
+			String[] resultItemNamesArray = new String[maxLevels.length
 					+ 1];
 			resultItemNamesArray[0] = "dimension";
-			for (int i = 0; i < maxLevelRates.length; i++)
-				resultItemNamesArray[i + 1] = maxLevelRates[i] + "";
+			for (int i = 0; i < maxLevels.length; i++)
+				resultItemNamesArray[i + 1] = maxLevels[i] + "";
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
 			for (String[] testResultRecord : testResultList) {

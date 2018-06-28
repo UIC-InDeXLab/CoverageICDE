@@ -161,9 +161,9 @@ public class DimensionTest {
 
 				long timespan = System.currentTimeMillis() - t0;
 
-				String breakline = String.format("%0" + 50 + "d", 0)
+				String breakline = String.format("%0" + 25 + "d", 0)
 						.replace("0", "-");
-				System.out.println(breakline);
+				System.out.println(breakline + " d = " + d + " " + breakline);
 				System.out.println("Algo: " + algorithm);
 				System.out.println("# of MUPs: " + resultsQueue.size());
 				System.out.println("Total Time: " + timespan + " ms");
