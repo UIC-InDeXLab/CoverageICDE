@@ -22,6 +22,9 @@ public class DataCollectionGreedySearch extends NaiveDataCollection {
 
 	public List<PatternValueNode> findMinListOfKeyPatterns() {
 		List<PatternValueNode> minListOfKeyPatterns = new LinkedList<PatternValueNode>();
+		
+		if (this.mupsList == null)
+			return minListOfKeyPatterns;
 
 		PatternValueNode newNodeFound = findPatternValue();
 		if (newNodeFound == null)

@@ -5,13 +5,17 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.stream.IntStream;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 
+import io.DataSet;
 import pattern.Pattern;
 
 public class NaiveDataCollection {
@@ -21,10 +25,16 @@ public class NaiveDataCollection {
 	public int[] cardinalities;
 	public int[] cardinalitiesSum;
 	
-	private List<Pattern> mupsList;
+	public List<Pattern> mupsList;
 
 	public NaiveDataCollection(int[] cardinality, Set<Pattern> mups) {
 		this.numberOfPatterns = mups.size();
+		
+		if (mups.isEmpty()) {
+			mupsList = null;
+			return;
+		}
+		
 		this.dimensions = mups.iterator().next().getDimension();
 		PatternValueNode.maxDimensions = this.dimensions;
 		this.cardinalities = Arrays.copyOf(cardinality, cardinality.length);
@@ -83,6 +93,9 @@ public class NaiveDataCollection {
 
 	public List<PatternValueNode> findMinListOfKeyPatterns() {
 		List<PatternValueNode> minListOfKeyPatterns = new LinkedList<PatternValueNode>();
+		
+		if (mupsList == null)
+			return minListOfKeyPatterns;
 
 		// Get all patterns
 		List<char[]> keyPatternList = new LinkedList<char[]>();
@@ -153,6 +166,81 @@ public class NaiveDataCollection {
 		}
 		
 		return patternToReturn;
+	}
+	
+	/**
+	 * Get all descendant patterns of a set of patterns at level l
+	 * @param mups
+	 * @param level
+	 * @return
+	 */
+	public static Set<Pattern> getAllDescendentPatternsAtLevel(Set<Pattern> mups, int level, DataSet dataSet) {
+		Set<Pattern> descendantPatterns = new HashSet<Pattern>();
+		
+		for (Pattern mup : mups) {
+			descendantPatterns.addAll(getAllDescendentPatternsAtLevel(mup, level, dataSet));
+		}		
+		
+		return descendantPatterns;
+	}
+	
+	/**
+	 * Get all descendant patterns of a single pattern at level l
+	 * @param mup
+	 * @param level
+	 * @return
+	 */
+	public static Set<Pattern> getAllDescendentPatternsAtLevel(Pattern mup, int level, DataSet dataSet) {
+		
+		Set<Pattern> descendantPatterns = new HashSet<Pattern>();
+		
+		if (mup.level > level) 
+			return descendantPatterns;
+		else if (mup.level == level) {
+			descendantPatterns.add(mup);
+			return descendantPatterns;
+		}
+		else {
+			char[] rawPattern = mup.data;
+			int[] xIndexes = new int[mup.getDimension() - mup.level];
+			
+			int tmpIdx = 0;
+			
+			for (int i = 0; i < mup.getDimension(); i++) {
+				if (mup.getValue(i) == 'x')
+					xIndexes[tmpIdx++] = i;
+			}
+
+			Iterator<int[]> indexesSetChosenToChange = CombinatoricsUtils.combinationsIterator(xIndexes.length, level - mup.level);
+			
+			while (indexesSetChosenToChange.hasNext()) {
+				int[] indexesChosenToChange = indexesSetChosenToChange.next();
+				
+				List<char[]> intermediatePatternDataList = new LinkedList<char[]>();
+				intermediatePatternDataList.add(rawPattern);
+				
+				for (int chosenIdx : indexesChosenToChange) {
+					List<char[]> tmpPatternDataList = new LinkedList<char[]>(intermediatePatternDataList);
+					intermediatePatternDataList.clear();
+					
+					for (char c : dataSet.getValueRange(chosenIdx)) {
+						for (char[] patternData : tmpPatternDataList) {
+							char[] newPatternData = patternData.clone();
+							newPatternData[chosenIdx] = c;
+							intermediatePatternDataList.add(newPatternData);
+						}
+					}
+				}
+				
+				// We get all new patterns
+				for (char[] newPatternData : intermediatePatternDataList) {
+					descendantPatterns.add(new Pattern(newPatternData));
+				}
+				
+			}
+		}		
+		
+		return descendantPatterns;
 	}
 	
 	/**

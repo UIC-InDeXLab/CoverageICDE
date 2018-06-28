@@ -109,7 +109,7 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 			
 
 			t0 = System.currentTimeMillis();
-			DataCollectionBestFirstSearch search = new DataCollectionBestFirstSearch(
+			DataCollectionGreedySearch search = new DataCollectionGreedySearch(
 					dataToCheck.cardinalities, mups);
 			
 			Queue<PatternValueNode> resultsQueue = new LinkedList<PatternValueNode>();

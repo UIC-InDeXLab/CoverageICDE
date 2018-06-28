@@ -15,6 +15,7 @@ import java.util.Set;
 
 import cli.Cli;
 import dataCollectionNew.DataCollectionBestFirstSearch;
+import dataCollectionNew.DataCollectionGreedySearch;
 import dataCollectionNew.NaiveDataCollection;
 import dataCollectionNew.PatternValueNode;
 import io.DataSet;
@@ -53,7 +54,7 @@ public class DataCollectionVariousDimensionTest {
 	public static void main(String[] args) {
 		Cli cmd = new Cli(args);
 		cmd.parse();
-		
+
 		DecimalFormat df = new DecimalFormat("#.###");
 
 		String fileName = cmd.getArgument(Cli.CMD_FILE_SHORT);
@@ -66,14 +67,16 @@ public class DataCollectionVariousDimensionTest {
 				"PatternCombiner"};
 
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
-		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-		int[] dimensions = new int[]{5, 7, 9, 11, 13, 15, 17, 19, 21};
+				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
+				33, 34, 35, 36, 37, 38, 39, 40, 41};
+		int[] cardinalities = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+		int[] dimensions = new int[]{5, 10, 15, 20, 25, 30, 35};
+		int[] maxLevels = {1, 2, 3, 4};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
-		
+
 		List<String[]> testResults = new ArrayList<String[]>();
 
 		for (int d : dimensions) {
@@ -85,111 +88,120 @@ public class DataCollectionVariousDimensionTest {
 
 			Map<String, Long> debugInfo = new HashMap<String, Long>();
 
-			String[] tmpResult = new String[3];
+			String[] tmpResult = new String[maxLevels.length + 1];
 			tmpResult[0] = d + "";
+			
+			int tmpResultIdx = 1;
 
 			HybridSearch ss = new HybridSearch(dataToCheck);
 
-			long t0 = System.currentTimeMillis();
-			Set<Pattern> mups = ss.findMaxUncoveredPatternSet(threshold);
-			long t1 = System.currentTimeMillis();
+			for (int maxLevel : maxLevels) {
 
-			String breakline = String.format("%0" + 20 + "d", 0).replace("0",
-					"-");
+				long t0 = System.currentTimeMillis();
+				Set<Pattern> mups = ss.findMaxUncoveredPatternSet(threshold, maxLevel);
+				long t1 = System.currentTimeMillis();
 
-			System.out.println(breakline + " Create Mups d = " + d + breakline);
-			System.out.println("Algo: HybridRandomSearch");
-			System.out.println("# of MUPs: " + mups.size());
-			System.out.println("Total Time: " + (t1 - t0) + " ms");
-			System.out.println("Visited: "
-					+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+				String breakline = String.format("%0" + 20 + "d", 0)
+						.replace("0", "-");
 
-			// Create min values covering mups
-			System.out.println(breakline
-					+ " Create Min Values using GreedySearch " + breakline);
 
-			t0 = System.currentTimeMillis();
-			DataCollectionBestFirstSearch search = new DataCollectionBestFirstSearch(
-					dataToCheck.cardinalities, mups);
-			Queue<PatternValueNode> resultsQueue = new LinkedList<PatternValueNode>();
-			try {
-				DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(Constants.TIMEOUT);
-				DataCollectionRunnable block = new DataCollectionRunnable(resultsQueue) {
+				// Create min values covering mups				
+				mups = DataCollectionBestFirstSearch.getAllDescendentPatternsAtLevel(mups, maxLevel, dataToCheck);
 
-					@Override
-					public void run() {
-						List<PatternValueNode> keyPatterns = search.findMinListOfKeyPatterns();
-						if (keyPatterns != null)
-							resultsQueue.addAll(keyPatterns);
-					}
-				};
+				
+				DataCollectionGreedySearch search = new DataCollectionGreedySearch(
+						dataToCheck.cardinalities, mups);
+				Queue<PatternValueNode> resultsQueue = new LinkedList<PatternValueNode>();
+				t0 = System.currentTimeMillis();
+				try {
+					DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(
+							Constants.TIMEOUT);
+					DataCollectionRunnable block = new DataCollectionRunnable(
+							resultsQueue) {
 
-				timeoutBlock.addBlock(block);
+						@Override
+						public void run() {
+							List<PatternValueNode> keyPatterns = search
+									.findMinListOfKeyPatterns();
+							if (keyPatterns != null)
+								resultsQueue.addAll(keyPatterns);
+						}
+					};
 
-			} catch (Throwable e) {
-				System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
-				resultsQueue.clear();			
-			} finally {
+					timeoutBlock.addBlock(block);
+
+				} catch (Throwable e) {
+					System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT
+							+ " seconds). Stopped the test.");
+					resultsQueue.clear();
+				} finally {
+				}
+				t1 = System.currentTimeMillis();
+
+				tmpResult[tmpResultIdx++] = df.format((double) (t1 - t0) / 1000);
+
+//				System.out.println("num key patterns: " + resultsQueue.size());
+//				System.out.println("Total Time: " + (t1 - t0) + " ms");
+
+//				// Create min values covering mups
+//				System.out.println(breakline
+//						+ " Create Min Values using NaiveSearch " + breakline);
+//
+//				t0 = System.currentTimeMillis();
+//				NaiveDataCollection naive = new NaiveDataCollection(
+//						dataToCheck.cardinalities, mups);
+//				resultsQueue.clear();
+//				try {
+//					DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(
+//							Constants.TIMEOUT);
+//					DataCollectionRunnable block = new DataCollectionRunnable(
+//							resultsQueue) {
+//
+//						@Override
+//						public void run() {
+//							List<PatternValueNode> keyPatterns = naive
+//									.findMinListOfKeyPatterns();
+//							if (keyPatterns != null)
+//								resultsQueue.addAll(keyPatterns);
+//						}
+//					};
+//
+//					timeoutBlock.addBlock(block);
+//
+//				} catch (Throwable e) {
+//					System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT
+//							+ " seconds). Stopped the test.");
+//					resultsQueue.clear();
+//				} finally {
+//				}
+//				t1 = System.currentTimeMillis();
+//
+//				tmpResult[2] = df.format((double) (t1 - t0) / 1000);
+//
+//				System.out.println("num key patterns: " + resultsQueue.size());
+//				System.out.println("Total Time: " + (t1 - t0) + " ms");
 			}
-			t1 = System.currentTimeMillis();
 			
-			tmpResult[1] = df.format((double)(t1 - t0)/1000);
+			System.out.println(String.join(",", tmpResult));
 
-			System.out.println("num key patterns: " + resultsQueue.size());
-			System.out.println("Total Time: " + (t1 - t0) + " ms");
-
-			// Create min values covering mups
-			System.out.println(breakline
-					+ " Create Min Values using NaiveSearch " + breakline);
-
-			t0 = System.currentTimeMillis();
-			NaiveDataCollection naive = new NaiveDataCollection(
-					dataToCheck.cardinalities, mups);
-			resultsQueue.clear();
-			try {
-				DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(Constants.TIMEOUT);
-				DataCollectionRunnable block = new DataCollectionRunnable(resultsQueue) {
-
-					@Override
-					public void run() {
-						List<PatternValueNode> keyPatterns = naive.findMinListOfKeyPatterns();
-						if (keyPatterns != null)
-							resultsQueue.addAll(keyPatterns);
-					}
-				};
-
-				timeoutBlock.addBlock(block);
-
-			} catch (Throwable e) {
-				System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
-				resultsQueue.clear();			
-			} finally {
-			}
-			t1 = System.currentTimeMillis();
-			
-			tmpResult[2] = df.format((double)(t1 - t0)/1000);
-
-			System.out.println("num key patterns: " + resultsQueue.size());
-			System.out.println("Total Time: " + (t1 - t0) + " ms");
-			
 			testResults.add(tmpResult);
 		}
 
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {
 			String msg = "";
-			String[] resultItemNamesArray = new String[3];
+			String[] resultItemNamesArray = new String[maxLevels.length + 1];
 			resultItemNamesArray[0] = "dimension";
-			resultItemNamesArray[1] = "greedy";
-			resultItemNamesArray[2] = "naive";
-
+			
+			for (int i = 0; i < maxLevels.length; i++) {
+				resultItemNamesArray[i + 1] = maxLevels[i] + "";
+			}
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
 			for (String[] resultRecord : testResults) {
-				
+
 				msg += String.join(",", resultRecord) + "\n";
 
 			}
-
 
 			FileIOHandle.writeTextToFile(msg, outputFileName, DIR_RESULT);
 		}
