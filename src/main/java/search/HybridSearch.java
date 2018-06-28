@@ -30,6 +30,10 @@ public class HybridSearch extends NaiveSearch {
 
 	@Override
 	public Set<Pattern> findMaxUncoveredPatternSet(int threshold) {
+		return findMaxUncoveredPatternSet(threshold, Integer.MAX_VALUE);
+	}
+	
+	public Set<Pattern> findMaxUncoveredPatternSet(int threshold, int maxLevel) {
 
 		MupSet mups = new MupSet(curDataSet.cardinalities);
 		Stack<Pattern> patternToCheckStack = new Stack<Pattern>();
@@ -44,11 +48,14 @@ public class HybridSearch extends NaiveSearch {
 				return null;
 
 			Pattern currentPattern = patternToCheckStack.pop();
+			
 			currentPattern.visitId = seq.getAndIncrement();
 
 			// Check coverage
 			boolean ifUncovered = true;
 			
+			if (currentPattern.level > maxLevel)
+				continue;			
 			
 			// If pattern dominates mups, we know it is not covered.
 			if ((currentPattern.parentVisitId < mups.lastAddedMupId

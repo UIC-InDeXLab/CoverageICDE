@@ -79,6 +79,18 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>dimensionTestLevelLimit</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<mainClass>vldb.DimensionTestWithLevelLimit</mainClass>
+							<classpathScope>test</classpathScope>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms8G</argLine>
+						</configuration>
+					</execution>
+					<execution>
 						<id>thresholdTestOnAirbnb</id>
 						<goals>
 							<goal>exec</goal>
