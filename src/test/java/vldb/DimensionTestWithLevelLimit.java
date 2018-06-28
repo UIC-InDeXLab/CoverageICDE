@@ -30,7 +30,7 @@ public class DimensionTestWithLevelLimit {
 	private static final String DIR_RESULT = "result/";
 
 	private static String genFileName(Cli cmd) {
-		String s = "dimensionTest";
+		String s = "dimensionTestWithLevelLimit";
 
 		for (String debugType : cmd.commandTypes) {
 			if (cmd.getArgument(debugType) != null && !debugType.equals("a")) {
@@ -126,7 +126,7 @@ public class DimensionTestWithLevelLimit {
 
 					long timespan = System.currentTimeMillis() - t0;
 
-					resultRecord[resultRecordIdx++] = timespan + "";
+					resultRecord[resultRecordIdx++] = df.format((double) (timespan) / 1000);
 					
 					if (resultsQueue.size() > 0)
 						resultRecord[resultRecord.length - 1] = resultsQueue.size() + "";
