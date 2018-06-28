@@ -72,7 +72,7 @@ public class DataCollectionVariousDimensionTest {
 		int[] cardinalities = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 		int[] dimensions = new int[]{5, 10, 15, 20, 25, 30, 35};
-		int[] maxLevels = {1, 2, 3, 4};
+		int[] maxLevels = {2, 4, 6, 8};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
@@ -96,6 +96,12 @@ public class DataCollectionVariousDimensionTest {
 			HybridSearch ss = new HybridSearch(dataToCheck);
 
 			for (int maxLevel : maxLevels) {
+				
+				if (maxLevel > d) {
+					tmpResultIdx++;
+					continue;
+				}
+					
 
 				long t0 = System.currentTimeMillis();
 				Set<Pattern> mups = ss.findMaxUncoveredPatternSet(threshold, maxLevel);
