@@ -63,13 +63,15 @@ public class DimensionTest {
 		"PatternCombiner"};
 
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
-		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-		int[] dimensions = new int[]{5, 7, 9, 11, 13, 15, 17, 19, 21};
+				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41};
+		int[] cardinalities = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+		int[] dimensions = new int[]{5, 10, 15, 20};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
+		
+		List<String[]> testResults = new ArrayList<String[]>();
 
 		for (int d : dimensions) {
 			int threshold = (int) (thresholdRate * n);
@@ -79,7 +81,11 @@ public class DimensionTest {
 					Arrays.copyOfRange(chosenAttributeIds, 0, d), n);
 
 			Map<String, Long> debugInfo = new HashMap<String, Long>();
+			
+			String[] resultRecord = new String[algorithms.length + 2];
+			resultRecord[0] = d + "";
 
+			int idx = 1;
 			for (String algorithm : algorithms) {
 				long t0 = System.currentTimeMillis();
 
@@ -160,54 +166,41 @@ public class DimensionTest {
 				}
 
 				long timespan = System.currentTimeMillis() - t0;
+				
+				resultRecord[idx++] = df.format((double)timespan/1000) + "";
+				
+				if (resultsQueue.size() > 0)
+					resultRecord[resultRecord.length - 1] = resultsQueue.size() + "";
 
-				String breakline = String.format("%0" + 25 + "d", 0)
-						.replace("0", "-");
-				System.out.println(breakline + " d = " + d + " " + breakline);
-				System.out.println("Algo: " + algorithm);
-				System.out.println("# of MUPs: " + resultsQueue.size());
-				System.out.println("Total Time: " + timespan + " ms");
-				System.out.println("Visited: "
-						+ debugInfo.get(NaiveSearch.DEBUG_NODES_VISITED));
+//				String breakline = String.format("%0" + 25 + "d", 0)
+//						.replace("0", "-");
+//				System.out.println(breakline + " d = " + d + " " + breakline);
+//				System.out.println("Algo: " + algorithm);
+//				System.out.println("# of MUPs: " + resultsQueue.size());
+//				System.out.println("Total Time: " + timespan + " ms");
+//				System.out.println("Visited: "
+//						+ debugInfo.get(NaiveSearch.DEBUG_NODES_VISITED));
 
-				Map<String, String> testResults = cmd.getArguments();
-				testResults.put("TIME", df.format((double)timespan/1000) + "");
-				for (Map.Entry<String, Long> e : debugInfo.entrySet()) {
-					testResults.put(e.getKey(), e.getValue() + "");
-				}
-
-				testResults.put("algorithm", algorithm);
-				testResults.put("dimension", d + "");
-
-				outputTestResultRecords.add(testResults);
+	
 
 			}
+			System.out.println(String.join(",", resultRecord));
+			testResults.add(resultRecord);
 		}
 
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {
 			String msg = "";
-			String[] resultItemNamesArray = new String[algorithms.length + 1];
+			String[] resultItemNamesArray = new String[algorithms.length + 2];
 			resultItemNamesArray[0] = "dimension";
 			for (int i = 0; i < algorithms.length; i++)
 				resultItemNamesArray[i + 1] = algorithms[i];
+			
+			resultItemNamesArray[resultItemNamesArray.length - 1] = "mups";
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
-			for (int dimension : dimensions) {
-				String[] tmpMsg = new String[algorithms.length + 1];
-				tmpMsg[0] = dimension + "";
+			for (String[] resultRecord : testResults) {
 
-				int i = 1;
-
-				for (String algorithm : algorithms) {
-					for (Map<String, String> resultEntry : outputTestResultRecords) {
-						if (resultEntry.get("dimension").equals(dimension + "") && resultEntry
-								.get("algorithm").equals(algorithm))
-							tmpMsg[i++] = resultEntry.get("TIME");
-
-					}
-				}
-
-				msg += String.join(",", tmpMsg) + "\n";
+				msg += String.join(",", resultRecord) + "\n";
 
 			}
 

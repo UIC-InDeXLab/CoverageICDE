@@ -1,5 +1,5 @@
 package vldb;
 
 public class Constants {
-	public final static int TIMEOUT = 1800;
+	public final static int TIMEOUT = 1000;
 }
