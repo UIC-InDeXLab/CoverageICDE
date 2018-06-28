@@ -88,7 +88,7 @@ public class DataCollectionVariousDimensionTest {
 
 			Map<String, Long> debugInfo = new HashMap<String, Long>();
 
-			String[] tmpResult = new String[maxLevels.length + 1];
+			String[] tmpResult = new String[maxLevels.length * 3 + 1];
 			tmpResult[0] = d + "";
 			
 			int tmpResultIdx = 1;
@@ -107,7 +107,7 @@ public class DataCollectionVariousDimensionTest {
 
 				// Create min values covering mups				
 				mups = DataCollectionBestFirstSearch.getAllDescendentPatternsAtLevel(mups, maxLevel, dataToCheck);
-
+				tmpResult[tmpResultIdx*3 + 2] = mups.size() + "";
 				
 				DataCollectionGreedySearch search = new DataCollectionGreedySearch(
 						dataToCheck.cardinalities, mups);
@@ -138,7 +138,8 @@ public class DataCollectionVariousDimensionTest {
 				}
 				t1 = System.currentTimeMillis();
 
-				tmpResult[tmpResultIdx++] = df.format((double) (t1 - t0) / 1000);
+				tmpResult[tmpResultIdx*3 + 1] = df.format((double) (t1 - t0) / 1000);
+				tmpResult[tmpResultIdx*3 + 3] = resultsQueue.size() + "";
 
 //				System.out.println("num key patterns: " + resultsQueue.size());
 //				System.out.println("Total Time: " + (t1 - t0) + " ms");
@@ -189,12 +190,17 @@ public class DataCollectionVariousDimensionTest {
 
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {
 			String msg = "";
-			String[] resultItemNamesArray = new String[maxLevels.length + 1];
+			String[] resultItemNamesArray = new String[maxLevels.length * 3 + 1];
 			resultItemNamesArray[0] = "dimension";
 			
 			for (int i = 0; i < maxLevels.length; i++) {
-				resultItemNamesArray[i + 1] = maxLevels[i] + "";
+				resultItemNamesArray[i * 3 + 1] = maxLevels[i] + "";
+				resultItemNamesArray[i * 3 + 2] = "input" + i;
+				resultItemNamesArray[i * 3 + 3] = "output" + i;
 			}
+			
+			resultItemNamesArray[resultItemNamesArray.length - 2] = "input";
+			resultItemNamesArray[resultItemNamesArray.length - 1] = "output";
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
 			for (String[] resultRecord : testResults) {
