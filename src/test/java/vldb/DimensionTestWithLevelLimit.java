@@ -65,8 +65,8 @@ public class DimensionTestWithLevelLimit {
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-		int[] dimensions = new int[]{15, 17, 19, 21, 23, 25};
-		int[] maxLevels = new int[]{3, 5, 7, 9};
+		int[] dimensions = new int[]{5, 10, 15, 20, 25, 30, 35};
+		int[] maxLevels = new int[]{2, 4, 6, 8};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
@@ -75,7 +75,7 @@ public class DimensionTestWithLevelLimit {
 
 		for (int d : dimensions) {
 			
-			String[] resultRecord = new String[maxLevels.length + 1];
+			String[] resultRecord = new String[maxLevels.length + 2];
 			resultRecord[0] = d + "";
 			int resultRecordIdx = 1;
 			
@@ -127,27 +127,10 @@ public class DimensionTestWithLevelLimit {
 					long timespan = System.currentTimeMillis() - t0;
 
 					resultRecord[resultRecordIdx++] = timespan + "";
+					
+					if (resultsQueue.size() > 0)
+						resultRecord[resultRecord.length - 1] = resultsQueue.size() + "";
 
-					String breakline = String.format("%0" + 25 + "d", 0)
-							.replace("0", "-");
-					System.out.println(breakline + " d = " + d + ", maxLevel = " + maxLevel + " " + breakline);
-					System.out.println("Algo: " + algorithm);
-					System.out.println("# of MUPs: " + resultsQueue.size());
-					System.out.println("Total Time: " + timespan + " ms");
-					System.out.println("Visited: "
-							+ debugInfo.get(NaiveSearch.DEBUG_NODES_VISITED));
-
-					Map<String, String> testResults = cmd.getArguments();
-					testResults.put("TIME",
-							df.format((double) timespan / 1000) + "");
-					for (Map.Entry<String, Long> e : debugInfo.entrySet()) {
-						testResults.put(e.getKey(), e.getValue() + "");
-					}
-
-					testResults.put("algorithm", algorithm);
-					testResults.put("dimension", d + "");
-
-					outputTestResultRecords.add(testResults);
 				}
 
 			}
@@ -162,6 +145,8 @@ public class DimensionTestWithLevelLimit {
 			resultItemNamesArray[0] = "dimension";
 			for (int i = 0; i < maxLevels.length; i++)
 				resultItemNamesArray[i + 1] = maxLevels[i] + "";
+			
+			resultItemNamesArray[resultItemNamesArray.length - 1] = "mups";
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
 			for (String[] testResultRecord : testResultList) {
