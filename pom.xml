@@ -26,8 +26,8 @@
 						<configuration>
 							<mainClass>sigmod.Test</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx64G</argLine>
-							<argLine>-Xms32G</argLine>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms8G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -38,8 +38,8 @@
 						<configuration>
 							<mainClass>sigmod.TestDC</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx64G</argLine>
-							<argLine>-Xms32G</argLine>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms8G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -50,8 +50,8 @@
 						<configuration>
 							<mainClass>vldb.BatchTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx64G</argLine>
-							<argLine>-Xms32G</argLine>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms=8G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -62,8 +62,8 @@
 						<configuration>
 							<mainClass>vldb.DataSizeTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx64G</argLine>
-							<argLine>-Xms32G</argLine>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms8G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -74,8 +74,8 @@
 						<configuration>
 							<mainClass>vldb.DimensionTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx64G</argLine>
-							<argLine>-Xms32G</argLine>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms8G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -98,8 +98,8 @@
 						<configuration>
 							<mainClass>vldb.ThresholdTestOnBlueNile</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx64G</argLine>
-							<argLine>-Xms32G</argLine>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms8G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -110,8 +110,8 @@
 						<configuration>
 							<mainClass>vldb.DataCollectionVariousThresholdTestOnAirbnb</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx64G</argLine>
-							<argLine>-Xms32G</argLine>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms8G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -122,8 +122,8 @@
 						<configuration>
 							<mainClass>vldb.DataCollectionVariousDimensionTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx64G</argLine>
-							<argLine>-Xms32G</argLine>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms8G</argLine>
 						</configuration>
 					</execution>
 					<execution>
@@ -134,8 +134,8 @@
 						<configuration>
 							<mainClass>vldb.AnytimeTest</mainClass>
 							<classpathScope>test</classpathScope>
-							<argLine>-Xmx64G</argLine>
-							<argLine>-Xms32G</argLine>
+							<argLine>-Xmx56G</argLine>
+							<argLine>-Xms8G</argLine>
 						</configuration>
 					</execution>
 					<execution>

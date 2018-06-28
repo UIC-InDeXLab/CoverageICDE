@@ -69,7 +69,7 @@ public class DataCollectionVariousDimensionTest {
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-		int[] dimensions = new int[]{5, 10, 15, 20, 25};
+		int[] dimensions = new int[]{5, 7, 9, 11, 13, 15, 17, 19, 21};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
@@ -97,7 +97,7 @@ public class DataCollectionVariousDimensionTest {
 			String breakline = String.format("%0" + 20 + "d", 0).replace("0",
 					"-");
 
-			System.out.println(breakline + " Create Mups " + breakline);
+			System.out.println(breakline + " Create Mups d = " + d + breakline);
 			System.out.println("Algo: HybridRandomSearch");
 			System.out.println("# of MUPs: " + mups.size());
 			System.out.println("Total Time: " + (t1 - t0) + " ms");
