@@ -98,6 +98,9 @@ public class DataCollectionVariousDimensionTest {
 			for (int maxLevel : maxLevels) {
 				
 				if (maxLevel > d) {
+					tmpResult[tmpResultIdx*3 + 1] = "";
+					tmpResult[tmpResultIdx*3 + 2] = "";
+					tmpResult[tmpResultIdx*3 + 3] = "";
 					tmpResultIdx++;
 					continue;
 				}
