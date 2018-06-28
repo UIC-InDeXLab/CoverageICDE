@@ -91,7 +91,7 @@ public class DataCollectionVariousDimensionTest {
 			String[] tmpResult = new String[maxLevels.length * 3 + 1];
 			tmpResult[0] = d + "";
 			
-			int tmpResultIdx = 1;
+			int tmpResultIdx = 0;
 
 			HybridSearch ss = new HybridSearch(dataToCheck);
 
