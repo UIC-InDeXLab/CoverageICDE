@@ -74,9 +74,15 @@ public class ThresholdTestOnAirbnb {
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
 				Arrays.copyOfRange(chosenAttributeIds, 0, d), n);
+		
+		List<String[]> testResults = new LinkedList<String[]>();
 
 		for (double thresholdRate : thresholdRates) {
 			int threshold = (int) (thresholdRate * n);
+			
+			String[] resultRecord = new String[algorithms.length + 2];
+			resultRecord[0] = thresholdRate + "";
+			int idx = 1;
 
 			Map<String, Long> debugInfo = new HashMap<String, Long>();			
 
@@ -163,58 +169,49 @@ public class ThresholdTestOnAirbnb {
 				}
 
 				long timespan = System.currentTimeMillis() - t0;
+				
+				resultRecord[idx++] = df.format((double) timespan / 1000) + "";
+				
+				if (resultsQueue.size() > 0)
+					resultRecord[resultRecord.length - 1] = resultsQueue.size() + "";
 
-				String breakline = String.format("%0" + 50 + "d", 0)
-						.replace("0", "-");
-				System.out.println(breakline);
-				System.out.println("Algo: " + algorithm);
-				System.out.println("# of MUPs: " + resultsQueue.size());
-				System.out.println("Total Time: " + timespan + " ms");
-				System.out.println("Visited: "
-						+ debugInfo.get(NaiveSearch.DEBUG_NODES_VISITED));
+//				String breakline = String.format("%0" + 50 + "d", 0)
+//						.replace("0", "-");
+//				System.out.println(breakline);
+//				System.out.println("Algo: " + algorithm);
+//				System.out.println("# of MUPs: " + resultsQueue.size());
+//				System.out.println("Total Time: " + timespan + " ms");
+//				System.out.println("Visited: "
+//						+ debugInfo.get(NaiveSearch.DEBUG_NODES_VISITED));
+//
+//				Map<String, String> testResults = cmd.getArguments();
+//				testResults.put("TIME",
+//						df.format((double) timespan / 1000) + "");
+//				for (Map.Entry<String, Long> e : debugInfo.entrySet()) {
+//					testResults.put(e.getKey(), e.getValue() + "");
+//				}
+//
+//				testResults.put("algorithm", algorithm);
+//				testResults.put("thresholdRate", thresholdRate + "");
 
-				Map<String, String> testResults = cmd.getArguments();
-				testResults.put("TIME",
-						df.format((double) timespan / 1000) + "");
-				for (Map.Entry<String, Long> e : debugInfo.entrySet()) {
-					testResults.put(e.getKey(), e.getValue() + "");
-				}
-
-				testResults.put("algorithm", algorithm);
-				testResults.put("thresholdRate", thresholdRate + "");
-
-				outputTestResultRecords.add(testResults);
-
+//				outputTestResultRecords.add(testResults);
+				
+				System.out.println(String.join(",", resultRecord));
+				testResults.add(resultRecord);
 			}
 		}
 
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {
 			String msg = "";
-			String[] resultItemNamesArray = new String[algorithms.length + 1];
+			String[] resultItemNamesArray = new String[algorithms.length + 2];
 			resultItemNamesArray[0] = "threshold";
 			for (int i = 0; i < algorithms.length; i++)
 				resultItemNamesArray[i + 1] = algorithms[i];
+			resultItemNamesArray[resultItemNamesArray.length - 1] = "mups";
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
-			for (double thresholdRate : thresholdRates) {
-				String[] tmpMsg = new String[algorithms.length + 1];
-				tmpMsg[0] = thresholdRate + "";
-
-				int i = 1;
-
-				for (String algorithm : algorithms) {
-					for (Map<String, String> resultEntry : outputTestResultRecords) {
-						if (resultEntry.get("thresholdRate")
-								.equals(thresholdRate + "")
-								&& resultEntry.get("algorithm")
-										.equals(algorithm))
-							tmpMsg[i++] = resultEntry.get("TIME");
-
-					}
-				}
-
-				msg += String.join(",", tmpMsg) + "\n";
-
+			for (String[] resultRecord : testResults) {
+				msg += String.join(",", resultRecord) + "\n";
 			}
 
 			FileIOHandle.writeTextToFile(msg, outputFileName, DIR_RESULT);
