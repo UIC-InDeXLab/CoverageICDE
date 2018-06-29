@@ -216,7 +216,7 @@ public class DataSizeTest {
 
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {
 			String msg = "";
-			String[] resultItemNamesArray = new String[algorithms.length + 1];
+			String[] resultItemNamesArray = new String[algorithms.length + 2];
 			resultItemNamesArray[0] = "n";
 			for (int i = 0; i < algorithms.length; i++)
 				resultItemNamesArray[i + 1] = algorithms[i];
