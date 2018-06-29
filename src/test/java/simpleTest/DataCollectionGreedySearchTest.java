@@ -21,7 +21,7 @@ public class DataCollectionGreedySearchTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 10;
+		int d = 15;
 
 		int threshold = 5000;
 

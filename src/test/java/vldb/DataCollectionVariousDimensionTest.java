@@ -72,7 +72,7 @@ public class DataCollectionVariousDimensionTest {
 		int[] cardinalities = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 		int[] dimensions = new int[]{5, 10, 15, 20, 25, 30, 35};
-		int[] maxLevels = {2, 4, 6, 8};
+		int[] maxLevels = {3, 4, 5, 6};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
 		String outputFileName = genFileName(cmd);
