@@ -70,7 +70,7 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 		double[] thresholdRates = new double[]{0.000001, 0.0000032, 0.00001,
 				0.000032, 0.0001, 0.00032, 0.001, 0.0032, 0.01};
-		
+
 		int[] maxLevels = {3, 4, 5, 6};
 
 		List<Map<String, String>> outputTestResultRecords = new ArrayList<Map<String, String>>();
@@ -79,14 +79,14 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),
 				Arrays.copyOfRange(chosenAttributeIds, 0, d), n);
-		
+
 		List<String[]> testResults = new ArrayList<String[]>();
 
 		for (double thresholdRate : thresholdRates) {
-			
+
 			String[] tmpResult = new String[maxLevels.length + 2];
 			tmpResult[0] = thresholdRate + "";
-			
+
 			int threshold = (int) (thresholdRate * n);
 
 			HybridSearch ss = new HybridSearch(dataToCheck);
@@ -98,87 +98,98 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 			String breakline = String.format("%0" + 20 + "d", 0).replace("0",
 					"-");
 
-//			System.out.println(breakline + " Create Mups " + breakline);
-//			System.out.println("Algo: HybridRandomSearch");
-//			System.out.println("# of MUPs: " + mups.size());
-//			System.out.println("Total Time: " + (t1 - t0) + " ms");
-//			System.out.println("Visited: "
-//					+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+			// System.out.println(breakline + " Create Mups " + breakline);
+			// System.out.println("Algo: HybridRandomSearch");
+			// System.out.println("# of MUPs: " + mups.size());
+			// System.out.println("Total Time: " + (t1 - t0) + " ms");
+			// System.out.println("Visited: "
+			// + ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
 
 			// Create min values covering mups
-//			System.out.println(breakline
-//					+ " Create Min Values using GreedySearch " + breakline);
+			// System.out.println(breakline
+			// + " Create Min Values using GreedySearch " + breakline);
 			int idx = 1;
-			
+
 			Queue<PatternValueNode> resultsQueue = new LinkedList<PatternValueNode>();
-			
-			
+
 			for (int maxLevel : maxLevels) {
 				tmpResult[idx] = "";
-				Set<Pattern> mupsOnAndAboveLevel = DataCollectionBestFirstSearch.getAllDescendentPatternsAtLevel(mups, maxLevel, dataToCheck);
-				
+				Set<Pattern> mupsOnAndAboveLevel = DataCollectionBestFirstSearch
+						.getAllDescendentPatternsAtLevel(mups, maxLevel,
+								dataToCheck);
+
 				t0 = System.currentTimeMillis();
 				DataCollectionGreedySearch search = new DataCollectionGreedySearch(
 						dataToCheck.cardinalities, mupsOnAndAboveLevel);
-				
-				
+
 				try {
-					DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(Constants.TIMEOUT);
-					DataCollectionRunnable block = new DataCollectionRunnable(resultsQueue) {
-	
+					DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(
+							Constants.TIMEOUT);
+					DataCollectionRunnable block = new DataCollectionRunnable(
+							resultsQueue) {
+
 						@Override
 						public void run() {
-							List<PatternValueNode> keyPatterns = search.findMinListOfKeyPatterns();
+							List<PatternValueNode> keyPatterns = search
+									.findMinListOfKeyPatterns();
 							if (keyPatterns != null)
 								resultsQueue.addAll(keyPatterns);
 						}
 					};
-	
+
 					timeoutBlock.addBlock(block);
-	
+
 				} catch (Throwable e) {
-					System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
-					resultsQueue.clear();			
+					System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT
+							+ " seconds). Stopped the test.");
+					resultsQueue.clear();
 				} finally {
 				}
-				
-				
+
 				t1 = System.currentTimeMillis();
-				
-				tmpResult[idx++] = df.format((double)(t1 - t0)/1000);
+
+				tmpResult[idx++] = df.format((double) (t1 - t0) / 1000);
 			}
 
 			// Create min values covering mups
-//			System.out.println(breakline
-//					+ " Create Min Values using NaiveSearch " + breakline);
+			// System.out.println(breakline
+			// + " Create Min Values using NaiveSearch " + breakline);
+			if (thresholdRate < 0.0000032 || thresholdRate >= 0.001) {
+				t0 = System.currentTimeMillis();
+				NaiveDataCollection naive = new NaiveDataCollection(
+						dataToCheck.cardinalities, mups);
+				resultsQueue.clear();
+				try {
+					DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(
+							Constants.TIMEOUT);
+					DataCollectionRunnable block = new DataCollectionRunnable(
+							resultsQueue) {
 
-			t0 = System.currentTimeMillis();
-			NaiveDataCollection naive = new NaiveDataCollection(
-					dataToCheck.cardinalities, mups);
-			resultsQueue.clear();
-			try {
-				DataCollectionTimeout timeoutBlock = new DataCollectionTimeout(Constants.TIMEOUT);
-				DataCollectionRunnable block = new DataCollectionRunnable(resultsQueue) {
+						@Override
+						public void run() {
+							List<PatternValueNode> keyPatterns = naive
+									.findMinListOfKeyPatterns();
+							if (keyPatterns != null)
+								resultsQueue.addAll(keyPatterns);
+						}
+					};
 
-					@Override
-					public void run() {
-						List<PatternValueNode> keyPatterns = naive.findMinListOfKeyPatterns();
-						if (keyPatterns != null)
-							resultsQueue.addAll(keyPatterns);
-					}
-				};
+					timeoutBlock.addBlock(block);
 
-				timeoutBlock.addBlock(block);
+				} catch (Throwable e) {
+					System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT
+							+ " seconds). Stopped the test.");
+					resultsQueue.clear();
+				} finally {
+				}
+				t1 = System.currentTimeMillis();
 
-			} catch (Throwable e) {
-				System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
-				resultsQueue.clear();			
-			} finally {
+				tmpResult[idx++] = df.format((double) (t1 - t0) / 1000);
 			}
-			t1 = System.currentTimeMillis();
-			
-			tmpResult[idx++] = df.format((double)(t1 - t0)/1000);
-			
+			else {
+				tmpResult[idx++] = "";
+			}
+
 			System.out.println(String.join(",", tmpResult));
 			testResults.add(tmpResult);
 		}
@@ -187,18 +198,17 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 			String msg = "";
 			String[] resultItemNamesArray = new String[maxLevels.length + 2];
 			resultItemNamesArray[0] = "threshold";
-			
+
 			int idx = 1;
 			for (int maxLevel : maxLevels) {
 				resultItemNamesArray[idx++] = "greedy" + maxLevel;
 			}
-			
-			resultItemNamesArray[resultItemNamesArray.length - 1] = "naive";
 
+			resultItemNamesArray[resultItemNamesArray.length - 1] = "naive";
 
 			msg += String.join(",", resultItemNamesArray) + "\n";
 			for (String[] resultRecord : testResults) {
-				
+
 				msg += String.join(",", resultRecord) + "\n";
 
 			}
