@@ -17,9 +17,9 @@ public class HybridSearchTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 8;
+		int d = 17;
 
-		int threshold = 5000;
+		int threshold = 1000;
 
 		DataSet dataToCheck = new DataSet(fileName,
 				Arrays.copyOfRange(cardinalities, 0, d),

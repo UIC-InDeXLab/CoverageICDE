@@ -20,7 +20,7 @@ public class GreedySearchTest {
 		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-		int d = 16;
+		int d = 17;
 
 		int threshold = 1000;
 
