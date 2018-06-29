@@ -63,7 +63,7 @@ public class ThresholdTestOnAirbnb {
 
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
-		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+		int[] cardinalities = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 		double[] thresholdRates = new double[]{0.000001, 0.0000032, 0.00001,
 				0.000032, 0.0001, 0.00032, 0.001, 0.0032, 0.01};

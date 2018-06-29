@@ -65,9 +65,9 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 		int n = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_RECORDS_SHORT));
 
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
-		int[] cardinalities = {3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-				2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41};
+		int[] cardinalities = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+				2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 		double[] thresholdRates = new double[]{0.000001, 0.0000032, 0.00001,
 				0.000032, 0.0001, 0.00032, 0.001, 0.0032, 0.01};
 
@@ -154,7 +154,7 @@ public class DataCollectionVariousThresholdTestOnAirbnb {
 			// Create min values covering mups
 			// System.out.println(breakline
 			// + " Create Min Values using NaiveSearch " + breakline);
-			if (thresholdRate < 0.0000032 || thresholdRate >= 0.001) {
+			if (thresholdRate < 0.0000032 || thresholdRate > 0.0032) {
 				t0 = System.currentTimeMillis();
 				NaiveDataCollection naive = new NaiveDataCollection(
 						dataToCheck.cardinalities, mups);
