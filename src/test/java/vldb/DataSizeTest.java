@@ -78,7 +78,7 @@ public class DataSizeTest {
 			int threshold = (int) (thresholdRate * n);
 
 			String[] resultRecord = new String[algorithms.length + 2];
-			resultRecord[0] = thresholdRate + "";
+			resultRecord[0] = n + "";
 			int idx = 1;
 
 			DataSet dataToCheck = new DataSet(fileName,
