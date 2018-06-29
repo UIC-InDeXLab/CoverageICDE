@@ -196,9 +196,10 @@ public class ThresholdTestOnAirbnb {
 
 //				outputTestResultRecords.add(testResults);
 				
-				System.out.println(String.join(",", resultRecord));
-				testResults.add(resultRecord);
+				
 			}
+			System.out.println(String.join(",", resultRecord));
+			testResults.add(resultRecord);
 		}
 
 		if (cmd.checkArgument(Cli.CMD_OUTPUT_SHORT)) {
