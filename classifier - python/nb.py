@@ -7,7 +7,7 @@ def read_csv(filename):
 	f.readline()  # skip the header
 	data = np.loadtxt(fname = f, delimiter = ',')
 
-	varibles = data[:, 0:3]
+	varibles = data[:, 0:4]
 	label = data[:,4]
 
 	return varibles, label
