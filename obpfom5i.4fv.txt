@@ -1,0 +1,22 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	new file:   data/RecidivismData_Original-categorized.csv
+#	new file:   data/categorization.txt
+#
+# Untracked files:
+#	CPP/FastIntersectCheck/Debug/
+#	CPP/FastIntersectCheck/FastIntersectCheck.sdf
+#	CPP/FastIntersectCheck/FastIntersectCheck.sln
+#	CPP/FastIntersectCheck/FastIntersectCheck.v12.suo
+#	CPP/FastIntersectCheck/FastIntersectCheck/Debug/
+#	CPP/FastIntersectCheck/FastIntersectCheck/FastIntersectCheck.vcxproj
+#	CPP/FastIntersectCheck/FastIntersectCheck/FastIntersectCheck.vcxproj.filters
+#	bin/
+#
+
