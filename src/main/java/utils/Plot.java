@@ -122,8 +122,8 @@ public class Plot extends JFrame {
 	}
 
 	public static void main(String[] args) {
-
-		// Plot ex = new Plot(new long[]{1, 3, 4}, "2d");
-		// ex.setVisible(true);
+//
+//		 Plot ex = new Plot(new long[]{1, 3, 4}, "2d");
+//		 ex.setVisible(true);
 	}
 }

@@ -32,16 +32,16 @@ public class BlueNileMups {
 		long t1 = System.currentTimeMillis();
 
 		String breakline = String.format("%0" + 50 + "d", 0).replace("0", "-");
-
-		System.out.println(breakline);
-		System.out.println("Algo: HybridRandomSearch");
-		System.out.println("# of MUPs: " + mups.size());
-		System.out.println("Total Time: " + (t1 - t0) + " ms");
-		System.out.println("Visited: "
-				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
-		System.out.println("Hits: " + ss.getNumHits());
-		
-		System.out.println(mups);
+//
+//		System.out.println(breakline);
+//		System.out.println("Algo: HybridRandomSearch");
+//		System.out.println("# of MUPs: " + mups.size());
+//		System.out.println("Total Time: " + (t1 - t0) + " ms");
+//		System.out.println("Visited: "
+//				+ ss.getDebugInfo().get(NaiveSearch.DEBUG_NODES_VISITED));
+//		System.out.println("Hits: " + ss.getNumHits());
+//		
+//		System.out.println(mups);
 
 
 		// Plot

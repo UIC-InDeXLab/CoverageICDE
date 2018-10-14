@@ -183,7 +183,7 @@ def decision_tree(train, test, max_depth, min_size):
 seed(1)
 # load and prepare data
 folder = 'data2/'
-filenames = ['RecidivismData_sub_none.csv']
+filenames = ['RecidivismData_sub_none.csv', 'RecidivismData_sub.csv']
 testfile = 'TestR.csv'
 testset = load_csv(folder+testfile)
 # convert string attributes to integers
@@ -195,4 +195,5 @@ for ds in range(len(filenames)):
     trainingset = load_csv(folder+filenames[ds])
     for i in range(len(trainingset[0])):
         str_column_to_float(trainingset, i)
-    print evaluate_ds(trainingset, testset, decision_tree, max_depth, min_size)
+    print filenames[ds]
+    print "precision:", evaluate_ds(trainingset, testset, decision_tree, max_depth, min_size)
