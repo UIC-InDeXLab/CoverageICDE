@@ -1,7 +1,7 @@
 from sklearn import tree
 import numpy as np
 from sklearn.metrics import accuracy_score
-import graphviz 
+#import graphviz 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import classification_report
 from sklearn.decomposition import TruncatedSVD
@@ -55,10 +55,18 @@ for fn in filenames:
 	X_test = enc.transform(X_test_orig).toarray()
 	# X_test = pca.transform(X_test)
 	
-	# Testing
+	# Testing against Hispanic Female
 	y_pred = clf.predict(X_test)
 	print fn
+	print 'against Hispanic Female:'
 	print classification_report(y_test_orig, y_pred)
+	print 
+
+	# Testing against random set
+	X_test2 = enc.transform(X_test_whole).toarray()
+	y_pred2 = clf.predict(X_test2)
+	print 'against random test set:'
+	print classification_report(y_test_whole, y_pred2)
 	print 
 
 	# dot_data = tree.export_graphviz(clf, out_file=None, feature_names=['sex','age','race','marrital status'], class_names={0: 'no', 1: 'yes'}) 
@@ -85,6 +93,7 @@ X_test = enc.transform(X_test_whole).toarray()
 
 # Testing
 y_pred = clf.predict(X_test)
+print '--------------------'
 print whole_train_filename
 print classification_report(y_test_whole, y_pred)
 print 
