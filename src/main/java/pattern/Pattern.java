@@ -59,6 +59,10 @@ public class Pattern implements Comparable<Pattern> {
 		this.level = getLevel();
 	}
 
+	/**
+	 * Get number of elements in a pattern
+	 * @return
+	 */
 	public int getDimension() {
 		return data.length;
 	}
