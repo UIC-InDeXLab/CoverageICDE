@@ -16,6 +16,7 @@ import java.util.Set;
 import cli.Cli;
 import io.DataSet;
 import pattern.Pattern;
+import search.AprioriSearch;
 import search.GreedySearch;
 import search.HybridSearch;
 import search.NaiveSearch;
@@ -59,7 +60,7 @@ public class ThresholdTestOnBlueNile {
 		int n = Integer.MAX_VALUE;
 
 		String[] algorithms = new String[]{"hybrid", "PatternBreakerOriginal",
-				"PatternCombiner"};
+				"PatternCombiner", "apriori"};
 
 		int[] chosenAttributeIds = {1, 2, 3, 4, 5, 6, 7};
 		int[] cardinalities = {10, 7, 4, 8, 3, 3, 5};
@@ -135,6 +136,30 @@ public class ThresholdTestOnBlueNile {
 					debugInfo = search.getDebugInfo();
 				} else if (algorithm.equals("PatternCombiner")) {
 					PatternCombiner search = new PatternCombiner(dataToCheck);
+					
+					try {
+						MupSearchTimeout timeoutBlock = new MupSearchTimeout(Constants.TIMEOUT);
+						MupSearchRunnable block = new MupSearchRunnable(resultsQueue) {
+
+							@Override
+							public void run() {
+								Set<Pattern> mups = search.findMaxUncoveredPatternSet(threshold);
+								if (mups != null)
+									resultsQueue.addAll(mups);
+							}
+						};
+
+						timeoutBlock.addBlock(block);
+
+					} catch (Throwable e) {
+						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
+						resultsQueue.clear();			
+					} finally {
+					}
+					
+					debugInfo = search.getDebugInfo();
+				} else if (algorithm.equals("apriori")) {
+					AprioriSearch search = new AprioriSearch(dataToCheck);
 					
 					try {
 						MupSearchTimeout timeoutBlock = new MupSearchTimeout(Constants.TIMEOUT);

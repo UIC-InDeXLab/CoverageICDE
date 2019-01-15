@@ -62,6 +62,11 @@ public class AprioriSearch extends NaiveSearch {
 		while (!kElementSet.isEmpty()) {
 			Set<Pattern> kPlusOneElementSet = new HashSet<Pattern>();
 			for (Pattern curItemset : kElementSet) {
+				
+				// Check if the current itemset exceeds the maxLevel
+				if (curItemset.level > maxLevel)
+					continue;
+				
 				// Create (k+1) element itemsets
 				for (Pattern oneElementItemset : oneElementSet) {
 					Pattern newItemset = merge(curItemset, oneElementItemset);

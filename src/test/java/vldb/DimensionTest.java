@@ -16,6 +16,7 @@ import java.util.Set;
 import cli.Cli;
 import io.DataSet;
 import pattern.Pattern;
+import search.AprioriSearch;
 import search.GreedySearch;
 import search.HybridSearch;
 import search.NaiveSearch;
@@ -60,7 +61,7 @@ public class DimensionTest {
 		int n = Integer.parseInt(cmd.getArgument(Cli.CMD_NUM_RECORDS_SHORT));
 
 		String[] algorithms = new String[]{"hybrid", "PatternBreakerOriginal",
-		"PatternCombiner"};
+		"PatternCombiner", "apriori"};
 
 		int[] chosenAttributeIds = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 				17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41};
@@ -145,6 +146,34 @@ public class DimensionTest {
 						continue;
 					}
 					PatternCombiner search = new PatternCombiner(dataToCheck);
+					
+					try {
+						MupSearchTimeout timeoutBlock = new MupSearchTimeout(Constants.TIMEOUT);
+						MupSearchRunnable block = new MupSearchRunnable(resultsQueue) {
+
+							@Override
+							public void run() {
+								Set<Pattern> mups = search.findMaxUncoveredPatternSet(threshold);
+								if (mups != null)
+									resultsQueue.addAll(mups);
+							}
+						};
+
+						timeoutBlock.addBlock(block);
+
+					} catch (Throwable e) {
+						System.out.println("TIMEOUT (exceeds " + Constants.TIMEOUT + " seconds). Stopped the test.");
+						resultsQueue.clear();			
+					} finally {
+					}
+					
+					debugInfo = search.getDebugInfo();
+				} else if (algorithm.equals("apriori")) {
+					if (d > 15) {
+						resultRecord[idx++] = "";
+						continue;
+					}
+					AprioriSearch search = new AprioriSearch(dataToCheck);
 					
 					try {
 						MupSearchTimeout timeoutBlock = new MupSearchTimeout(Constants.TIMEOUT);
