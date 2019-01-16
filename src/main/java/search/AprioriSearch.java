@@ -61,8 +61,7 @@ public class AprioriSearch extends NaiveSearch {
 		Set<Pattern> kElementSet = new HashSet<Pattern>(oneElementSet);
 		while (!kElementSet.isEmpty()) {
 			Set<Pattern> kPlusOneElementSet = new HashSet<Pattern>();
-			for (Pattern curItemset : kElementSet) {
-				
+			for (Pattern curItemset : kElementSet) {	
 				// Check if the current itemset exceeds the maxLevel
 				if (curItemset.level > maxLevel)
 					continue;
@@ -72,7 +71,11 @@ public class AprioriSearch extends NaiveSearch {
 					Pattern newItemset = merge(curItemset, oneElementItemset);
 					if (newItemset != null) {
 						updateDebugNodesAddAVisit(newItemset);
-						if (curDataSet.checkCoverage(newItemset) < threshold) {
+						int support = curDataSet.checkCoverage(newItemset);
+						
+						if (!newItemset.getValidity())
+							continue;
+						if ( support < threshold) {
 							// not perfect
 							uncoveredPatternSet.add(newItemset);
 						} else {
@@ -90,14 +93,10 @@ public class AprioriSearch extends NaiveSearch {
 		 */
 		Set<Pattern> mups = new HashSet<Pattern>();
 		for (Pattern uncoveredPattern : uncoveredPatternSet) {
-			boolean ifMup = true;
 			// Check if all its parent patterns are covered.
-			for (Pattern parent : uncoveredPattern.genParents().values()) {
-				if (uncoveredPatternSet.contains(parent)) {
-					ifMup = false;
-					break;
-				}
-			}
+			boolean ifMup = Collections.disjoint(uncoveredPatternSet,
+					uncoveredPattern.genParents().values());
+
 			if (ifMup)
 				mups.add(uncoveredPattern);
 		}
@@ -116,8 +115,11 @@ public class AprioriSearch extends NaiveSearch {
 	 * @return
 	 */
 	public Pattern merge(Pattern p1, Pattern p2) {
-		if (p1.getDimension() != p2.getDimension() || p1.data == p2.data)
+		boolean ifValid = true;
+		
+		if (p1.getDimension() != p2.getDimension()) {
 			return null;
+		}
 		char[] mergedData = new char[p1.getDimension()];
 
 		for (int idx = 0; idx < p1.getDimension(); idx++)
@@ -125,14 +127,17 @@ public class AprioriSearch extends NaiveSearch {
 				mergedData[idx] = p2.data[idx];
 			else if (p2.data[idx] == 'x')
 				mergedData[idx] = p1.data[idx];
-			else if (p1.data[idx] != p2.data[idx])
-				return null;
+			else if (p1.data[idx] != p2.data[idx]) {
+				ifValid = false;
+				mergedData[idx] = 'x';
+			}
 			else
 				mergedData[idx] = p1.data[idx];
 		if (Arrays.equals(mergedData, p1.data)
-				|| Arrays.equals(mergedData, p2.data))
-			return null;
+				|| Arrays.equals(mergedData, p2.data) ||  p1.data == p2.data)
+			ifValid = false;
+		
 		// System.out.println(p1 + " + " + p2 + " = " + mergedData);
-		return new Pattern(mergedData);
+		return new Pattern(mergedData, ifValid);
 	}
 }

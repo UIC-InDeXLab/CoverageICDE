@@ -18,11 +18,21 @@ public class Pattern implements Comparable<Pattern> {
 	
 	public int visitId;
 	public int parentVisitId;
+	
+	boolean ifValid;
 
 	public Pattern(char[] data) {
 		this.data = Arrays.copyOf(data, data.length);
 		this.covereage = -1;
 		this.level = getLevel();
+		ifValid = true;
+	}
+	
+	public Pattern(char[] data, boolean validity) {
+		this.data = Arrays.copyOf(data, data.length);
+		this.covereage = -1;
+		this.level = getLevel();
+		this.ifValid = validity;
 	}
 
 	public Pattern(char[] data,
@@ -32,6 +42,7 @@ public class Pattern implements Comparable<Pattern> {
 				coveragePercentageOfEachValueInEachAttr);
 		this.covereage = -1;
 		this.level = getLevel();
+		ifValid = true;
 	}
 
 	public Pattern(char[] data, int idx, char chrToReplace) {
@@ -39,6 +50,7 @@ public class Pattern implements Comparable<Pattern> {
 		this.data[idx] = chrToReplace;
 		this.covereage = -1;
 		this.level = getLevel();
+		ifValid = true;
 	}
 
 	public Pattern(char[] dataContent, int idx, char chrToReplace,
@@ -57,6 +69,7 @@ public class Pattern implements Comparable<Pattern> {
 		}
 		this.covereage = -1;
 		this.level = getLevel();
+		ifValid = true;
 	}
 
 	/**
@@ -65,6 +78,14 @@ public class Pattern implements Comparable<Pattern> {
 	 */
 	public int getDimension() {
 		return data.length;
+	}
+	
+	/**
+	 * A pattern can be invalid if it is merged by two patterns (during Apriori Search)
+	 * @return
+	 */
+	public boolean getValidity() {
+		return this.ifValid;
 	}
 
 	/**
