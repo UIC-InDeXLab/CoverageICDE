@@ -1,8 +1,6 @@
 # CoverageICDE
 This repository contains the code for the ICDE 2019 paper where we introduced the notion of **Coverage** over low-dimensional categorical attributes.
 
-The implementation is (mainly) done by Zhongjun Jin. Please feel free to contact the authors if you have any questions.
-
 # Abstract
 Data analysis impacts virtually every aspect of our society today. Often, this analysis is performed on an existing dataset, possibly collected through a process that the data scientists had limited control over. The existing data analyzed may not include the complete universe, but it is expected to cover the diversity of items in the universe. Lack of adequate coverage in the dataset can result in undesirable outcomes such as biased decisions and algorithmic racism, as well as creating vulnerabilities such as opening up room for adversarial attacks.
 
@@ -12,3 +10,12 @@ In this work, we assess the coverage of a given dataset over multiple categorica
 [1] Abolfazl Asudeh, Zhongjun Jin, H. V. Jagadish. **Assessing and Remedying Coverage for a Given Dataset**. ICDE, 2019.
 
 [2] (Demo) Zhongjun Jin, Mengjing Xu, Chenkai Sun, Abolfazl Asudeh, H. V. Jagadish. **MithraCoverage: A System for Investigating Population Bias for Intersectional Fairness**. SIGMOD, 2020, ACM. 
+
+## Authors
+
+* **[Zhongjun Jin](https://github.com/markjin1990)**
+* **[Abolfazl Asudeh](https://github.com/asudeh)**
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
